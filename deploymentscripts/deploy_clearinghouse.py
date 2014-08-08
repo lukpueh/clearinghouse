@@ -68,7 +68,7 @@ def _deploy_seattle_files_to_directory(repodir, targetdir):
   directory.
   """
   
-  print "Deploying seattle and repy library code to " + targetdir
+  print("Deploying seattle and repy library code to {0}".format(targetdir))
   
   # Copy the repy files needed by various parts of clearinghouse,
   # including ones we don't use but may be required to import repyhelper 
@@ -97,9 +97,12 @@ def _process_mix_files_in_directory(repodir, directory_with_mix_files):
   # Generate a .py file for each .mix file.
   for file_path in mix_files:
     processed_file_path = (os.path.basename(file_path)).replace(".mix", ".py")
-    retval = subprocess.call(["python", "repypp.py", file_path, processed_file_path])
+    retval = subprocess.call(["python", "repypp.py", file_path,
+        processed_file_path])
+
     if retval != 0:
-      exit_with_message(1, "Failed converting " + file_path + " to " + processed_file_path)
+      exit_with_message(1, "Failed converting " + file_path + " to " +
+              processed_file_path)
 
   os.chdir(originaldir)
 
@@ -110,41 +113,48 @@ def _process_mix_files_in_directory(repodir, directory_with_mix_files):
 def main():
     
   if not len(sys.argv) == 3:
-    exit_with_message(2, "Usage: python deploy_clearinghouse.py <path/to/clearinghouse/repo <dir/to/deploy/to>")
+    exit_with_message(2, 
+            "Usage: python deploy_clearinghouse.py <path/to/clearinghouse/repo <dir/to/deploy/to>")
   
   repodir = sys.argv[1]
   deployroot = sys.argv[2]
   
   if not os.path.isdir(repodir):
-    exit_with_message(1, "ERROR: the provided path to the git repo (clearinhghouse) does not exist.")
+    exit_with_message(1, 
+            "ERROR: the provided path to the git repo (clearinhghouse) does not exist.")
 
   if not os.path.exists(os.path.join(repodir, "clearinghouse")):
-    exit_with_message(1, "ERROR: the given repository directory doesn't contains a clearinghouse directory.")
+    exit_with_message(1, 
+            "ERROR: the given repository directory doesn't contain a clearinghouse directory.")
 
   # Warn the user if the provided deploy directory exists and if it should be replaced.
   # We actually rename rather than remove the old one, just to be paranoid.
   replace_deployment_dir = False
   if os.path.isdir(deployroot):
-    print "WARNING: existing directory found at directory to deploy: " + deployroot
+    print("WARNING: existing directory found at directory to deploy: {0}".format(
+        deployroot))
     ans = raw_input("Backup and replace this directory (copying config files to the new deployment)? [y/n]")
     replace_deployment_dir = str.lower(ans) == 'y'
     if not replace_deployment_dir:
       exit_with_message(2, "You chose not to replace the directory.")
     else:
-      print
+      print("")
       renameddir = deployroot.rstrip('/').rstrip('\\') + '.bak.' + str(time.time())
-      print "Renaming existing directory " + deployroot + " to " + renameddir
+      print("Renaming existing directory {0} to {1}".format(deployroot,
+          renamedir))
       shutil.move(deployroot, renameddir)
 
   # Create the directory we will deploy to.
-  print "Creating directory " + deployroot
+  print("Creating directory {0}".format(deployroot))
   os.mkdir(deployroot)
 
   # Copy over the clearinghouse files from the repository to the deploy
   # directory.
   clearinghouse_repo_dir = os.path.join(repodir, "clearinghouse")
-  clearinghouse_deploy_dir = os.path.join(deployroot, "clearinghouse")
-  print "Copying " + clearinghouse_repo_dir + " to " + clearinghouse_deploy_dir
+  clearinghouse_deploy_dir = os.path.join(deployroot, "seattlegeni")
+
+  print("Copying {0} to {1}".format(clearinghouse_repo_dir,
+      clearinghouse_deploy_dir))
   shutil.copytree(clearinghouse_repo_dir, clearinghouse_deploy_dir, symlinks=True)
 
   # Deploy the seattle/repy library files in a directory called "seattle". This
@@ -180,7 +190,8 @@ def main():
     print("Copying {0} to {1}".format(old_keydb_config_path,
         new_keydb_config_path))
 
-    # Use copy2 to preserve permissions, e.g. in case these weren't world-readable.
+    # Use copy2 to preserve permissions, e.g. in case these weren't
+    # world-readable.
     shutil.copy2(old_keydb_config_path, new_keydb_config_path)
 
     # The backend config file.
