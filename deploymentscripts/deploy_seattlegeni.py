@@ -117,7 +117,7 @@ def main():
   if not os.path.isdir(trunkdir):
     exit_with_message(1, "ERROR: the provided path to the svn trunk does not exist.")
 
-  if not os.path.exists(os.path.join(trunkdir, "seattlegeni")):
+  if not os.path.exists(os.path.join(trunkdir, "clearinghouse")):
     exit_with_message(1, "ERROR: the given svn trunk directory doesn't contains a seattlegeni directory.")
 
   # Warn the user if the provided deploy directory exists and if it should be replaced.
