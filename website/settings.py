@@ -161,11 +161,11 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
   'django.middleware.common.CommonMiddleware',
-  'django.contrib.csrf.middleware.CsrfViewMiddleware',
-  'django.contrib.csrf.middleware.CsrfResponseMiddleware',
-  'django.contrib.sessions.middleware.SessionMiddleware',
+  'django.middleware.csrf.CsrfViewMiddleware',
+  'django.middleware.sessions.SessionMiddleware',
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
+  'django.middleware.clickjacking.XFrameOptionsMiddleware',
   #'django.middleware.doc.XViewMiddleware',
 
   # Our own middleware that logs when a request is initially received and
@@ -173,6 +173,7 @@ MIDDLEWARE_CLASSES = (
   'seattlegeni.website.middleware.logrequest.LogRequestMiddleware',
   # Our own middleware that logs when unhandled exceptions happen.
   'seattlegeni.website.middleware.logexception.LogExceptionMiddleware',
+
 )
 
 ROOT_URLCONF = 'seattlegeni.website.urls'
@@ -188,7 +189,6 @@ INSTALLED_APPS = (
   'django.contrib.admin',
   'django.contrib.auth',
   'django.contrib.contenttypes',
-  'django.contrib.csrf',
   'django.contrib.sessions',
   'django.contrib.sites',
   'django.contrib.messages',
