@@ -58,12 +58,15 @@ SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://custombuilder.poly.edu/
 # Need to specify the LOGIN_URL, as our login page isn't at the default login
 # location (the default is /accounts/login).
 LOGIN_URL = 'login'
+
 # Users will be redirected to SOCIAL_AUTH_LOGIN_ERROR_URL in case of backend error/user cancellation
 # during login or association (account linking).
 SOCIAL_AUTH_LOGIN_ERROR_URL ='error'
 SOCIAL_AUTH_BACKEND_ERROR_URL = 'error'
+
 # When a user logs in with OpenID/OAuth send them to the profile page
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'profile'
+
 # A new user created through OpenID/OAuth gets sent here upon creation. 
 # currently not used
 #SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'new_auto_register_user'
@@ -94,15 +97,25 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'mysql'      # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'FILL_THIS_IN' # Or path to database file if using sqlite3.
-DATABASE_USER = 'FILL_THIS_IN' # Not used with sqlite3.
-DATABASE_PASSWORD = 'FILL_THIS_IN' # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+# Database
+# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+DATABASES = {
+    'default': {
+        # you can use django.db.backends.sqlite3 instead of mysql. If you
+        # decide to do so, you can leave the other fields empty
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'FILL_THIS_IN',
+        'USER': 'FILL_THIS_IN',
+        'PASSWORD': 'FILL_THIS_IN',
+        'HOST': '',
+        'PORT': '',
+    }
+}
 
-if DATABASE_ENGINE == 'mysql':
-  DATABASE_OPTIONS = {'init_command': 'SET storage_engine=INNODB'}
+if DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
+    DATABASES['default']['OPTIONS'] = {}
+    DATABASES['default']['OPTIONS']['init_command'] = \
+            'SET storage_engine=INNODB'
 
 # Make this unique, and don't share it with anybody.
 # Fill this in!
