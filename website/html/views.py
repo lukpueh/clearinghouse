@@ -341,7 +341,7 @@ def register(request):
                              {'msg' : "Username %s has been successfully registered." % (user.username)})
   else:
     form = forms.GeniUserCreationForm()
-  return render_to_responde('accounts/register.html', 
+  return render_to_response('accounts/register.html', 
           {'form' : form, 'page_top_errors' : page_top_errors},
           context_instance=RequestContext(request))
   
@@ -389,7 +389,7 @@ def _show_login(request, ltemplate, template_dict, form=None):
         #if not request.session.test_cookie_worked():
         request.session.set_test_cookie()
     template_dict['form'] = form
-    return render_to_responde(ltemplate, template_dict, 
+    return render_to_response(ltemplate, template_dict, 
             context_instance=RequestContext(request))
   
   
@@ -457,7 +457,7 @@ def help(request):
 
 
 def accounts_help(request):
-  return renderr_to_response('accounts/help.html', {}, 
+  return render_to_response('accounts/help.html', {}, 
           context_instance=RequestContext(request))
 
 
