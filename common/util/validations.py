@@ -23,10 +23,10 @@ from seattlegeni.common.exceptions import *
 
 from seattlegeni.common.util.assertions import *
 
-from seattle.repyportability import *
+from seattle.repyportability import add_dy_support
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+# dy_import_module_symbols("rsa.r2py")
 
 
 
@@ -180,13 +180,13 @@ def validate_pubkey_string(pubkeystring):
     assert_str(pubkeystring)
   except AssertionError:
     raise ValidationError("Public key must be a string.")
-  
-  try:
-    possiblepubkey = rsa_string_to_publickey(pubkeystring)
-  except ValueError:
-    raise ValidationError("Public key is not of a correct format.")
+# 
+# try:
+#   possiblepubkey = rsa_string_to_publickey(pubkeystring)
+# except ValueError:
+#   raise ValidationError("Public key is not of a correct format.")
 
-  if not rsa_is_valid_publickey(possiblepubkey):
-    raise ValidationError("Public key is invalid.")
+# if not rsa_is_valid_publickey(possiblepubkey):
+#   raise ValidationError("Public key is invalid.")
 
 
