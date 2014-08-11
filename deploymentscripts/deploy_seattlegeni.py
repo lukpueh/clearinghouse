@@ -61,51 +61,6 @@ def _print_post_deploy_instructions():
 
 
 
-def _deploy_seattle_files_to_directory(trunkdir, targetdir):
-  """
-  Deploys a copy of all seattle files needed to run repy code to a specified
-  directory.
-  """
-  
-  print "Deploying seattle and repy library code to " + targetdir
-  
-  # Copy the repy files needed by various parts of seattlegeni,
-  # including ones we don't use but may be required to import repyhelper 
-  # (OBSOLETE?).
-  _copy_to_target(os.path.join(trunkdir, "repy", "*"), targetdir)
-  _copy_to_target(os.path.join(trunkdir, "nodemanager", "*"), targetdir)
-  _copy_to_target(os.path.join(trunkdir, "portability", "*"), targetdir)
-  _copy_to_target(os.path.join(trunkdir, "seattlelib", "*"), targetdir)
-
-  _process_mix_files_in_directory(trunkdir, targetdir)
-
-
-
-
-
-#iterate through the .mix files in current folder and run them through the preprocessor
-#script_path must specify the name of the preprocessor script
-#the working directory must be set to the directory containing the preprocessor script prior to executing this function.
-def _process_mix_files_in_directory(trunkdir, directory_with_mix_files):
- 
-  originaldir = os.getcwd()
-  os.chdir(directory_with_mix_files)
-
-  mix_files = glob.glob("*.mix")
- 
-  # Generate a .py file for each .mix file.
-  for file_path in mix_files:
-    processed_file_path = (os.path.basename(file_path)).replace(".mix", ".py")
-    retval = subprocess.call(["python", "repypp.py", file_path, processed_file_path])
-    if retval != 0:
-      exit_with_message(1, "Failed converting " + file_path + " to " + processed_file_path)
-
-  os.chdir(originaldir)
-
-
-
-
-
 def main():
     
   if not len(sys.argv) == 3:
@@ -146,15 +101,14 @@ def main():
   print "Copying " + clearinghouse_source_dir + " to " + clearinghouse_deploy_dir
   shutil.copytree(clearinghouse_source_dir, clearinghouse_deploy_dir, symlinks=True)
 
-  # Deploy the seattle/repy library files in a directory called "seattle". This
-  # will serve. This will be the sole location of repy files in seattlegeni and
-  # will also serve as a python package called "seattle" for use within
-  # seattlegeni code.
-  seattle_package_dir = os.path.join(deployroot, "seattle")
-  os.mkdir(seattle_package_dir)
-  # Open/close file to emulate a "touch __init__.py"
-  open(os.path.join(seattle_package_dir, "__init__.py"), "a").close()
-  _deploy_seattle_files_to_directory(trunkdir, seattle_package_dir)
+  # Inform the user to deploy the Repy runtime and library files in a 
+  # directory called "seattle" for use within Clearinghouse code.
+  # XXX In a future version of this script (and the other init/build scripts 
+  # XXX that we happen to use), this user intervention won't be required.
+  print "Don't forget to create a Repy runtime for the clearinghouse in "
+  print "the directory " + clearinghouse_deploy_dir + "/seattle by calling "
+  print "./clearinghouse/scripts/dist/build.py " + clearinghouse_deploy_dir + \ 
+    "seattle"
   
   # If we replaced an existing directory, then copy the config files from the
   # old deployment to the new one.
