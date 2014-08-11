@@ -105,10 +105,12 @@ def main():
   # directory called "seattle" for use within Clearinghouse code.
   # XXX In a future version of this script (and the other init/build scripts 
   # XXX that we happen to use), this user intervention won't be required.
+  print 10 * "-",
   print "Don't forget to create a Repy runtime for the clearinghouse in "
-  print "the directory " + clearinghouse_deploy_dir + "/seattle by calling "
-  print "./clearinghouse/scripts/dist/build.py " + clearinghouse_deploy_dir + \ 
-    "seattle"
+  print "the directory " + clearinghouse_deploy_dir + "/seattle:"
+  print "    cd clearinghouse/scripts/dist"
+  print "    python build.py " + clearinghouse_deploy_dir + "/seattle"
+  print
   
   # If we replaced an existing directory, then copy the config files from the
   # old deployment to the new one.
