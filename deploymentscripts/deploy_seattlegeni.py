@@ -1,6 +1,6 @@
 """
 <Program Name>
-  deploy_seattlegeni.py
+  deploy_clearinghouse.py
 
 <Started>
   July 29, 2009
@@ -9,10 +9,10 @@
   Justin Samuel
 
 <Purpose>
-  Deploys all components of seattlegeni. Some things (e.g. database setup,
+  Deploys all components of clearinghouse. Some things (e.g. database setup,
   config file modification to enter db user/pass info, etc.) still need
-  to be done after this is run. See the instructions in:
-  seattlegeni/README.txt
+  to be done after this is run. See the instructions at
+  https://seattle.poly.edu/wiki/ClearinghouseInstallation
 
 <Description>
   The script backs up the target deploy directory if it exists and the user
@@ -20,7 +20,7 @@
   directory the user specified.
 
 <Usage>
-  python deploy_seattlegeni.py <path/to/svn/trunk> <dir/to/deploy/to>
+  python deploy_clearinghouse.py <path/to/svn/trunk> <dir/to/deploy/to>
   
 """
 
@@ -139,12 +139,12 @@ def main():
   print "Creating directory " + deployroot
   os.mkdir(deployroot)
 
-  # Copy over the seattlegeni files from svn to the deploy directory.
+  # Copy over the clearinghouse files from svn to the deploy directory.
   #seattlegeni_svn = os.path.join(trunkdir, "seattlegeni", "website")
-  seattlegeni_svn_dir = os.path.join(trunkdir, "seattlegeni")
-  seattlegeni_deploy_dir = os.path.join(deployroot, "seattlegeni")
-  print "Copying " + seattlegeni_svn_dir + " to " + seattlegeni_deploy_dir
-  shutil.copytree(seattlegeni_svn_dir, seattlegeni_deploy_dir, symlinks=True)
+  clearinghouse_source_dir = os.path.join(trunkdir, "clearinghouse")
+  clearinghouse_deploy_dir = os.path.join(deployroot, "clearinghouse")
+  print "Copying " + clearinghouse_source_dir + " to " + clearinghouse_deploy_dir
+  shutil.copytree(clearinghouse_source_dir, clearinghouse_deploy_dir, symlinks=True)
 
   # Deploy the seattle/repy library files in a directory called "seattle". This
   # will serve. This will be the sole location of repy files in seattlegeni and
@@ -160,28 +160,28 @@ def main():
   # old deployment to the new one.
   if replace_deployment_dir:
     # The website settings files.
-    old_settings_path = os.path.join(renameddir, "seattlegeni", "website", "settings.py")
-    new_settings_path = os.path.join(seattlegeni_deploy_dir, "website", "settings.py")
+    old_settings_path = os.path.join(renameddir, "clearinghouse", "website", "settings.py")
+    new_settings_path = os.path.join(clearinghouse_deploy_dir, "website", "settings.py")
     print "Copying " + old_settings_path + " to " + new_settings_path
     # Use copy2 to preserve permissions, e.g. in case these weren't world-readable.
     shutil.copy2(old_settings_path, new_settings_path)
     
     # The keydb config file.
-    old_keydb_config_path = os.path.join(renameddir, "seattlegeni", "keydb", "config.py")
-    new_keydb_config_path = os.path.join(seattlegeni_deploy_dir, "keydb", "config.py")
+    old_keydb_config_path = os.path.join(renameddir, "clearinghouse", "keydb", "config.py")
+    new_keydb_config_path = os.path.join(clearinghouse_deploy_dir, "keydb", "config.py")
     print "Copying " + old_keydb_config_path + " to " + new_keydb_config_path
     # Use copy2 to preserve permissions, e.g. in case these weren't world-readable.
     shutil.copy2(old_keydb_config_path, new_keydb_config_path)
 
     # The backend config file.
-    old_keydb_config_path = os.path.join(renameddir, "seattlegeni", "backend", "config.py")
-    new_keydb_config_path = os.path.join(seattlegeni_deploy_dir, "backend", "config.py")
+    old_keydb_config_path = os.path.join(renameddir, "clearinghouse", "backend", "config.py")
+    new_keydb_config_path = os.path.join(clearinghouse_deploy_dir, "backend", "config.py")
     print "Copying " + old_keydb_config_path + " to " + new_keydb_config_path
     # Use copy2 to preserve permissions, e.g. in case these weren't world-readable.
     shutil.copy2(old_keydb_config_path, new_keydb_config_path)
 
-  state_key_path = os.path.join(seattlegeni_deploy_dir, "node_state_transitions", "statekeys")
-  beta_state_key_path = os.path.join(seattlegeni_deploy_dir, "node_state_transitions", "statekeys_beta")
+  state_key_path = os.path.join(clearinghouse_deploy_dir, "node_state_transitions", "statekeys")
+  beta_state_key_path = os.path.join(clearinghouse_deploy_dir, "node_state_transitions", "statekeys_beta")
   
   # Remove the production key from the deployment, as we don't want anyone to get confused by them.
   # If there is any error, just ignore it.
