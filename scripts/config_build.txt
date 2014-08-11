@@ -18,3 +18,6 @@ dist/LICENSE.TXT
 affix/*
 affix/components/*
 
+# Needed so we can create state transition keys
+softwareupdater/generatekeys.py
+
