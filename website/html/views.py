@@ -48,23 +48,23 @@ from django.views.generic.simple import direct_to_template
 from django.views.generic.simple import redirect_to
 
 # Make available all of our own standard exceptions.
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
 # This is the logging decorator use use.
-from seattlegeni.common.util.decorators import log_function_call
-from seattlegeni.common.util.decorators import log_function_call_without_return
+from clearinghouse.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call_without_return
 
 # For user registration input validation
-from seattlegeni.common.util import validations
+from clearinghouse.common.util import validations
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
 
 # All of the work that needs to be done is passed through the controller interface.
-from seattlegeni.website.control import interface
+from clearinghouse.website.control import interface
 
-from seattlegeni.website.html import forms
+from clearinghouse.website.html import forms
 
 from seattle.repyportability import *
 add_dy_support(locals())

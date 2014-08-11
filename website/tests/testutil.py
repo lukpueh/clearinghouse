@@ -2,10 +2,10 @@
 Utility functions for the test scripts in this directory/package.
 """
 
-# The seattlegeni testlib must be imported first.
-from seattlegeni.tests import testlib
+# The clearinghouse testlib must be imported first.
+from clearinghouse.tests import testlib
 
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import maindb
 
 
 

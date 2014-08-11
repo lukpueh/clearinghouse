@@ -1,18 +1,18 @@
 """
 Provides information about the data in the database. This is for generating
-reports, not for any core functionality of seattlegeni.
+reports, not for any core functionality of clearinghouse.
 
 Some of the functions in the module are very database intensive. They could
 be done more efficiently, but where possible this module tries to use the
-maindb api so that summarized information matches how seattlegeni actually
+maindb api so that summarized information matches how clearinghouse actually
 sees things.
 """
 
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import maindb
 
-from seattlegeni.website.control.models import GeniUser
+from clearinghouse.website.control.models import GeniUser
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
 
 

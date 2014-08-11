@@ -14,11 +14,11 @@
 
 import traceback
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
-from seattlegeni.common.util.decorators import log_function_call_without_return
+from clearinghouse.common.util.decorators import log_function_call_without_return
 
 from seattle.repyportability import *
 add_dy_support(locals())
@@ -31,7 +31,7 @@ dy_import_module_symbols("rsa.r2py")
 
 
 # Set to True to obtain keys from the key daemon, false to generate keys
-# directly (potentially making some parts of seattlegeni run very slow).
+# directly (potentially making some parts of clearinghouse run very slow).
 USE_KEYDAEMON = False
 
 KEYDAEMON_HOST = "127.0.0.1"

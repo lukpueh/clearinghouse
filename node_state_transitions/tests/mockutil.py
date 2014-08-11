@@ -1,18 +1,18 @@
 
-# The seattlegeni testlib must be imported first. We do this in case this
+# The clearinghouse testlib must be imported first. We do this in case this
 # module gets executed as a test to prevent it from "failing".
-from seattlegeni.tests import testlib
+from clearinghouse.tests import testlib
 
 import random
 
-from seattlegeni.common.api import backend
-from seattlegeni.common.api import lockserver
-from seattlegeni.common.api import nodemanager
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import backend
+from clearinghouse.common.api import lockserver
+from clearinghouse.common.api import nodemanager
+from clearinghouse.common.api import maindb
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.node_state_transitions import node_transition_lib
+from clearinghouse.node_state_transitions import node_transition_lib
 
 from seattle.repyportability import *
 add_dy_support(locals())

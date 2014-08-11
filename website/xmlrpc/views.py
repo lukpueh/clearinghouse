@@ -38,20 +38,20 @@ import traceback
 # Used for raising xmlrpc faults
 import xmlrpclib
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
 
 # Make available all of our own standard exceptions.
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util import assertions
-from seattlegeni.common.util import log
+from clearinghouse.common.util import assertions
+from clearinghouse.common.util import log
 
 # This is the logging decorator we use.
-from seattlegeni.common.util.decorators import log_function_call
-from seattlegeni.common.util.decorators import log_function_call_without_first_argument
+from clearinghouse.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call_without_first_argument
 
 # All of the work that needs to be done is passed through the controller interface.
-from seattlegeni.website.control import interface
+from clearinghouse.website.control import interface
 
 from seattle.repyportability import *
 add_dy_support(locals())
@@ -95,7 +95,7 @@ class PublicXMLRPCFunctions(object):
     """
     We provide a _dispatch function (which SimpleXMLRPCServer looks for and
     uses) so that we can log exceptions due to our programming errors within
-    seattlegeni as well to detect incorrect usage by clients.
+    clearinghouse as well to detect incorrect usage by clients.
     """
       
     try:
@@ -434,7 +434,7 @@ class PublicXMLRPCFunctions(object):
       Retrieve the account's API key encrypted with the account's public key.
       This provides the holder of an account's private key a means of obtaining
       the SeattleGENI API key for the account. A side effect is that this also
-      provide a means of determining whether an account exists on seattlegeni.
+      provide a means of determining whether an account exists on clearinghouse.
       However, we do not protect against such querying here because the same
       can be determined in a handful of other ways through the html interface.
       

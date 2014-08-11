@@ -211,11 +211,11 @@ import sys
 # To send the admins emails when there's an unhandled exception.
 import django.core.mail 
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
 
 # Use threading.Lock directly instead of repy's getlock() to ease testing
 # by not depending on repy. We also use threading.Event().

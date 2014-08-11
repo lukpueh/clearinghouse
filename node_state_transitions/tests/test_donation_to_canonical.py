@@ -14,14 +14,14 @@
   Aug 21, 2009
 """
 
-# The seattlegeni testlib must be imported first.
-from seattlegeni.tests import testlib
+# The clearinghouse testlib must be imported first.
+from clearinghouse.tests import testlib
 
-from seattlegeni.node_state_transitions import node_transition_lib
+from clearinghouse.node_state_transitions import node_transition_lib
 
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import maindb
 
-from seattlegeni.node_state_transitions.tests import mockutil
+from clearinghouse.node_state_transitions.tests import mockutil
 
 
 

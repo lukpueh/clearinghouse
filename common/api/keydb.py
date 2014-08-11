@@ -16,17 +16,17 @@
    The init_keydb() method must be called before calling the other methods.
    
    For info on setting up and security access to the keydb, see the file
-   seattlegeni/keydb/README.txt.
+   clearinghouse/keydb/README.txt.
 """
 
 import MySQLdb
 import traceback
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util.assertions import *
+from clearinghouse.common.util.assertions import *
 
-from seattlegeni.keydb import config
+from clearinghouse.keydb import config
 
 
 

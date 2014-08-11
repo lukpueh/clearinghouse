@@ -15,15 +15,15 @@
   Aug 21, 2009
 """
 
-# The seattlegeni testlib must be imported first.
-from seattlegeni.tests import testlib
+# The clearinghouse testlib must be imported first.
+from clearinghouse.tests import testlib
 
-from seattlegeni.node_state_transitions import node_transition_lib
-from seattlegeni.node_state_transitions import transition_canonical_to_onepercentmanyevents
+from clearinghouse.node_state_transitions import node_transition_lib
+from clearinghouse.node_state_transitions import transition_canonical_to_onepercentmanyevents
 
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import maindb
 
-from seattlegeni.node_state_transitions.tests import mockutil
+from clearinghouse.node_state_transitions.tests import mockutil
 
 from seattle.repyportability import *
 add_dy_support(locals())
@@ -41,7 +41,7 @@ vessels_dict[mockutil.extra_vessel_name] = {"userkeys" : [node_transition_lib.ca
                                    "ownerinfo" : "",
                                    "status" : "",
                                    "advertise" : True}
-vessels_dict["vessel_non_seattlegeni"] = {"userkeys" : [node_transition_lib.canonicalpublickey],
+vessels_dict["vessel_non_clearinghouse"] = {"userkeys" : [node_transition_lib.canonicalpublickey],
                                    "ownerkey" : mockutil.donor_key,
                                    "ownerinfo" : "",
                                    "status" : "",

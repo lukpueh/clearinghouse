@@ -10,7 +10,7 @@
   Justin Samuel
 
 <Purpose>
-  This is the nodemanager api for seattlegeni.
+  This is the nodemanager api for clearinghouse.
   
   Unless you are are developing the backend server, all you will use this
   module for is to first call init_nodemanager() and then to call either of
@@ -40,11 +40,11 @@
 import random
 import traceback
 
-from seattlegeni.common.util.assertions import *
+from clearinghouse.common.util.assertions import *
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util.decorators import log_function_call_without_first_argument
+from clearinghouse.common.util.decorators import log_function_call_without_first_argument
 
 # Let's keep a copy of the built-ins, as repyportability destroys them
 import __builtin__
@@ -123,7 +123,7 @@ def init_nodemanager():
     except TimeError:
       error_message = traceback.format_exc()
   
-  # We raise a TimeUpdateError which is a seattlegeni error rather than a
+  # We raise a TimeUpdateError which is a clearinghouse error rather than a
   # TimeError which is a repy error.
   raise TimeUpdateError("Failed to perform time_updatetime(): " + error_message)
     

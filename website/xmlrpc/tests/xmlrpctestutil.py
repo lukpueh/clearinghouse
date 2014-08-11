@@ -8,7 +8,7 @@ With the addition of the following to make it work:
 
 # We import the testlib FIRST, as the test db settings 
 # need to be set before we import anything else.
-from seattlegeni.tests import testlib
+from clearinghouse.tests import testlib
 
 import cStringIO
 import xmlrpclib

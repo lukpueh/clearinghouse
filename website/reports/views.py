@@ -9,13 +9,13 @@
   Justin Samuel
 
 <Purpose>
-  Views for reports about seattlegeni.
+  Views for reports about clearinghouse.
 """
 
 import django.contrib.auth.decorators
 from django.http import HttpResponse
 
-from seattlegeni.common.util import statistics
+from clearinghouse.common.util import statistics
 
 
 

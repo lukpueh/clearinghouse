@@ -15,7 +15,7 @@
   monzum@cs.washington.edu
 
 <Usage>
-  Ensure that seattlegeni and seattle are in the PYTHONPATH.
+  Ensure that clearinghouse and seattle are in the PYTHONPATH.
   Ensure that the database is setup properly and django settings
     are set correctly.
 
@@ -23,7 +23,7 @@
 """
 
 
-from seattlegeni.node_state_transitions import node_transition_lib
+from clearinghouse.node_state_transitions import node_transition_lib
 
 
 def main():

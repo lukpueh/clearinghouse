@@ -16,7 +16,7 @@
 """
 
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
 class LogRequestMiddleware(object):
   

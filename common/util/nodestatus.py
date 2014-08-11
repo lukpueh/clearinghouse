@@ -34,15 +34,15 @@
 
 import os
 
-from seattlegeni.common.api import lockserver
-from seattlegeni.common.api import maindb
-from seattlegeni.common.api import nodemanager
+from clearinghouse.common.api import lockserver
+from clearinghouse.common.api import maindb
+from clearinghouse.common.api import nodemanager
 
-from seattlegeni.common.util import log as log_module
+from clearinghouse.common.util import log as log_module
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
 
 from seattle.repyportability import *
 add_dy_support(locals())

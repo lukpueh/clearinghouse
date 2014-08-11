@@ -10,15 +10,15 @@ admin.autodiscover()
 
 # We override the default error handler because we want to pass a RequestContext
 # to the template so that it can know the MEDIA_URL and so look nice.
-handler500 = 'seattlegeni.website.html.errorviews.internal_error'
+handler500 = 'clearinghouse.website.html.errorviews.internal_error'
 # the format for urlpatterns is
 # (regular exp, function, optional dictionary, optional name)
 urlpatterns = patterns('',
     
-    (r'^html/', include('seattlegeni.website.html.urls')),
-    (r'^download/', include('seattlegeni.website.html.downloadurls')),
-    (r'^xmlrpc', include('seattlegeni.website.xmlrpc.urls')),
-    (r'^reports/', include('seattlegeni.website.reports.urls')),
+    (r'^html/', include('clearinghouse.website.html.urls')),
+    (r'^download/', include('clearinghouse.website.html.downloadurls')),
+    (r'^xmlrpc', include('clearinghouse.website.xmlrpc.urls')),
+    (r'^reports/', include('clearinghouse.website.reports.urls')),
     # OPenID/OAuth pages, RedirectView.as_view cuts off the complete/backend/ in the url
     url(r'^complete/(?P<backend>[^/]+)/error', RedirectView.as_view(url='/html/error')),
     url(r'^complete/(?P<backend>[^/]+)/associate_error', RedirectView.as_view(url='/html/associate_error')),

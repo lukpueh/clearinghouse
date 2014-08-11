@@ -21,7 +21,7 @@
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from django.http import HttpResponse
 
-from seattlegeni.website.xmlrpc.views import PublicXMLRPCFunctions
+from clearinghouse.website.xmlrpc.views import PublicXMLRPCFunctions
 from django.views.decorators.csrf import csrf_exempt
 
 

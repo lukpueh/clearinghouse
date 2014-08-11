@@ -4,7 +4,7 @@ from django.conf.urls.defaults import *
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('seattlegeni.website.html.views',
+urlpatterns = patterns('clearinghouse.website.html.views',
                        
                        # 'Get Donations' functions:
                        # show the main download page for downloading installers

@@ -15,16 +15,16 @@
   See http://docs.djangoproject.com/en/dev/ref/contrib/admin/
 """
 
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import maindb
 
-from seattlegeni.website.control.models import Donation
-from seattlegeni.website.control.models import GeniUser
-from seattlegeni.website.control.models import Node
-from seattlegeni.website.control.models import Vessel
-from seattlegeni.website.control.models import VesselPort
-from seattlegeni.website.control.models import VesselUserAccessMap
-from seattlegeni.website.control.models import ActionLogEvent
-from seattlegeni.website.control.models import ActionLogVesselDetails
+from clearinghouse.website.control.models import Donation
+from clearinghouse.website.control.models import GeniUser
+from clearinghouse.website.control.models import Node
+from clearinghouse.website.control.models import Vessel
+from clearinghouse.website.control.models import VesselPort
+from clearinghouse.website.control.models import VesselUserAccessMap
+from clearinghouse.website.control.models import ActionLogEvent
+from clearinghouse.website.control.models import ActionLogVesselDetails
 
 from django.contrib import admin
 from django.contrib.auth.forms import AdminPasswordChangeForm
@@ -235,7 +235,7 @@ class ActionLogVesselDetailsAdmin(admin.ModelAdmin):
 
 
 # Register/associate each custom admin view defined above with the
-# corresponding model defined in seattlegeni.website.control.models
+# corresponding model defined in clearinghouse.website.control.models
 admin.site.register(GeniUser, GeniUserAdmin)
 admin.site.register(Node, NodeAdmin)
 admin.site.register(Donation, DonationAdmin)

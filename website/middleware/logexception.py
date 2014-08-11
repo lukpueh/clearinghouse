@@ -18,7 +18,7 @@
 
 import traceback
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
 class LogExceptionMiddleware(object):
   

@@ -5,7 +5,7 @@ from django.conf.urls.defaults import *
 # admin.autodiscover()
 # the format for urlpatterns is
 # (regular exp, function, optional dictionary, optional name)
-urlpatterns = patterns('seattlegeni.website.html.views',
+urlpatterns = patterns('clearinghouse.website.html.views',
 
                        # Previously defined in accounts/urls.py.                       
                        (r'^register$', 'register',{},'register'),

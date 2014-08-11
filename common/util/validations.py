@@ -19,9 +19,9 @@
 
 import re
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util.assertions import *
+from clearinghouse.common.util.assertions import *
 
 from seattle.repyportability import *
 add_dy_support(locals())

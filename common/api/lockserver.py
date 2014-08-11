@@ -64,9 +64,9 @@ import socket
 import traceback
 import xmlrpclib
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call
 
 
 

@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('seattlegeni.website.reports.views',
+urlpatterns = patterns('clearinghouse.website.reports.views',
 
                        (r'^$', 'index', {}, 'index'),
                        (r'^all$', 'all', {}, 'all'),

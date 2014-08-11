@@ -16,16 +16,16 @@
 
 import traceback
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.api import backend
-from seattlegeni.common.api import lockserver
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import backend
+from clearinghouse.common.api import lockserver
+from clearinghouse.common.api import maindb
 
-from seattlegeni.common.util import log
-from seattlegeni.common.util import parallel
+from clearinghouse.common.util import log
+from clearinghouse.common.util import parallel
 
-from seattlegeni.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call
 
 
 

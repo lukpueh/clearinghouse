@@ -9,7 +9,7 @@
   Justin Samuel
 
 <Purpose>
-  These define the decorators used in seattlegeni code. Decorators are something
+  These define the decorators used in clearinghouse code. Decorators are something
   we try to avoid using, so they should only be used if absolutely necessary.
   Currently we only use them for logging function calls (such as the public
   api functions).
@@ -24,7 +24,7 @@
 
 import datetime
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
 from django.http import HttpRequest
 

@@ -49,21 +49,21 @@ import django.db
 from seattle import runonce
 from repyportability import *
 
-import seattlegeni.common.util.log
+import clearinghouse.common.util.log
 
-from seattlegeni.common.api import maindb
-from seattlegeni.common.api import backend
-from seattlegeni.common.api import lockserver
-from seattlegeni.common.api import nodemanager
+from clearinghouse.common.api import maindb
+from clearinghouse.common.api import backend
+from clearinghouse.common.api import lockserver
+from clearinghouse.common.api import nodemanager
 
 # For setting the backend authcode.
-import seattlegeni.backend.config
+import clearinghouse.backend.config
 
-from seattlegeni.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
 
 # Import all the repy files.
 add_dy_support(locals())
@@ -1379,7 +1379,7 @@ def log(message):
     None
   """
 
-  seattlegeni.common.util.log.info(message)
+  clearinghouse.common.util.log.info(message)
   
 
 
@@ -1409,14 +1409,14 @@ def _init_node_transition_lib():
     is_initialized = True
     
     # Set the log level if we want to override the defaults.
-    #seattlegeni.common.util.log.set_log_level(seattlegeni.common.util.log.LOG_LEVEL_DEBUG)
+    #clearinghouse.common.util.log.set_log_level(clearinghouse.common.util.log.LOG_LEVEL_DEBUG)
 
     # We don't need to maindb.init_maindb() because that happens automatically
     # when django creates a new database connection.
     
     nodemanager.init_nodemanager()
 
-    backend.set_backend_authcode(seattlegeni.backend.config.authcode)
+    backend.set_backend_authcode(clearinghouse.backend.config.authcode)
     
 
 

@@ -10,7 +10,7 @@ additional changes you'll need to make to this file.
 import os
 
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
 
 
@@ -20,7 +20,7 @@ from seattlegeni.common.util import log
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-# The log level used by the seattlegeni log module. All messages at this level
+# The log level used by the clearinghouse log module. All messages at this level
 # or more severe will be logged.
 SEATTLECLEARINGHOUSE_LOG_LEVEL = log.LOG_LEVEL_DEBUG
 
@@ -47,7 +47,7 @@ SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://custombuilder.poly.edu/
 #SEATTLECLEARINGHOUSE_BASE_INSTALLERS_DIR = "/var/www/dist"
 
 # Not currently used. This is left in for legacy installs
-# The directory in which customized installers created by seattlegeni will be
+# The directory in which customized installers created by clearinghouse will be
 # stored. A directory within this directory will be created for each user.
 #SEATTLECLEARINGHOUSE_USER_INSTALLERS_DIR = os.path.join(SEATTLECLEARINGHOUSE_BASE_INSTALLERS_DIR, "geni")
 
@@ -87,7 +87,7 @@ ADMINS = (
 #EMAIL_USE_TLS = True
 
 # Email address that error notifications will be sent from.
-#SERVER_EMAIL = "error@seattlegeni.server.hostname"
+#SERVER_EMAIL = "error@clearinghouse.server.hostname"
 
 # We use this so we know which server the email came from by the subject line.
 #EMAIL_SUBJECT_PREFIX = "[localhost] "
@@ -157,12 +157,12 @@ MIDDLEWARE_CLASSES = (
 
   # Our own middleware that logs when a request is initially received and
   # sets up the logger to log other messages with per-request unique ids.
-  'seattlegeni.website.middleware.logrequest.LogRequestMiddleware',
+  'clearinghouse.website.middleware.logrequest.LogRequestMiddleware',
   # Our own middleware that logs when unhandled exceptions happen.
-  'seattlegeni.website.middleware.logexception.LogExceptionMiddleware',
+  'clearinghouse.website.middleware.logexception.LogExceptionMiddleware',
 )
 
-ROOT_URLCONF = 'seattlegeni.website.urls'
+ROOT_URLCONF = 'clearinghouse.website.urls'
 
 TEMPLATE_DIRS = (
   # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -183,7 +183,7 @@ INSTALLED_APPS = (
   'social_auth',
 
   # We have our maindb model defined here, so it must be listed.
-  'seattlegeni.website.control',
+  'clearinghouse.website.control',
 )
   # Seattle Clearinghouse uses a django plugin called "django social auth" to handle
   # OpenID and OAuth.  The desired OpenID/OAuth providers must be listed here 
@@ -230,15 +230,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 #  Social_auth follows each of these in order and passes along a object with
 #  information gathered to each function.
-#  Custom fns can be written and passed in here we define them in seattlegeni.website.pipeline.
+#  Custom fns can be written and passed in here we define them in clearinghouse.website.pipeline.
 #  To use a custom fn you must call .save_status_to_session before your custom fn.
 SOCIAL_AUTH_PIPELINE = (
-  'seattlegeni.website.pipeline.custom_social_auth_user', 
+  'clearinghouse.website.pipeline.custom_social_auth_user', 
   #'social_auth.backends.pipeline.associate.associate_by_email', 
   'social_auth.backends.pipeline.misc.save_status_to_session',
-  'seattlegeni.website.pipeline.redirect_to_auto_register',
-  'seattlegeni.website.pipeline.username',
-  'seattlegeni.website.pipeline.custom_create_user',
+  'clearinghouse.website.pipeline.redirect_to_auto_register',
+  'clearinghouse.website.pipeline.username',
+  'clearinghouse.website.pipeline.custom_create_user',
   'social_auth.backends.pipeline.social.associate_user',
   'social_auth.backends.pipeline.social.load_extra_data',
   'social_auth.backends.pipeline.user.update_user_details',
