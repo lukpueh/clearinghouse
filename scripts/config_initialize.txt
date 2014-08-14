@@ -13,6 +13,6 @@ https://github.com/SeattleTestbed/softwareupdater
 https://github.com/SeattleTestbed/portability
 https://github.com/SeattleTestbed/dist -b new_build_v1
 https://github.com/aaaaalbert/affix.git -b minimal-clean-alpha-release
-https://github.com/aaaaalbert/clearinghouse
+https://github.com/aaaaalbert/clearinghouse -b make-github-aware-#134
 https://github.com/aaaaalbert/seash.git -b sync-with-affix-alpha-release
 https://github.com/SeattleTestbed/resource.git
