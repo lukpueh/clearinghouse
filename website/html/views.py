@@ -56,6 +56,12 @@ from seattlegeni.common.util import validations
 
 from seattlegeni.common.util import log
 
+# FIXME: this patches the portability safe_type declaration, there might be a 
+# cleaner way of doing this. We rely in the backup made by the safe module to
+# reload type here.
+import safe
+__builtins__['type'] = safe._type
+
 from seattlegeni.website import settings
 
 # All of the work that needs to be done is passed through the controller interface.
@@ -67,7 +73,6 @@ from seattle.repyportability import *
 add_dy_support(locals())
 
 dy_import_module_symbols("rsa.r2py")
-
 
 
 

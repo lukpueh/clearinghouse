@@ -67,6 +67,7 @@ Login - Clearinghouse
 		  </div>
 		
 		  <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
 		  {% if err %}
 		  <p class="warning2">{{ err }}</p><br/>
 		  {% endif %}
