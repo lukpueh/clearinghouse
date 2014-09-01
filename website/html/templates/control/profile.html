@@ -12,7 +12,7 @@
   Gaetano Pressimone Aug 2012
   
 <Purpose>
-  Django template file for Seattle Clearinghouse's 'Profile' page.  The page 
+  Django template file for {{ TESTBED }} {{ CLEARINGHOUSE }}'s 'Profile' page.  The page 
   shows user information and also allows editing of certain user fields.
 
 <extends>
@@ -85,7 +85,7 @@
 {% endblock script %}
 
 {% block title %}
-Profile - Seattle Clearinghouse
+Profile - {{ TESTBED }} {{ CLEARINGHOUSE }}
 {% endblock title %}
 
 {% block nav_profile %}
@@ -97,7 +97,7 @@ Profile - Seattle Clearinghouse
 		<div id="middle">
 		
 			<div id="download">
-				<a href="http://seattleclearinghouse.poly.edu/dist/demokit.zip"><img src="{{ MEDIA_URL }}images/download_demokit.jpg" alt="Download demokit"/>Download demokit</a>
+				<a href="http://seattleclearinghouse.poly.edu/dist/demokit.zip"><img src="{{ MEDIA_URL }}images/download_demokit.jpg" alt="Download {{ DEMOKIT }}"/>Download {{ DEMOKIT }}</a>
 			</div>
 			
 		   <table class="profile">          
@@ -163,7 +163,7 @@ Profile - Seattle Clearinghouse
 					</td>
 				</tr>
 				<tr class="even">
-					<td class="key">E-mail Address<img class="help" src="{{ MEDIA_URL }}images/help-icon.png"title="If you forget your password this email will be used to recover your account. The Clearinghouse does not use your email for anything else."/></td>
+					<td class="key">E-mail Address<img class="help" src="{{ MEDIA_URL }}images/help-icon.png"title="If you forget your password this email will be used to recover your account. The {{ CLEARINGHOUSE }} does not use your email for anything else."/></td>
 					<td class="value">
 						<span class="value" >{{ email }} </span>
 						<span class="hide_this">
@@ -177,7 +177,7 @@ Profile - Seattle Clearinghouse
 				</tr>
 				<tr class="odd">
 					<td class="key">API Key
-						<img class="help" src="{{ MEDIA_URL }}images/help-icon.png"title="The Clearinghouse offers an API key that allows applications to perform actions on your behalf, such as acquiring, releasing, and renewing vessels.  If this key is lost or stolen, you can reset it at any time."/></td>
+						<img class="help" src="{{ MEDIA_URL }}images/help-icon.png"title="The {{ CLEARINGHOUSE }} offers an API key that allows applications to perform actions on your behalf, such as acquiring, releasing, and renewing vessels.  If this key is lost or stolen, you can reset it at any time."/></td>
 					<td class="value api_cell"> 
 							<span class="api_cell" title="double click to show"><i>double click to show</i></span>
 							<span id="api_key" class="hide_this" title="double click to hide">{{ api_key }}</span>
@@ -192,7 +192,7 @@ Profile - Seattle Clearinghouse
 					<td class="value">{{ port }}</td>
 				</tr>
 				<tr class="odd">
-					<td class="key">Linked Accounts<img class="help" src="{{ MEDIA_URL }}images/help-icon.png"title="When you link an account you may then use it to log in to the Clearinghouse."/></td>
+					<td class="key">Linked Accounts<img class="help" src="{{ MEDIA_URL }}images/help-icon.png"title="When you link an account you may then use it to log in to the {{ CLEARINGHOUSE }}."/></td>
 					<td class="value">
 					      
         	  {% for type, accounts in social_auth.associated.items %}
@@ -247,7 +247,7 @@ Profile - Seattle Clearinghouse
 				<td><h3>Your Keys</h3></td>
 				<td> <form id="change_key" action="{% url change_key %}" method="post"style="display:inline;">
 					<input type="hidden" name="generate" value="yes"/>
-					<button id="generate_keypair" type="submit" title="The Clearinghouse can generate a new key pair for you. After it is generated, you will need to download your public and private keys again." style=""> Generate new Key Pair</button>
+					<button id="generate_keypair" type="submit" title="The {{ CLEARINGHOUSE }} can generate a new key pair for you. After it is generated, you will need to download your public and private keys again." style=""> Generate new Key Pair</button>
 						</form>
 			</td> 
 			</tr>
@@ -274,7 +274,7 @@ Profile - Seattle Clearinghouse
 			</tr>
 				{% if has_privkey %}
 				<tr class="even">
-					<td class="key">Private Key <img class="help" src="{{ MEDIA_URL }}images/red-help-icon.png"title="The Clearinghouse does not need your private key to provide you access to vessels.  You may wish to download this key and then delete it from the server."/></td>
+					<td class="key">Private Key <img class="help" src="{{ MEDIA_URL }}images/red-help-icon.png"title="The {{ CLEARINGHOUSE }} does not need your private key to provide you access to vessels.  You may wish to download this key and then delete it from the server."/></td>
 					<td class="value">********<a href="#">
 						<form class="inline" method="POST" action="{% url priv_key %}">
 							<button type="submit" title="Download your private key">Download </button>

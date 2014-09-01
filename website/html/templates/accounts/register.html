@@ -12,7 +12,7 @@
   Gaetano Pressimone 2012
   
 <Purpose>
-  Django template file for Seattle Clearinghouse's 'register' page.  The page 
+  Django template file for {{ TESTBED }} {{ CLEARINGHOUSE }}'s 'register' page.  The page 
   allows a visitor to create a new account.
 
 <Extends>
@@ -41,7 +41,7 @@
 
 {% endcomment %}
 {% block title %}
-Register - Clearinghouse
+Register - {{ CLEARINGHOUSE }}
 {% endblock title %}
 
 {% block script %}
@@ -57,10 +57,10 @@ Register - Clearinghouse
 	<div id="main">
 		<div id="middle">
 		
-		  <div id="learn-about-seattle">
-		    New to Seattle? We suggest you first
-		    <a href="https://seattle.cs.washington.edu/">learn about Seattle</a>
-		    before using the Clearinghouse, a resource sharing website.
+		  <div id="learn-about-{{ TESTBED }}">
+		    New to {{ TESTBED }}? We suggest you first
+		    <a href="https://seattle.cs.washington.edu/">learn about {{ TESTBED }}</a>
+		    before using the {{ CLEARINGHOUSE }}, a resource sharing website.
 		  </div>
 		
 		  <form action="{% url register %}" method="POST" enctype="multipart/form-data">
