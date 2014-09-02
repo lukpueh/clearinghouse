@@ -1,8 +1,8 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 from django.conf import settings
-from django.views.generic.simple import redirect_to
 from django.views.generic import RedirectView
+
 from django.shortcuts import render_to_response, redirect
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -15,9 +15,9 @@ handler500 = 'clearinghouse.website.html.errorviews.internal_error'
 # (regular exp, function, optional dictionary, optional name)
 urlpatterns = patterns('',
     
-    (r'^html/', include('clearinghouse.website.html.urls')),
-    (r'^download/', include('clearinghouse.website.html.downloadurls')),
-    (r'^xmlrpc', include('clearinghouse.website.xmlrpc.urls')),
+    url(r'^html/', include('clearinghouse.website.html.urls')),
+    url(r'^download/', include('clearinghouse.website.html.downloadurls')),
+    url(r'^xmlrpc', include('clearinghouse.website.xmlrpc.urls')),
     (r'^reports/', include('clearinghouse.website.reports.urls')),
     # OPenID/OAuth pages, RedirectView.as_view cuts off the complete/backend/ in the url
     url(r'^complete/(?P<backend>[^/]+)/error', RedirectView.as_view(url='/html/error')),
@@ -26,12 +26,12 @@ urlpatterns = patterns('',
     #url(r'^complete/(?P<backend>[^/]+)/new_auto_register_user', RedirectView.as_view(url='/html/new_auto_register_user')),
     #Currently unused, we've disabled disconnected social accounts
     #url(r'^disconnect/(?P<backend>[^/]+)/profile', RedirectView.as_view(url='/html/profile')),
-    (r'', include('social_auth.urls')),
+    url(r'', include('social_auth.urls')),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # Uncomment the next line to enable the admin:
-    (r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 )
 
 # If DEBUG is True, then this is for development rather than production. So,

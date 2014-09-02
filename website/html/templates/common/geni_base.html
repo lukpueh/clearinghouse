@@ -46,7 +46,7 @@
 <body>
   {% block header %}	
 	  <div id="header">
-  		<span id="logo"><a href="{% url profile %}">{{ TESTBED }} {{ CLEARINGHOUSE }}</a></span>
+  		<span id="logo"><a href="{% url 'profile' %}">{{ TESTBED }} {{ CLEARINGHOUSE }}</a></span>
   		<span id="caption">Formerly known as SeattleGENI.  Learn about <a href="{{ TESTBED_URL }}">{{ TESTBED }}</a></span>	
   	</div>
 	{% endblock header%}	

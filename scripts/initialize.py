@@ -28,8 +28,8 @@ import os
 config_file = open("config_initialize.txt")
 
 for line in config_file.readlines():
-  # Ignore comments
-  if line.startswith("#"):
+  # Ignore comments and blank lines
+  if line.startswith("#") or line=='\n':
     continue
 
   # If we end up here, the line contains a Git URL (+options?) for us to clone

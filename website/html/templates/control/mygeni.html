@@ -13,7 +13,7 @@
   Ivan Beschastnikh
   
 <Purpose>
-  Django template file for {{ TESTBED }} {{ CLEARINGHOUSE }}'s 'My {{ TESTBED }} {{ CLEARINGHOUSE }}' page.
+  Django template file for Seattle Clearinghouse's 'My Seattle Clearinghouse' page.
   The older mygeni.js functionality (graphics logic) has been ported into this page as inline javascript. 
 {% endcomment %}
 
@@ -261,7 +261,7 @@ function color_generator(username) {
 {% endblock script %}
 
 {% block nav_mygeni %}
-<td class="active"><a href="{% url mygeni %}">My {{ TESTBED }} {{ CLEARINGHOUSE }}</a></td>
+<td class="active"><a href="{% url 'mygeni' %}">My {{ TESTBED }} {{ CLEARINGHOUSE }}</a></td>
 {% endblock nav_mygeni %}
 
 {% block content %}

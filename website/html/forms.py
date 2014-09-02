@@ -26,6 +26,7 @@ from clearinghouse.common.exceptions import *
 from clearinghouse.common.util import validations
 from clearinghouse.website.control import interface
 
+
 MAX_PUBKEY_UPLOAD_SIZE = 2048
 
 class PubKeyField(forms.FileField):
@@ -46,6 +47,7 @@ class PubKeyField(forms.FileField):
 
 
 class GeniUserCreationForm(DjangoUserCreationForm):
+
   affiliation = forms.CharField(error_messages={'required': 'Enter an Affiliation'})
   email = forms.CharField(label="E-mail Address", error_messages={'required': 'Enter an E-mail Address'})
   pubkey = PubKeyField(label="My Public Key", required=False)

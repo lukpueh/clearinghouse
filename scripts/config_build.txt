@@ -9,6 +9,8 @@
 # Contributors please note:
 # Be sure to revisit this workaround whenever progress is made on 
 # SeattleTestbed/portability#25 through 28!
+seattlelib_v2/*
+clearinghouse/*
 repy_v2/*
 portability/*
 seattlelib_v2/*
@@ -21,3 +23,10 @@ affix/components/*
 # Needed so we can create state transition keys
 softwareupdater/generatekeys.py
 
+utf/*
+dist/LICENSE.txt
+# Tests
+test seattlelib_v2/tests/*
+test clearinghouse/tests/*
+test repy_v2/testsV2/*
+test nodemanager/tests/restrictions.test
