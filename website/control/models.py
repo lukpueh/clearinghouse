@@ -18,7 +18,7 @@
   http://docs.djangoproject.com/en/dev/topics/db/models/
 
   Changes to these models should be done with corresponding changes
-  to the design document at https://seattle.cs.washington.edu/wiki/SeattleGeniDesign
+  to the design document at https://seattle.poly.edu/wiki/SeattleGeniDesign
 """
 
 import django

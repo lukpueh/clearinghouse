@@ -1182,7 +1182,7 @@ def get_vessel_infodict_list(vessel_list):
     which is safe for public display.
     
     This function needs to return lists of dictionaries with a minimum of the
-    following, according to https://seattle.cs.washington.edu/wiki/SeattleGeniAPI:
+    following, according to https://seattle.poly.edu/wiki/SeattleGeniApi:
       {'node_ip':node_ip, 'node_port':node_port, 'vessel_id':vessel_id, 
       'node_id':node_id, 'handle':handle}
   <Arguments>

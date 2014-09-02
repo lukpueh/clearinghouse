@@ -264,7 +264,11 @@ SESSION_COOKIE_AGE = 3600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 TESTBED = 'Seattle'
+TESTBED_URL = 'https://seattle.poly.edu/'
+TESTBED_DEVELOPERS_MAIL = 'mailto:seattle-devel@googlegroups.com'
+TESTBED_USERS_MAIL = 'mailto:seattle-devel@googlegroups.com'
 
 CLEARINGHOUSE = 'Clearinghouse'
+CLEARINGHOUSE_URL = 'https://seattleclearinghouse.poly.edu/'
 
 DEMOKIT = 'Demokit'
