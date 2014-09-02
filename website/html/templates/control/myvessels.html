@@ -12,7 +12,7 @@
   Gaetano Pressimone Aug 14 2012
   
 <Purpose>
-  Django template file for Seattle Clearinghouse's 'My Vessels' page.  The page 
+  Django template file for {{ TESTBED }} {{ CLEARINGHOUSE }}'s 'My Vessels' page.  The page 
   allows a logged in user to acquire, renew or remove vessels.
 
 <Extends>
@@ -76,7 +76,7 @@
 {% endcomment %}
 
 {% block title %}
-My Vessels - Seattle Clearinghouse
+My Vessels - {{ TESTBED }} {{ CLEARINGHOUSE }}
 {% endblock title %}
 
 {% block style %}
