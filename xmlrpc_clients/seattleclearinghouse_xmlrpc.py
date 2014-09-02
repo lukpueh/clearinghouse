@@ -17,7 +17,7 @@
   calls through the SeattleClearinghouse XMLRPC API.
 
   Full tutorials on using this library, see:
-  https://seattle.cs.washington.edu/wiki/SeattleGeniClientLib
+  https://seattle.poly.edu/wiki/SeattleGeniClientLib
   
   In order to perform secure SSL communication with SeattleClearinghouse:
     * You must have M2Crypto installed.
@@ -76,7 +76,7 @@ class SeattleClearinghouseClient(object):
   """
   Implementation of an XMLRPC client for communicating with a SeattleClearinghouse
   server. This uses the public API described at:
-  https://seattle.cs.washington.edu/wiki/SeattleGeniApi
+  https://seattle.poly.edu/wiki/SeattleGeniApi
   """
   
   def __init__(self, username, api_key=None, private_key_string=None,

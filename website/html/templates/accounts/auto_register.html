@@ -50,7 +50,7 @@ Auto Register - {{ CLEARINGHOUSE }}
     {% csrf_token %}
     <div id="main">
 		<div id="middle">		
-		  <div id="learn-about-{{ TESTBED }}">
+		  <div id="learn-about-seattle">
 		    This {{backend}} account is not linked with a {{ TESTBED }} {{ CLEARINGHOUSE }} account so we're creating one for you.  Already a user? <a href="{% url login %}">Login</a>
 		  </div>
 <form action="{% url auto_register %}" method="POST"> 
