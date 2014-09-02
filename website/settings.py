@@ -262,3 +262,9 @@ SESSION_COOKIE_AGE = 3600
 
 # Use session cookies, not persistent cookies.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+TESTBED = 'Seattle'
+
+CLEARINGHOUSE = 'Clearinghouse'
+
+DEMOKIT = 'Demokit'
