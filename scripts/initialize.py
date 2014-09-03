@@ -24,6 +24,8 @@
 
 import subprocess
 import os
+import sys
+
 
 config_file = open("config_initialize.txt")
 
@@ -39,14 +41,25 @@ for line in config_file.readlines():
   (stdout_data, stderr_data) = git_process.communicate()
 
   # Git prints all status messages to stderr (!). We check its retval 
-  # to see if it performed correctly, and give debug output if not.
+  # to see if it performed correctly, and halt the program (giving debug 
+  # output) if not.
   if git_process.returncode == 0:
      print "Done!"
   else:
     print "*** Error checking out repo. Git returned status code", git_process.returncode
-    print "*** Git messages on stdout:'" + stdout_data + "'."
-    print "*** Git messages on stderr:'" + stderr_data + "'."
- 
+    print "*** Git messages on stdout: '" + stdout_data + "'."
+    print "*** Git messages on stderr: '" + stderr_data + "'."
+    print
+    print """These errors need to be fixed before the build process can proceed. In 
+doubt, please contact the Seattle development team at 
+
+   seattle-devel@googlegroups.com
+
+and supply all of the above information. Thank you!
+
+"""
+    sys.exit(1)
+
 
 # If there is a readme file, show it to the user. 
 try:
