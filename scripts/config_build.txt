@@ -15,18 +15,17 @@ repy_v2/*
 portability/*
 seattlelib_v2/*
 seash/*
-clearinghouse/xmlrpc_clients/seattleclearinghouse_xmlrpc.py
-dist/LICENSE.TXT
+common/seattleclearinghouse_xmlrpc.py
 affix/*
 affix/components/*
 
 # Needed so we can create state transition keys
 softwareupdater/generatekeys.py
 
-utf/*
-dist/LICENSE.txt
 # Tests
+test common/utf/*
 test seattlelib_v2/tests/*
 test clearinghouse/tests/*
 test repy_v2/testsV2/*
-test nodemanager/tests/restrictions.test
+test common/restrictions.test
+

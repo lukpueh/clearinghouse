@@ -29,7 +29,7 @@ config_file = open("config_initialize.txt")
 
 for line in config_file.readlines():
   # Ignore comments and blank lines
-  if line.startswith("#") or line=='\n':
+  if line.startswith("#") or line.strip == '':
     continue
 
   # If we end up here, the line contains a Git URL (+options?) for us to clone
@@ -37,5 +37,19 @@ for line in config_file.readlines():
   pr = subprocess.Popen("git clone " + line, cwd = os.getcwd(), shell = True, 
      stdout = subprocess.PIPE, stderr = subprocess.PIPE )
   (out, error) = pr.communicate()
-  print "Done!"
+  if error.strip() == "":
+    print "Done!"
+  else:
+    print "Error checking out repo: '" + error + "'."
+ 
+
+# If there is a readme file, show it to the user. 
+try:
+  readme_file = open('readme.txt', 'r')
+  for line in readme_file.readlines():
+    print line
+  readme_file.close()
+except IOError:
+  # There is no readme file, or we can't access it.
+  pass
 
