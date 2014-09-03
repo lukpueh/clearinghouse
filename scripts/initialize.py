@@ -34,13 +34,18 @@ for line in config_file.readlines():
 
   # If we end up here, the line contains a Git URL (+options?) for us to clone
   print "Checking out repo from", line.split()[0], "..."
-  pr = subprocess.Popen("git clone " + line, cwd = os.getcwd(), shell = True, 
+  git_process = subprocess.Popen("git clone " + line, cwd = os.getcwd(), shell = True, 
      stdout = subprocess.PIPE, stderr = subprocess.PIPE )
-  (out, error) = pr.communicate()
-  if error.strip() == "":
-    print "Done!"
+  (stdout_data, stderr_data) = git_process.communicate()
+
+  # Git prints all status messages to stderr (!). We check its retval 
+  # to see if it performed correctly, and give debug output if not.
+  if git_process.returncode == 0:
+     print "Done!"
   else:
-    print "Error checking out repo: '" + error + "'."
+    print "*** Error checking out repo. Git returned status code", git_process.returncode
+    print "*** Git messages on stdout:'" + stdout_data + "'."
+    print "*** Git messages on stderr:'" + stderr_data + "'."
  
 
 # If there is a readme file, show it to the user. 
