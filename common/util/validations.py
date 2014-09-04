@@ -23,9 +23,8 @@ from clearinghouse.common.exceptions import *
 
 from clearinghouse.common.util.assertions import *
 
-from seattle.repyportability import add_dy_support
+from seattle.repyportability import *
 
-import namespace
 add_dy_support(locals())
 
 rsa = dy_import_module("rsa.r2py")
