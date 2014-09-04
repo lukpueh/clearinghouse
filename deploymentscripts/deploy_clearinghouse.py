@@ -53,10 +53,12 @@ def _copy_to_target(file_expr, target):
 
 
 def _print_post_deploy_instructions():
-  print("")
-  print("Deployed successfully.") 
-  print("The file clearinghouse/clearinghouse/README.txt contains the")
-  print("rest of the information you'll need to get things running.")
+  print("""
+Deployed successfully.
+Additional setup instructions are available from our webpage, 
+https://seattle.poly.edu/wiki/ClearinghouseInstallation
+
+""")
 
 
 
