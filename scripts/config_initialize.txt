@@ -13,8 +13,7 @@ https://github.com/SeattleTestbed/seattlelib_v1 ../DEPENDENCIES/seattlelib_v1
 https://github.com/SeattleTestbed/seattlelib_v2 ../DEPENDENCIES/seattlelib_v2
 https://github.com/SeattleTestbed/nodemanager ../DEPENDENCIES/nodemanager
 https://github.com/SeattleTestbed/softwareupdater ../DEPENDENCIES/softwareupdater
-https://github.com/SeattleTestbed/portability ../DEPENDENCIES/portability
-https://github.com/SeattleTestbed/dist -b new_build_v1 ../DEPENDENCIES/dist
+https://github.com/aaaaalbert/portability -b fix-repyportability-dylink-import-path-problem ../DEPENDENCIES/portability
 https://github.com/aaaaalbert/affix.git -b minimal-clean-alpha-release ../DEPENDENCIES/affix
 https://github.com/aaaaalbert/clearinghouse -b make-github-aware-#134 ../DEPENDENCIES/clearinghouse
 https://github.com/aaaaalbert/seash.git -b sync-with-affix-alpha-release ../DEPENDENCIES/seash
