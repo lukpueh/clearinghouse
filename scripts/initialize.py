@@ -63,7 +63,7 @@ and supply all of the above information. Thank you!
 
 # If there is a readme file, show it to the user. 
 try:
-  readme_file = open('readme.txt', 'r')
+  readme_file = open('README.txt', 'r')
   for line in readme_file.readlines():
     print line
   readme_file.close()
