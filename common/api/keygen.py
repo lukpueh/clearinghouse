@@ -23,7 +23,7 @@ from clearinghouse.common.util.decorators import log_function_call_without_retur
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 
 
@@ -79,10 +79,10 @@ def generate_keypair():
 @log_function_call_without_return
 def _generate_keypair_directly():
   
-  (pubkeydict, privkeydict) = rsa_gen_pubpriv_keys(MANUAL_GENERATION_BITSIZE)
+  (pubkeydict, privkeydict) = rsa.rsa_gen_pubpriv_keys(MANUAL_GENERATION_BITSIZE)
 
-  pubkeystring = rsa_publickey_to_string(pubkeydict)
-  privkeystring = rsa_privatekey_to_string(privkeydict)
+  pubkeystring = rsa.rsa_publickey_to_string(pubkeydict)
+  privkeystring = rsa.rsa_privatekey_to_string(privkeydict)
   
   return (pubkeystring, privkeystring)
 

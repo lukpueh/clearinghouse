@@ -34,7 +34,7 @@ from clearinghouse.node_state_transitions.tests import mockutil
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 
 
@@ -111,7 +111,7 @@ def setup_general():
   for i in range(9):
     vessels_dict["vessel"+str(i)]={}
     vessels_dict["vessel"+str(i)]["userkeys"] = []
-    vessels_dict["vessel"+str(i)]["ownerkey"] = rsa_string_to_publickey(node.owner_pubkey)
+    vessels_dict["vessel"+str(i)]["ownerkey"] = rsa.rsa_string_to_publickey(node.owner_pubkey)
     vessels_dict["vessel"+str(i)]["ownerinfo"] = ""
     vessels_dict["vessel"+str(i)]["status"] = ""
     vessels_dict["vessel"+str(i)]["advertise"] = True

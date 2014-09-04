@@ -131,17 +131,17 @@ class SeattleClearinghouseClient(object):
     # available when the user provides their api key and doesn't require
     # it to be retrieved.
     try:
-      dy_import_module_symbols("rsa.r2py")
+      rsa = dy_import_module("rsa.r2py")
     except ImportError, e:
       raise SeattleClearinghouseError("Unable to get API key from SeattleClearinghouse " +
                              "because a required python or repy module " + 
                              "cannot be found:" + str(e))
     
     # This will raise a ValueError if the private key is not valid.
-    private_key_dict = rsa_string_to_privatekey(private_key_string)
+    private_key_dict = rsa.rsa_string_to_privatekey(private_key_string)
     
     encrypted_data = self.proxy.get_encrypted_api_key(username)
-    decrypted_data = rsa_decrypt(encrypted_data, private_key_dict)
+    decrypted_data = rsa.rsa_decrypt(encrypted_data, private_key_dict)
     split_data = decrypted_data.split("!")
 
     # The encrypted data has 20 bytes of random data followed by a "!" which

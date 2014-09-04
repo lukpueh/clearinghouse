@@ -42,7 +42,7 @@ from clearinghouse.website.control import models
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 
 
@@ -433,9 +433,9 @@ class SeattleGeniTestCase(unittest.TestCase):
     username = "testuser"
     api_key = "testapikey"
     
-    (pubkeydict, privkeydict) = rsa_gen_pubpriv_keys(512)
-    pubkeystr = rsa_publickey_to_string(pubkeydict)
-    privkeystr = rsa_privatekey_to_string(privkeydict)
+    (pubkeydict, privkeydict) = rsa.rsa_gen_pubpriv_keys(512)
+    pubkeystr = rsa.rsa_publickey_to_string(pubkeydict)
+    privkeystr = rsa.rsa_privatekey_to_string(privkeydict)
     
     interface.get_user_without_password = create_mock_get_user(username, api_key=api_key,
                                                                pubkeystr=pubkeystr,
@@ -445,7 +445,7 @@ class SeattleGeniTestCase(unittest.TestCase):
     self.assertTrue(isinstance(response, str))
     
     encrypted_data = proxy.get_encrypted_api_key(username)
-    decrypted_data = rsa_decrypt(encrypted_data, privkeydict)
+    decrypted_data = rsa.rsa_decrypt(encrypted_data, privkeydict)
     split_data = decrypted_data.split("!")
     
     self.assertEqual(api_key, split_data[1])
@@ -483,8 +483,8 @@ class SeattleGeniTestCase(unittest.TestCase):
     
     pwauth = {"username" : username, "password" : password}
     
-    (pubkeydict, privkeydict) = rsa_gen_pubpriv_keys(512)
-    pubkeystr = rsa_publickey_to_string(pubkeydict)
+    (pubkeydict, privkeydict) = rsa.rsa_gen_pubpriv_keys(512)
+    pubkeystr = rsa.rsa_publickey_to_string(pubkeydict)
     
     proxy.set_public_key(pwauth, pubkeystr)
 

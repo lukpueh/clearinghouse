@@ -30,7 +30,7 @@ from clearinghouse.node_state_transitions.tests import mockutil
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 
 
@@ -231,7 +231,7 @@ def run_movingto_twopercent_to_canonical_test():
   for i in range(9):
     vessels_dict["vessel"+str(i)]={}
     vessels_dict["vessel"+str(i)]["userkeys"] = []
-    vessels_dict["vessel"+str(i)]["ownerkey"] = rsa_string_to_publickey(node.owner_pubkey)
+    vessels_dict["vessel"+str(i)]["ownerkey"] = rsa.rsa_string_to_publickey(node.owner_pubkey)
     vessels_dict["vessel"+str(i)]["ownerinfo"] = ""
     vessels_dict["vessel"+str(i)]["status"] = ""
     vessels_dict["vessel"+str(i)]["advertise"] = True
@@ -241,7 +241,7 @@ def run_movingto_twopercent_to_canonical_test():
 
 
   vessels_dict[mockutil.extra_vessel_name]["userkeys"] = [node_transition_lib.transition_state_keys['movingto_twopercent']]
-  vessels_dict[mockutil.extra_vessel_name]["ownerkey"] = rsa_string_to_publickey(node.owner_pubkey)
+  vessels_dict[mockutil.extra_vessel_name]["ownerkey"] = rsa.rsa_string_to_publickey(node.owner_pubkey)
 
   mockutil.mock_nodemanager_get_node_info(mockutil.nodeid_key, "10.0test", vessels_dict)
   mockutil.mock_backend_set_vessel_owner_key()

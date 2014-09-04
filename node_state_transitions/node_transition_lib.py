@@ -67,11 +67,10 @@ from clearinghouse.website import settings
 
 # Import all the repy files.
 add_dy_support(locals())
-dy_import_module_symbols('advertise.r2py')
-dy_import_module_symbols('rsa.r2py')
-dy_import_module_symbols('listops.r2py')
-dy_import_module_symbols('parallelize.r2py')
-dy_import_module_symbols('random.r2py')
+
+advertise = dy_import_module('advertise.r2py')
+rsa = dy_import_module('rsa.r2py')
+parallelize = dy_import_module('parallelize.r2py')
 
 
 
@@ -268,7 +267,7 @@ def run_parallel_processes(nodeprocesslist, lockname, parallel_instances, *proce
 
   try:
     # Note that processnode is a function.
-    parallel_handle = parallelize_initfunction(nodeprocesslist, processnode, parallel_instances, *processargs)
+    parallel_handle = parallelize.parallelize_initfunction(nodeprocesslist, processnode, parallel_instances, *processargs)
 
   except: 
     log("Error: failed to set up parallelize_initfunction" + traceback.format_exc())
@@ -279,7 +278,7 @@ def run_parallel_processes(nodeprocesslist, lockname, parallel_instances, *proce
 
   try:
     # Keep looping until all the threads in the parallel handle are finished running.
-    while not parallelize_isfunctionfinished(parallel_handle):
+    while not parallelize.parallelize_isfunctionfinished(parallel_handle):
       # Check to see if the process lock is still being held.
       if not runonce.stillhaveprocesslock("process_lock."+lockname):
         log("The lock for "+lockname+" has been lost. Exiting transitional script")
@@ -289,7 +288,7 @@ def run_parallel_processes(nodeprocesslist, lockname, parallel_instances, *proce
       time.sleep(1)
 
     # Get the results to the parallel_handle for the node processing.
-    nodeprocessresults = parallelize_getresults(parallel_handle)
+    nodeprocessresults = parallelize.parallelize_getresults(parallel_handle)
 
 
     success_count = 0
@@ -320,7 +319,7 @@ def run_parallel_processes(nodeprocesslist, lockname, parallel_instances, *proce
   finally:
     # Clean up the parallel_handle and make sure that the handle is closed.
     log("Cleaning up and closing parallel_handle")
-    parallelize_closefunction(parallel_handle)
+    parallelize.parallelize_closefunction(parallel_handle)
 
   # Everything worked out fine in the parallel_handle.
   return (success_count, failure_count)
@@ -643,7 +642,7 @@ def add_new_node_to_db(node_string, node_info):
 
   # Check to see if the vessels owner key has been changed from the donor key
   # to the per node key. This is either situation 2 or situation 3.
-  if donor_key != rsa_string_to_publickey(database_nodeobject.owner_pubkey):
+  if donor_key != rsa.rsa_string_to_publickey(database_nodeobject.owner_pubkey):
     # Note that this is the case for if there is multiple vessels in 
     # the same node that are in the acceptdonation state. On the first 
     # run a database record was created for one vessel and a donation 
@@ -769,7 +768,7 @@ def create_donation_record(database_nodeobject, donor_key):
   # Retrieve the user object in order to give them credit
   # for their donation using the donor key
   try:
-    database_userobject = maindb.get_donor(rsa_publickey_to_string(donor_key))
+    database_userobject = maindb.get_donor(rsa.rsa_publickey_to_string(donor_key))
     log("Retrieved the userobject of the donor from database: " +
         str(database_userobject))
   except:
@@ -1272,7 +1271,7 @@ def get_vessel_list(node_info, node_pubkey_string, extra_vessel, node_string):
 
   vessel_list = []
 
-  node_pubkey_dict = rsa_string_to_publickey(node_pubkey_string)
+  node_pubkey_dict = rsa.rsa_string_to_publickey(node_pubkey_string)
 
   # Go through all the vessels and check if we are the owner of the
   # vessel. If we are then we add the vessel to the vessel_list,
@@ -1315,7 +1314,7 @@ def split_node_string(node_string):
 def _do_advertise_lookup(startstate_publickey):
   """ Do an advertise lookup. This function is used mainly for easier
       testing purposes. """
-  nodelist = advertise_lookup(startstate_publickey, maxvals = 10*1024*1024)
+  nodelist = advertise.advertise_lookup(startstate_publickey, maxvals = 10*1024*1024)
   # There can sometimes be empty strings in the list returned by advertise_lookup.
   while "" in nodelist:
     nodelist.remove("")
@@ -1424,7 +1423,7 @@ def _init_node_transition_lib():
 
 def _do_rsa_publickey_to_string(pubkey):
   """A helper function to retrieve string form of pubkey, used for testing."""
-  return rsa_publickey_to_string(pubkey)
+  return rsa.rsa_publickey_to_string(pubkey)
 
 
 

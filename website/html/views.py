@@ -73,7 +73,7 @@ from clearinghouse.website.html import forms
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 
 
@@ -100,7 +100,7 @@ def _state_key_file_to_publickey_string(key_file_name):
   a key string format.
   """
   fullpath = os.path.join(settings.SEATTLECLEARINGHOUSE_STATE_KEYS_DIR, key_file_name)
-  return rsa_publickey_to_string(rsa_file_to_publickey(fullpath))
+  return rsa.rsa_publickey_to_string(rsa.rsa_file_to_publickey(fullpath))
 
 
 

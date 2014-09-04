@@ -21,7 +21,7 @@ import traceback
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("parallelize.r2py")
+parallelize = dy_import_module("parallelize.r2py")
 
 
 
@@ -62,17 +62,17 @@ def run_parallelized(first_arg_list, func, *additional_args):
   """
   
   try:
-    phandle = parallelize_initfunction(first_arg_list, func, CONCURRENT_THREADS_PER_CALL, *additional_args)
+    phandle = parallelize.parallelize_initfunction(first_arg_list, func, CONCURRENT_THREADS_PER_CALL, *additional_args)
   
     try: 
-      while not parallelize_isfunctionfinished(phandle):
+      while not parallelize.parallelize_isfunctionfinished(phandle):
         time.sleep(0.1)
   
-      return parallelize_getresults(phandle)
+      return parallelize.parallelize_getresults(phandle)
   
     finally:
       # clean up the handle
-      parallelize_closefunction(phandle)
+      parallelize.parallelize_closefunction(phandle)
       
   except ParallelizeError, e:
     raise InternalError("Failed to run parallelized function: " + traceback.format_exc())

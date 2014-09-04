@@ -56,7 +56,7 @@ from clearinghouse.website.control import interface
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 
 
@@ -480,8 +480,8 @@ class PublicXMLRPCFunctions(object):
                                        ENCRYPTED_API_KEY_PADDING_BYTES)) 
     data = randstring + "!" + geniuser.api_key
     data = str(data) # make sure it's type str, not unicode, as required by rsa_encrypt
-    user_pubkey_dict = rsa_string_to_publickey(geniuser.user_pubkey)
-    encrypted_data = rsa_encrypt(data, user_pubkey_dict)
+    user_pubkey_dict = rsa.rsa_string_to_publickey(geniuser.user_pubkey)
+    encrypted_data = rsa.rsa_encrypt(data, user_pubkey_dict)
     # rsa_encrypt returns returns a string with an extra space in the front.
     encrypted_data = encrypted_data.strip() 
     # If the encrypted_data is more than one "block" long, something odd is
