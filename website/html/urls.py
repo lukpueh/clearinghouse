@@ -1,6 +1,6 @@
 from django.conf.urls import *
 
-import seattlegeni.website.html.views as htmlviews
+import clearinghouse.website.html.views as htmlviews
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin

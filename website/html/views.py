@@ -45,7 +45,7 @@ from django.template import RequestContext
 from django.views.decorators.http import require_POST
 
 # Make available all of our own standard exceptions.
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
 # This is the logging decorator use use.
 from clearinghouse.common.util.decorators import log_function_call
@@ -63,7 +63,7 @@ from clearinghouse.website import settings
 import safe
 __builtins__['type'] = safe._type
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
 
 # All of the work that needs to be done is passed through the controller interface.
 from clearinghouse.website.control import interface

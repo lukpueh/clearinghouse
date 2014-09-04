@@ -24,7 +24,7 @@ from django.http import HttpResponse
 from clearinghouse.website.xmlrpc.views import PublicXMLRPCFunctions
 from django.views.decorators.csrf import csrf_exempt
 
-from seattlegeni.website.settings import TESTBED_URL
+from clearinghouse.website.settings import TESTBED_URL
 
 # This is the url that will be displayed if the xmlrpc service is requested
 # directory through a web browser (that is, through a GET request).
