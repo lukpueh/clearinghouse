@@ -105,9 +105,11 @@ def main():
   # Copy over the clearinghouse files from the repository to the deploy
   # directory.
   clearinghouse_repo_dir = os.path.join(repodir, "clearinghouse")
-  clearinghouse_deploy_dir = os.path.join(deployroot, "seattlegeni")
+  clearinghouse_deploy_dir = os.path.join(deployroot, "clearinghouse")
+  print "Copying " + clearinghouse_repo_dir + " to " + clearinghouse_deploy_dir
+  shutil.copytree(clearinghouse_repo_dir, clearinghouse_deploy_dir, 
+      symlinks=True)
 
-  
   # If we replaced an existing directory, then copy the config files from the
   # old deployment to the new one.
   if replace_deployment_dir:
