@@ -16,12 +16,12 @@
 import sys
 import time
 
-from seattlegeni.common.api import lockserver
-from seattlegeni.common.api import maindb
-from seattlegeni.common.util import log
-from seattlegeni.website.control import vessels
+from clearinghouse.common.api import lockserver
+from clearinghouse.common.api import maindb
+from clearinghouse.common.util import log
+from clearinghouse.website.control import vessels
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
 
 # Set the log level high enough so that we don't produce a bunch of logging

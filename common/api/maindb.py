@@ -20,7 +20,7 @@
   database interaction from other code. It is definitely the case that
   no code outside this module should be modifying the database.
   
-  We try to keep all manual transaction management in seattlegeni to within
+  We try to keep all manual transaction management in clearinghouse to within
   this module. The general idea is that the default behavior of django is
   what we want in most places (to commit any time data-altering functions
   are called, such as .save() or .delete()). However, in a few cases we
@@ -41,25 +41,25 @@ from django.db import transaction
 
 import random
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
-from seattlegeni.common.util.decorators import log_function_call
-from seattlegeni.common.util.decorators import log_function_call_and_only_first_argument
+from clearinghouse.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call_and_only_first_argument
 
-from seattlegeni.common.util.assertions import *
+from clearinghouse.common.util.assertions import *
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
 
-from seattlegeni.website.control.models import Donation
-from seattlegeni.website.control.models import GeniUser
-from seattlegeni.website.control.models import Node
-from seattlegeni.website.control.models import Vessel
-from seattlegeni.website.control.models import VesselPort
-from seattlegeni.website.control.models import VesselUserAccessMap
-from seattlegeni.website.control.models import ActionLogEvent
-from seattlegeni.website.control.models import ActionLogVesselDetails
+from clearinghouse.website.control.models import Donation
+from clearinghouse.website.control.models import GeniUser
+from clearinghouse.website.control.models import Node
+from clearinghouse.website.control.models import Vessel
+from clearinghouse.website.control.models import VesselPort
+from clearinghouse.website.control.models import VesselUserAccessMap
+from clearinghouse.website.control.models import ActionLogEvent
+from clearinghouse.website.control.models import ActionLogVesselDetails
 
 
 
@@ -141,7 +141,7 @@ def init_maindb():
   <Returns>
     None.
   """
-  if settings.DATABASE_ENGINE is "mysql":
+  if settings.DATABASES['default']['ENGINE'] == "django.db.backends.mysql":
     django.db.connection.cursor().execute('set transaction isolation level read committed')
   else:
     log.error("init_maindb() called when not using mysql. This is only OK when developing.")
@@ -164,8 +164,8 @@ def init_maindb():
 def create_user(username, password, email, affiliation, user_pubkey, user_privkey, donor_pubkey):
   """
   <Purpose>
-    Create a new seattlegeni user in the database. This user will be able to
-    login to website, use the seattlegeni xmlrpc api, acquire vessels, etc.
+    Create a new clearinghouse user in the database. This user will be able to
+    login to website, use the clearinghouse xmlrpc api, acquire vessels, etc.
     
     A 'user' lock should be held on the specified username before calling this
     function. The code calling this function should have already checked to
@@ -202,7 +202,7 @@ def create_user(username, password, email, affiliation, user_pubkey, user_privke
       
     <Side Effects>
       Creates a user record in the django user table and a user record in the
-      seattlegeni geniuser table, the two of which have a one-to-one mapping.
+      clearinghouse geniuser table, the two of which have a one-to-one mapping.
       Does not change the database if creation of either record fails.
       
     <Returns>
@@ -1406,7 +1406,7 @@ def get_available_rand_vessels(geniuser, vesselcount):
       The number of rand vessels the user has requested.
   <Exceptions>
      UnableToAcquireResourcesError
-       If there are not enough resources in seattlegeni to fulfill the request.
+       If there are not enough resources in clearinghouse to fulfill the request.
   <Side Effects>
     None
   <Returns>
@@ -1448,7 +1448,7 @@ def get_available_nat_vessels(geniuser, vesselcount):
       The number of nat vessels the user has requested.
   <Exceptions>
      UnableToAcquireResourcesError
-       If there are not enough resources in seattlegeni to fulfill the request.
+       If there are not enough resources in clearinghouse to fulfill the request.
   <Side Effects>
     None
   <Returns>
@@ -1492,7 +1492,7 @@ def get_available_wan_vessels(geniuser, vesselcount):
       The number of wan vessels the user has requested.
   <Exceptions>
      UnableToAcquireResourcesError
-       If there are not enough resources in seattlegeni to fulfill the request.
+       If there are not enough resources in clearinghouse to fulfill the request.
   <Side Effects>
     None
   <Returns>
@@ -1618,7 +1618,7 @@ def get_available_lan_vessels_by_subnet(geniuser, vesselcount):
       The number of lan vessels the user has requested.
   <Exceptions>
      UnableToAcquireResourcesError
-       If there are not enough resources in seattlegeni to fulfill the request.
+       If there are not enough resources in clearinghouse to fulfill the request.
   <Side Effects>
     None
   <Returns>
@@ -1627,7 +1627,7 @@ def get_available_lan_vessels_by_subnet(geniuser, vesselcount):
     on the user's port.
     
     The number of vessel lists (that is, the number of different subnets)
-    returned may not include all possible subnets that seattlegeni knows about.
+    returned may not include all possible subnets that clearinghouse knows about.
     This is for efficiency reasons. The maximum number of subnets returned
     can be adjusted through the GET_AVAILABLE_LAN_VESSELS_MAX_SUBNETS
     constant at the top of this module.

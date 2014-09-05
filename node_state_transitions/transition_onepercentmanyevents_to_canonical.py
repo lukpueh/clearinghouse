@@ -21,7 +21,7 @@
   monzum@cs.washington.edu
 
 <Usage>
-  Ensure that seattlegeni and seattle are in the PYTHONPATH.
+  Ensure that clearinghouse and seattle are in the PYTHONPATH.
   Ensure that the database is setup properly and django settings
     are set correctly.
 
@@ -30,9 +30,9 @@
 
 import os
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call
 
 import node_transition_lib
 

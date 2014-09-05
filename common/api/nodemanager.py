@@ -10,7 +10,7 @@
   Justin Samuel
 
 <Purpose>
-  This is the nodemanager api for seattlegeni.
+  This is the nodemanager api for clearinghouse.
   
   Unless you are are developing the backend server, all you will use this
   module for is to first call init_nodemanager() and then to call either of
@@ -40,11 +40,11 @@
 import random
 import traceback
 
-from seattlegeni.common.util.assertions import *
+from clearinghouse.common.util.assertions import *
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util.decorators import log_function_call_without_first_argument
+from clearinghouse.common.util.decorators import log_function_call_without_first_argument
 
 # Let's keep a copy of the built-ins, as repyportability destroys them
 import __builtin__
@@ -54,31 +54,21 @@ from repyportability import *
 add_dy_support(locals())
 
 ###### code to enable affixes #########
-dy_import_module_symbols('affixstackinterface.r2py')
+affix_stack = dy_import_module('affix_stack.r2py')
 
-affix_obj = AffixStackInterface('(CoordinationAffix)')
+affix_obj = AffixStack('(CoordinationAffix)(NamingAndResolverAffix)')
 
-old_openconnection = openconnection
-
-def new_openconnection(destip, destport, localip, localport, timeout):
-  # we may get a unicode string.  repy's network API only accepts
-  # standard python strs.
-  destip = str(destip)
-  if destip.endswith('zenodotus.poly.edu'):
-    return affix_obj.openconnection(destip, destport, localip, localport, timeout)
-  else:
-    return old_openconnection(destip, destport, localip, localport, timeout)
-
-openconnection = new_openconnection
+openconnection = affix_obj.openconnection
 
 # overwrite the openconnection that is provided to modules we import
-sys.modules['dylink_repy'].openconnection = openconnection
+sys.modules['dylink_r2py'].openconnection = openconnection
 
 ####### end code to enable affixes ######
 
-dy_import_module_symbols('nmclient.r2py')
-dy_import_module_symbols("listops.r2py")
-dy_import_module_symbols("time.r2py")
+nmclient = dy_import_module('nmclient.r2py')
+listops = dy_import_module("listops.r2py")
+time = dy_import_module("time.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 # Restore built-ins so that django and other libraries don't complain
 for i in builtins:
@@ -118,12 +108,12 @@ def init_nodemanager():
   
   for localport in portlist:
     try:
-      time_updatetime(localport)
+      time.time_updatetime(localport)
       return
     except TimeError:
       error_message = traceback.format_exc()
   
-  # We raise a TimeUpdateError which is a seattlegeni error rather than a
+  # We raise a TimeUpdateError which is a clearinghouse error rather than a
   # TimeError which is a repy error.
   raise TimeUpdateError("Failed to perform time_updatetime(): " + error_message)
     
@@ -169,13 +159,13 @@ def get_node_info(ip, port):
   try:
     # This can raise an NMClientException, but the handle won't be stored in
     # the nmclient module if it does so we don't have to clean it up.
-    nmhandle = nmclient_createhandle(ip, port)
+    nmhandle = nmclient.nmclient_createhandle(ip, port)
 
     # Be sure to clean up the handle.    
     try:
-      nodeinfo = nmclient_getvesseldict(nmhandle)
+      nodeinfo = nmclient.nmclient_getvesseldict(nmhandle)
     finally:
-      nmclient_destroyhandle(nmhandle)
+      nmclient.nmclient_destroyhandle(nmhandle)
     
   except NMClientException:
     nodestr = str((ip, port))
@@ -221,7 +211,7 @@ def _get_vessel_usableports(resourcedata):
       if resourcetype == 'messport':
         messports.append(int(float(value)))
 
-  return listops_intersect(connports, messports)
+  return listops.listops_intersect(connports, messports)
 
 
 
@@ -259,13 +249,13 @@ def get_vessel_resources(ip, port, vesselname):
   try:
     # This can raise an NMClientException, but the handle won't be stored in
     # the nmclient module if it does so we don't have to clean it up.
-    nmhandle = nmclient_createhandle(ip, port)
+    nmhandle = nmclient.nmclient_createhandle(ip, port)
     
     # Be sure to clean up the handle.
     try:
-      resourcedata = nmclient_rawsay(nmhandle, "GetVesselResources", vesselname)  
+      resourcedata = nmclient.nmclient_rawsay(nmhandle, "GetVesselResources", vesselname)  
     finally:
-      nmclient_destroyhandle(nmhandle)
+      nmclient.nmclient_destroyhandle(nmhandle)
     
     resourcesdict["usableports"] = _get_vessel_usableports(resourcedata)
     
@@ -516,19 +506,19 @@ def _do_signed_call(privkeystring, nodeid_ip_port_pubkey_tuple, *callargs):
   try:
     # This can raise an NMClientException, but the handle won't be stored in
     # the nmclient module if it does so we don't have to clean it up.
-    nmhandle = nmclient_createhandle(ip, port)
+    nmhandle = nmclient.nmclient_createhandle(ip, port)
   
     # Be sure to clean up the handle.    
     try:
-      myhandleinfo = nmclient_get_handle_info(nmhandle)
-      myhandleinfo['publickey'] = rsa_string_to_publickey(pubkeystring)
-      myhandleinfo['privatekey'] = rsa_string_to_privatekey(privkeystring)
-      nmclient_set_handle_info(nmhandle, myhandleinfo)
+      myhandleinfo = nmclient.nmclient_get_handle_info(nmhandle)
+      myhandleinfo['publickey'] = rsa.rsa_string_to_publickey(pubkeystring)
+      myhandleinfo['privatekey'] = rsa.rsa_string_to_privatekey(privkeystring)
+      nmclient.nmclient_set_handle_info(nmhandle, myhandleinfo)
     
-      return nmclient_signedsay(nmhandle, *callargs)
+      return nmclient.nmclient_signedsay(nmhandle, *callargs)
       
     finally:
-      nmclient_destroyhandle(nmhandle)
+      nmclient.nmclient_destroyhandle(nmhandle)
     
   except NMClientException:
     nodestr = str((nodeid, ip, port))

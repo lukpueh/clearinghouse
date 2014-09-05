@@ -21,20 +21,20 @@
 
 #pragma out
 
-# The seattlegeni testlib must be imported first.
-from seattlegeni.tests import testlib
+# The clearinghouse testlib must be imported first.
+from clearinghouse.tests import testlib
 
-from seattlegeni.node_state_transitions import node_transition_lib
+from clearinghouse.node_state_transitions import node_transition_lib
 
-from seattlegeni.node_state_transitions import transition_onepercentmanyevents_to_canonical
-from seattlegeni.common.api import maindb
+from clearinghouse.node_state_transitions import transition_onepercentmanyevents_to_canonical
+from clearinghouse.common.api import maindb
 
-from seattlegeni.node_state_transitions.tests import mockutil
+from clearinghouse.node_state_transitions.tests import mockutil
 
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 
 
@@ -47,7 +47,7 @@ vessels_dict_basic[mockutil.extra_vessel_name] = {"userkeys" : [node_transition_
                                                   "ownerinfo" : "",
                                                   "status" : "",
                                                   "advertise" : True}
-vessels_dict_basic["vessel_non_seattlegeni"] = {"userkeys" : [node_transition_lib.transition_state_keys['onepercentmanyevents']],
+vessels_dict_basic["vessel_non_clearinghouse"] = {"userkeys" : [node_transition_lib.transition_state_keys['onepercentmanyevents']],
                                                 "ownerkey" : mockutil.donor_key,
                                                 "ownerinfo" : "",
                                                 "status" : "",
@@ -111,7 +111,7 @@ def setup_general():
   for i in range(9):
     vessels_dict["vessel"+str(i)]={}
     vessels_dict["vessel"+str(i)]["userkeys"] = []
-    vessels_dict["vessel"+str(i)]["ownerkey"] = rsa_string_to_publickey(node.owner_pubkey)
+    vessels_dict["vessel"+str(i)]["ownerkey"] = rsa.rsa_string_to_publickey(node.owner_pubkey)
     vessels_dict["vessel"+str(i)]["ownerinfo"] = ""
     vessels_dict["vessel"+str(i)]["status"] = ""
     vessels_dict["vessel"+str(i)]["advertise"] = True

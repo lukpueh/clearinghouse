@@ -9,11 +9,11 @@
   Justin Samuel
 
 <Purpose>
-  This module provides logging functionality to be used within seattlegeni.
-  All seattlegeni code should log through this module rather than using
+  This module provides logging functionality to be used within clearinghouse.
+  All clearinghouse code should log through this module rather than using
   print() or directly using the repy logging module. This ensures that only
   one module (this one) determines where log messages actually go for all
-  of seattlegeni. (This module may in turn use the repy logging module, but
+  of clearinghouse. (This module may in turn use the repy logging module, but
   client code should be unaware of that.)
   
   Logging output done by this module will try to include a request_id with

@@ -5,7 +5,7 @@ Custom pipeline functions used in Seattle Clearinghouse.
 from django.http import HttpResponseRedirect
 from social_auth.backends.exceptions import AuthException
 from social_auth.backends.pipeline.social import social_auth_user
-from seattlegeni.website.control import interface
+from clearinghouse.website.control import interface
 from uuid import uuid4
                                 
 def redirect_to_auto_register(*args, **kwargs):

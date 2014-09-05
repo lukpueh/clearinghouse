@@ -19,11 +19,11 @@
 
 import datetime
 
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import maindb
 
-from seattlegeni.common.util import decorators
+from clearinghouse.common.util import decorators
 
-from seattlegeni.website.control import models
+from clearinghouse.website.control import models
 
 
 

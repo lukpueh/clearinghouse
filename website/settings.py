@@ -10,7 +10,7 @@ additional changes you'll need to make to this file.
 import os
 
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
 
 
@@ -20,7 +20,7 @@ from seattlegeni.common.util import log
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-# The log level used by the seattlegeni log module. All messages at this level
+# The log level used by the clearinghouse log module. All messages at this level
 # or more severe will be logged.
 SEATTLECLEARINGHOUSE_LOG_LEVEL = log.LOG_LEVEL_DEBUG
 
@@ -47,7 +47,7 @@ SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://custombuilder.poly.edu/
 #SEATTLECLEARINGHOUSE_BASE_INSTALLERS_DIR = "/var/www/dist"
 
 # Not currently used. This is left in for legacy installs
-# The directory in which customized installers created by seattlegeni will be
+# The directory in which customized installers created by clearinghouse will be
 # stored. A directory within this directory will be created for each user.
 #SEATTLECLEARINGHOUSE_USER_INSTALLERS_DIR = os.path.join(SEATTLECLEARINGHOUSE_BASE_INSTALLERS_DIR, "geni")
 
@@ -58,12 +58,15 @@ SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://custombuilder.poly.edu/
 # Need to specify the LOGIN_URL, as our login page isn't at the default login
 # location (the default is /accounts/login).
 LOGIN_URL = 'login'
+
 # Users will be redirected to SOCIAL_AUTH_LOGIN_ERROR_URL in case of backend error/user cancellation
 # during login or association (account linking).
 SOCIAL_AUTH_LOGIN_ERROR_URL ='error'
 SOCIAL_AUTH_BACKEND_ERROR_URL = 'error'
+
 # When a user logs in with OpenID/OAuth send them to the profile page
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'profile'
+
 # A new user created through OpenID/OAuth gets sent here upon creation. 
 # currently not used
 #SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'new_auto_register_user'
@@ -87,22 +90,32 @@ ADMINS = (
 #EMAIL_USE_TLS = True
 
 # Email address that error notifications will be sent from.
-#SERVER_EMAIL = "error@seattlegeni.server.hostname"
+#SERVER_EMAIL = "error@clearinghouse.server.hostname"
 
 # We use this so we know which server the email came from by the subject line.
 #EMAIL_SUBJECT_PREFIX = "[localhost] "
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'mysql'      # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'FILL_THIS_IN' # Or path to database file if using sqlite3.
-DATABASE_USER = 'FILL_THIS_IN' # Not used with sqlite3.
-DATABASE_PASSWORD = 'FILL_THIS_IN' # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+# Database
+# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+DATABASES = {
+    'default': {
+        # you can use django.db.backends.sqlite3 instead of mysql. If you
+        # decide to do so, you can leave the other fields empty
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'FILL_THIS_IN',
+        'USER': 'FILL_THIS_IN',
+        'PASSWORD': 'FILL_THIS_IN',
+        'HOST': '',
+        'PORT': '',
+    }
+}
 
-if DATABASE_ENGINE == 'mysql':
-  DATABASE_OPTIONS = {'init_command': 'SET storage_engine=INNODB'}
+if DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
+    DATABASES['default']['OPTIONS'] = {}
+    DATABASES['default']['OPTIONS']['init_command'] = \
+            'SET storage_engine=INNODB'
 
 # Make this unique, and don't share it with anybody.
 # Fill this in!
@@ -141,41 +154,40 @@ ADMIN_MEDIA_PREFIX = '/admin_media/'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-  'django.template.loaders.filesystem.load_template_source',
-  'django.template.loaders.app_directories.load_template_source',
+  'django.template.loaders.filesystem.Loader',
+  'django.template.loaders.app_directories.Loader',
 # 'django.template.loaders.eggs.load_template_source',
 )
 
 MIDDLEWARE_CLASSES = (
   'django.middleware.common.CommonMiddleware',
-  'django.contrib.csrf.middleware.CsrfViewMiddleware',
-  'django.contrib.csrf.middleware.CsrfResponseMiddleware',
+  'django.middleware.csrf.CsrfViewMiddleware',
   'django.contrib.sessions.middleware.SessionMiddleware',
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
+  'django.middleware.clickjacking.XFrameOptionsMiddleware',
   #'django.middleware.doc.XViewMiddleware',
 
   # Our own middleware that logs when a request is initially received and
   # sets up the logger to log other messages with per-request unique ids.
-  'seattlegeni.website.middleware.logrequest.LogRequestMiddleware',
+  'clearinghouse.website.middleware.logrequest.LogRequestMiddleware',
   # Our own middleware that logs when unhandled exceptions happen.
-  'seattlegeni.website.middleware.logexception.LogExceptionMiddleware',
+  'clearinghouse.website.middleware.logexception.LogExceptionMiddleware',
 )
 
-ROOT_URLCONF = 'seattlegeni.website.urls'
+ROOT_URLCONF = 'clearinghouse.website.urls'
 
 TEMPLATE_DIRS = (
   # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
   # Always use forward slashes, even on Windows.
   # Don't forget to use absolute paths, not relative paths.
-  SEATTLECLEARINGHOUSE_WEBSITE_ROOT + '/html/templates'
+  SEATTLECLEARINGHOUSE_WEBSITE_ROOT + '/html/templates',
 )
 
 INSTALLED_APPS = (
   'django.contrib.admin',
   'django.contrib.auth',
   'django.contrib.contenttypes',
-  'django.contrib.csrf',
   'django.contrib.sessions',
   'django.contrib.sites',
   'django.contrib.messages',
@@ -183,7 +195,7 @@ INSTALLED_APPS = (
   'social_auth',
 
   # We have our maindb model defined here, so it must be listed.
-  'seattlegeni.website.control',
+  'clearinghouse.website.control',
 )
   # Seattle Clearinghouse uses a django plugin called "django social auth" to handle
   # OpenID and OAuth.  The desired OpenID/OAuth providers must be listed here 
@@ -230,15 +242,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 #  Social_auth follows each of these in order and passes along a object with
 #  information gathered to each function.
-#  Custom fns can be written and passed in here we define them in seattlegeni.website.pipeline.
+#  Custom fns can be written and passed in here we define them in clearinghouse.website.pipeline.
 #  To use a custom fn you must call .save_status_to_session before your custom fn.
 SOCIAL_AUTH_PIPELINE = (
-  'seattlegeni.website.pipeline.custom_social_auth_user', 
+  'clearinghouse.website.pipeline.custom_social_auth_user', 
   #'social_auth.backends.pipeline.associate.associate_by_email', 
   'social_auth.backends.pipeline.misc.save_status_to_session',
-  'seattlegeni.website.pipeline.redirect_to_auto_register',
-  'seattlegeni.website.pipeline.username',
-  'seattlegeni.website.pipeline.custom_create_user',
+  'clearinghouse.website.pipeline.redirect_to_auto_register',
+  'clearinghouse.website.pipeline.username',
+  'clearinghouse.website.pipeline.custom_create_user',
   'social_auth.backends.pipeline.social.associate_user',
   'social_auth.backends.pipeline.social.load_extra_data',
   'social_auth.backends.pipeline.user.update_user_details',
@@ -262,3 +274,13 @@ SESSION_COOKIE_AGE = 3600
 
 # Use session cookies, not persistent cookies.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+TESTBED = 'Seattle'
+TESTBED_URL = 'https://seattle.poly.edu/'
+TESTBED_DEVELOPERS_MAIL = 'mailto:seattle-devel@googlegroups.com'
+TESTBED_USERS_MAIL = 'mailto:seattle-devel@googlegroups.com'
+
+CLEARINGHOUSE = 'Clearinghouse'
+CLEARINGHOUSE_URL = 'https://seattleclearinghouse.poly.edu/'
+
+DEMOKIT = 'Demokit'

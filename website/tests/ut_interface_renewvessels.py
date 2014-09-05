@@ -2,18 +2,18 @@
 Tests the interface.renew_vessels and interface.renew_all_vessels calls.
 """
 
-# The seattlegeni testlib must be imported first.
-from seattlegeni.tests import testlib
+# The clearinghouse testlib must be imported first.
+from clearinghouse.tests import testlib
 
-from seattlegeni.tests import mocklib
+from clearinghouse.tests import mocklib
 
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import maindb
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.website.control import interface
+from clearinghouse.website.control import interface
 
-from seattlegeni.website.tests import testutil
+from clearinghouse.website.tests import testutil
 
 import datetime
 import unittest

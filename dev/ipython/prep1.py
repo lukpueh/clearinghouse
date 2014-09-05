@@ -1,13 +1,13 @@
 # Modules to make available for convenience so the names are available in the
 # ipython shell. Just a lazy way to not have to execute these lines individually
 # in a new shell.
-from seattlegeni.website.control import interface
-from seattlegeni.common.api import backend
-from seattlegeni.common.api import keydb
-from seattlegeni.common.api import keygen
-from seattlegeni.common.api import lockserver
-from seattlegeni.common.api import maindb
-from seattlegeni.common.api import nodemanager
+from clearinghouse.website.control import interface
+from clearinghouse.common.api import backend
+from clearinghouse.common.api import keydb
+from clearinghouse.common.api import keygen
+from clearinghouse.common.api import lockserver
+from clearinghouse.common.api import maindb
+from clearinghouse.common.api import nodemanager
 
 # grab a few objects to play with
 g = maindb.get_user('user0')

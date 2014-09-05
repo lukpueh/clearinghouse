@@ -21,13 +21,14 @@
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from django.http import HttpResponse
 
-from seattlegeni.website.xmlrpc.views import PublicXMLRPCFunctions
+from clearinghouse.website.xmlrpc.views import PublicXMLRPCFunctions
 from django.views.decorators.csrf import csrf_exempt
 
+from clearinghouse.website.settings import TESTBED_URL
 
 # This is the url that will be displayed if the xmlrpc service is requested
 # directory through a web browser (that is, through a GET request).
-SEATTLECLEARINGHOUSE_XMLRPC_API_DOC_URL = "https://seattle.cs.washington.edu/wiki/SeattleGeniApi"
+SEATTLECLEARINGHOUSE_XMLRPC_API_DOC_URL = TESTBED_URL + "wiki/SeattleGeniApi"
 
 # Create a Dispatcher. This handles the calls and translates info to function maps.
 # TODO: allow_none = True or False? Does using None in the api make the xmlrpc

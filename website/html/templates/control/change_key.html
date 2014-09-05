@@ -6,11 +6,11 @@
 {% endblock style %}
 
 {% block title %}
-Change Key - Seattle Clearinghouse
+Change Key - {{ TESTBED }} {{ CLEARINGHOUSE }}
 {% endblock title %}
 
 {% block nav_profile %}
-<td class="active"><a href="{% url profile %}">Profile</a></td>
+<td class="active"><a href="{% url 'profile' %}">Profile</a></td>
 {% endblock nav_profile %}
 
 {% block content %}
@@ -21,7 +21,7 @@ Change Key - Seattle Clearinghouse
 			<p>You can change the key you use to access your vessels. After you change
 			   your key, it may take a few minutes before you can access all of your vessels
 			   with your new key or see them listed when you browse with
-			   <a href="https://seattle.cs.washington.edu/wiki/SeattleShell" target="_blank">Seash</a>.</p>
+			   <a href="{{ TESTBED_URL }}wiki/SeattleShell" target="_blank">Seash</a>.</p>
 
 			<h3>Upload a public key</h3>
 			
@@ -33,7 +33,7 @@ Change Key - Seattle Clearinghouse
 			   using Seash), you can upload your <strong>public key</strong> here.
 			   Do not upload your private key.</p>
 			<div class="keyform">
-			<form action="{% url change_key %}" method="post" enctype="multipart/form-data">
+			<form action="{% url 'change_key' %}" method="post" enctype="multipart/form-data">
 			<input type="file" name="pubkey">
 			<br />
 			<br />
@@ -47,7 +47,7 @@ Change Key - Seattle Clearinghouse
 			we generated.
 			
 			<div class="keyform">
-			<form action="{% url change_key %}" method="post">
+			<form action="{% url 'change_key' %}" method="post">
 			<input type="hidden" name="generate" value="yes">
 			<input type="submit" value="Generate Key">
 			</form>

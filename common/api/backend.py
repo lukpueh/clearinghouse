@@ -13,7 +13,7 @@
   server. Functions in this module are the only way that other code should
   interact with the backend.
    
-  All components of seattlegeni use the backend to perform any nodemanager
+  All components of clearinghouse.use the backend to perform any nodemanager
   communication that changes the state of a node. ("State" here means
   modifying the node in any way, not "state" as in the "canonical state".)
   If the node only needs to be queried, not modified, then that can be
@@ -40,9 +40,9 @@ import socket
 import traceback
 import xmlrpclib
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call
 
 
 

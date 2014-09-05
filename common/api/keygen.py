@@ -14,16 +14,16 @@
 
 import traceback
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
-from seattlegeni.common.util.decorators import log_function_call_without_return
+from clearinghouse.common.util.decorators import log_function_call_without_return
 
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 
 
@@ -31,7 +31,7 @@ dy_import_module_symbols("rsa.r2py")
 
 
 # Set to True to obtain keys from the key daemon, false to generate keys
-# directly (potentially making some parts of seattlegeni run very slow).
+# directly (potentially making some parts of clearinghouse run very slow).
 USE_KEYDAEMON = False
 
 KEYDAEMON_HOST = "127.0.0.1"
@@ -79,10 +79,10 @@ def generate_keypair():
 @log_function_call_without_return
 def _generate_keypair_directly():
   
-  (pubkeydict, privkeydict) = rsa_gen_pubpriv_keys(MANUAL_GENERATION_BITSIZE)
+  (pubkeydict, privkeydict) = rsa.rsa_gen_pubpriv_keys(MANUAL_GENERATION_BITSIZE)
 
-  pubkeystring = rsa_publickey_to_string(pubkeydict)
-  privkeystring = rsa_privatekey_to_string(privkeydict)
+  pubkeystring = rsa.rsa_publickey_to_string(pubkeydict)
+  privkeystring = rsa.rsa_privatekey_to_string(privkeydict)
   
   return (pubkeystring, privkeystring)
 

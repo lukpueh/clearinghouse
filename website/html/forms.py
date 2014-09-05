@@ -17,14 +17,15 @@
   For more information on forms in django see:
   http://docs.djangoproject.com/en/dev/topics/forms/
 """
-from seattlegeni.website.control.models import GeniUser
+from clearinghouse.website.control.models import GeniUser
 
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
 import django.forms as forms
 
-from seattlegeni.common.exceptions import *
-from seattlegeni.common.util import validations
-from seattlegeni.website.control import interface
+from clearinghouse.common.exceptions import *
+from clearinghouse.common.util import validations
+from clearinghouse.website.control import interface
+
 
 MAX_PUBKEY_UPLOAD_SIZE = 2048
 
@@ -46,6 +47,7 @@ class PubKeyField(forms.FileField):
 
 
 class GeniUserCreationForm(DjangoUserCreationForm):
+
   affiliation = forms.CharField(error_messages={'required': 'Enter an Affiliation'})
   email = forms.CharField(label="E-mail Address", error_messages={'required': 'Enter an E-mail Address'})
   pubkey = PubKeyField(label="My Public Key", required=False)

@@ -1,10 +1,10 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('seattlegeni.website.html.views',
+urlpatterns = patterns('clearinghouse.website.html.views',
                        
                        # 'Get Donations' functions:
                        # show the main download page for downloading installers

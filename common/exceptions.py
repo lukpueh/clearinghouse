@@ -9,12 +9,12 @@
   Justin Samuel
   
 <Purpose>
-  All exceptions used outside of a single module in seattlegeni are defined
-  in this file. All seattlegeni modules should import all exceptions in this
-  file. That is, the following code should be at the top of all seattlegeni
+  All exceptions used outside of a single module in clearinghouse are defined
+  in this file. All clearinghouse modules should import all exceptions in this
+  file. That is, the following code should be at the top of all clearinghouse
   modules:
   
-  from seattlegeni.common.exceptions import *
+  from clearinghouse.common.exceptions import *
   
   This ensures that we don't end up ever having an exception named in a
   try/catch block that isn't actually defined in that modules namespace.
@@ -23,7 +23,7 @@
   only export the exceptions we've defined here, not anything else that may be
   imported or used in this module. Only names that end in "Error" are exported.
   
-  In general, no code in seattlegeni should knowingly let built-in
+  In general, no code in clearinghouse should knowingly let built-in
   python exceptions escape from the place where the exception occurs.
   Instead, it should be caught and, if it can't be dealt with, re-raised as
   one of the exceptions in this module (with the details of the original
@@ -40,7 +40,7 @@
 class SeattleGeniError(Exception):
   """
   <Purpose>
-    All other custom exceptions of seattlegeni inherit from this.
+    All other custom exceptions of clearinghouse inherit from this.
   """
 
 
@@ -62,7 +62,7 @@ class ProgrammerError(SeattleGeniError):
   (for example, they passed an argument of the wrong type into a function).
   
   Do not catch this exception! You may prevent proper notification about a
-  broken part of seattlegeni. This exception will never be documented that
+  broken part of clearinghouse. This exception will never be documented that
   it can be raised. You should assume it's always possible that it be
   raised. If you really know what you're doing, you can break this rule and
   catch a ProgrammerError.
@@ -72,13 +72,13 @@ class ProgrammerError(SeattleGeniError):
   
 class InternalError(SeattleGeniError):
   """
-  Indicates that some part of the seattlegeni system failed. E.g., a
+  Indicates that some part of the clearinghouse system failed. E.g., a
   communication problem with the lockserver, backend, or database. Can also
   indicate the database is in a bad state. The text of the raised exception
   should clearly describe the problems and all related details.
   
   Do not catch this exception! You may prevent proper notification about a
-  broken part of seattlegeni. This exception will never be documented that
+  broken part of clearinghouse. This exception will never be documented that
   it can be raised. You should assume it's always possible that it be
   raised. If you really know what you're doing, you can break this rule and
   catch an InternalError.
@@ -140,7 +140,7 @@ class TimeUpdateError(SeattleGeniError):
 
 
 
-# Many modules are using the line 'from seattlegeni.common.exceptions import *'
+# Many modules are using the line 'from clearinghouse.common.exceptions import *'
 # to import the exceptions. We define __all__ so that we only export names from
 # this module that end in the word "Error". 
 __all__ = []

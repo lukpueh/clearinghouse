@@ -21,11 +21,11 @@
 
 # We import the testlib FIRST, as the test db settings 
 # need to be set before we import anything else.
-from seattlegeni.tests import testlib
+from clearinghouse.tests import testlib
 
-from seattlegeni.common.exceptions import *
-from seattlegeni.website.control import interface
-from seattlegeni.website.control import models
+from clearinghouse.common.exceptions import *
+from clearinghouse.website.control import interface
+from clearinghouse.website.control import models
 
 from django.contrib.auth.models import User as DjangoUser
 

@@ -9,9 +9,9 @@
   Gaetano Pressimone 2012
   
 <Purpose>
-  Django template file for Seattle Clearinghouse's 'auto_register' page.  The page 
-  allows a visitor to create a Clearinghouse account quickly if logging in
-  with a OpenID/OAuth account that has not yet been linked with a Seattle Clearinghouse
+  Django template file for {{ TESTBED }} {{ CLEARINGHOUSE }}'s 'auto_register' page.  The page 
+  allows a visitor to create a {{ CLEARINGHOUSE }} account quickly if logging in
+  with a OpenID/OAuth account that has not yet been linked with a {{ TESTBED }} {{ CLEARINGHOUSE }}
   account.
 
 <Extends>
@@ -34,7 +34,7 @@
 {% endcomment %}
 
 {% block title %}
-Auto Register - Clearinghouse
+Auto Register - {{ CLEARINGHOUSE }}
 {% endblock title %}
 
 {% block script %}
@@ -51,9 +51,9 @@ Auto Register - Clearinghouse
     <div id="main">
 		<div id="middle">		
 		  <div id="learn-about-seattle">
-		    This {{backend}} account is not linked with a Seattle Clearinghouse account so we're creating one for you.  Already a user? <a href="{% url login %}">Login</a>
+		    This {{backend}} account is not linked with a Seattle Clearinghouse account so we're creating one for you.  Already a user? <a href="{% url 'login' %}">Login</a>
 		  </div>
-<form action="{% url auto_register %}" method="POST"> 
+<form action="{% url 'auto_register' %}" method="POST"> 
  {% if username_form.errors %}
 		  <p class="warning2">
 		  Please correct the following:</p>

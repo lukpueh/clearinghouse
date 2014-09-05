@@ -13,12 +13,12 @@
   the database. It will result in inactive and broken nodes or vessels needing
   release/cleanup being marked as such in the database.
   
-  This is the only place in seattlegeni where we ensure that nodes that have
+  This is the only place in clearinghouse where we ensure that nodes that have
   gone offline and no longer advertise get marked as inactive in the database.
   
   This script will not directly result in any state-changing nodemanager
   communication (only node information querying). It uses the check_node()
-  function in the seattlegeni.common.util.nodestatus module, which means
+  function in the clearinghouse.common.util.nodestatus module, which means
   that only the database will be directly modified.
 """
 
@@ -29,16 +29,16 @@ import sys
 import time
 import traceback
 
-from seattlegeni.common.api import lockserver
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import lockserver
+from clearinghouse.common.api import maindb
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util import nodestatus
+from clearinghouse.common.util import nodestatus
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
 
 
 
@@ -87,7 +87,7 @@ def main():
         # because it's not as big of a concern to have a broken node that is
         # quickly offline (e.g. broken nodes in development), but having one be
         # online for an extended period of time is a stronger signal of
-        # potentially unknown bugs in the seattlegeni or seattle code.
+        # potentially unknown bugs in the clearinghouse or seattle code.
         active_nodes = maindb.get_active_nodes_include_broken()
         log.info("Starting check of " + str(len(active_nodes)) + " active nodes.")
       

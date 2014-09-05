@@ -22,10 +22,10 @@
   Note: AssertionError is a python built-in exception.
 """
 
-from seattlegeni.website.control.models import Donation
-from seattlegeni.website.control.models import GeniUser
-from seattlegeni.website.control.models import Node
-from seattlegeni.website.control.models import Vessel
+from clearinghouse.website.control.models import Donation
+from clearinghouse.website.control.models import GeniUser
+from clearinghouse.website.control.models import Node
+from clearinghouse.website.control.models import Vessel
 
 
 
@@ -145,7 +145,7 @@ def assert_vessel(value):
   
 
 
-# Many modules are using the line 'from seattlegeni.common.util.assertions import *'
+# Many modules are using the line 'from clearinghouse.common.util.assertions import *'
 # to import the assertions. We define __all__ so that we only export names from
 # this module that start with the "assert_". This prevents us from exporting anything
 # we happened to import as well as any non-private helper functions that may get

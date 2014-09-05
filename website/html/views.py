@@ -44,33 +44,36 @@ from django.template import RequestContext
 # we check the request type inside the view function.
 from django.views.decorators.http import require_POST
 
-from django.views.generic.simple import direct_to_template
-from django.views.generic.simple import redirect_to
-
 # Make available all of our own standard exceptions.
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
 # This is the logging decorator use use.
-from seattlegeni.common.util.decorators import log_function_call
-from seattlegeni.common.util.decorators import log_function_call_without_return
+from clearinghouse.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call_without_return
 
 # For user registration input validation
-from seattlegeni.common.util import validations
+from clearinghouse.common.util import validations
 
-from seattlegeni.common.util import log
+from clearinghouse.common.util import log
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
+# FIXME: this patches the portability safe_type declaration, there might be a 
+# cleaner way of doing this. We rely in the backup made by the safe module to
+# reload type here.
+import safe
+__builtins__['type'] = safe._type
+
+from clearinghouse.website import settings
 
 # All of the work that needs to be done is passed through the controller interface.
-from seattlegeni.website.control import interface
+from clearinghouse.website.control import interface
 
-from seattlegeni.website.html import forms
+from clearinghouse.website.html import forms
 
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
-
+rsa = dy_import_module("rsa.r2py")
 
 
 
@@ -97,7 +100,7 @@ def _state_key_file_to_publickey_string(key_file_name):
   a key string format.
   """
   fullpath = os.path.join(settings.SEATTLECLEARINGHOUSE_STATE_KEYS_DIR, key_file_name)
-  return rsa_publickey_to_string(rsa_file_to_publickey(fullpath))
+  return rsa.rsa_publickey_to_string(rsa.rsa_file_to_publickey(fullpath))
 
 
 
@@ -277,7 +280,7 @@ def profile(request, info="", error_msg="", messages=""):
   #port_range_min = port_range[0]
   #port_range_max = port_range[-1]
   
-  return direct_to_template(request, 'control/profile.html',
+  return render_to_response('cotrol/profile.html',
                             {'email_form' : email_form,
                              'affiliation_form' : affiliation_form,
                              'password_form' : password_form,
@@ -291,7 +294,8 @@ def profile(request, info="", error_msg="", messages=""):
                              #'port_range_max' : port_range_max,
                              'info' : info,
                              'error_msg' : error_msg,
-                             'messages' : messages})
+                             'messages' : messages},
+                            context_instance=RequestContext(request))
 
 
 
@@ -343,7 +347,9 @@ def register(request):
                              {'msg' : "Username %s has been successfully registered." % (user.username)})
   else:
     form = forms.GeniUserCreationForm()
-  return direct_to_template(request, 'accounts/register.html', {'form' : form, 'page_top_errors' : page_top_errors })
+  return render_to_response('accounts/register.html', 
+          {'form' : form, 'page_top_errors' : page_top_errors},
+          context_instance=RequestContext(request))
   
 
 
@@ -389,7 +395,8 @@ def _show_login(request, ltemplate, template_dict, form=None):
         #if not request.session.test_cookie_worked():
         request.session.set_test_cookie()
     template_dict['form'] = form
-    return direct_to_template(request, ltemplate, template_dict)
+    return render_to_response(ltemplate, template_dict, 
+            context_instance=RequestContext(request))
   
   
   
@@ -448,14 +455,16 @@ def help(request):
   except LoggedInButFailedGetGeniUserError:
     return _show_failed_get_geniuser_page(request)
   
-  return direct_to_template(request, 'control/help.html', {'username': user.username})
+  return render_to_response('control/help.html', {'username': user.username},
+          context_instance=RequestContext(request))
 
 
 
 
 
 def accounts_help(request):
-  return direct_to_template(request, 'accounts/help.html', {})
+  return render_to_response('accounts/help.html', {}, 
+          context_instance=RequestContext(request))
 
 
 
@@ -478,13 +487,14 @@ def mygeni(request):
     over_vessel_credits = 0
   
   # total_vessel_credits, percent_total_used, avail_vessel_credits
-  return direct_to_template(request, 'control/mygeni.html',
+  return request_ro_response('control/mygeni.html',
                             {'username' : user.username,
                              'total_vessel_credits' : total_vessel_credits,
                              'used_vessel_credits' : num_acquired_vessels,
                              'percent_total_used' : percent_total_used,
                              'avail_vessel_credits' : avail_vessel_credits,
-                             'over_vessel_credits' : over_vessel_credits})
+                             'over_vessel_credits' : over_vessel_credits},
+                            context_instance=RequestContext(request))
 
 
 
@@ -527,7 +537,7 @@ def myvessels(request, get_form=False, action_summary="", action_detail="", remo
       vessel["expires_in"] = "%dd %dh %dm" % (days, hours, minutes)
 
   # return the used resources page constructed from a template
-  return direct_to_template(request, 'control/myvessels.html',
+  return render_to_response('control/myvessels.html',
                             {'username' : user.username,
                              'num_vessels' : len(my_vessels),
                              'my_vessels' : my_vessels,
@@ -539,7 +549,8 @@ def myvessels(request, get_form=False, action_summary="", action_detail="", remo
                              'my_max_vessels' : my_max_vessels, 
                              'free_vessel_credits' : my_free_vessel_credits,
                              'total_vessel_credits' : my_total_vessel_credits,
-                             'remove_summary' : remove_summary})
+                             'remove_summary' : remove_summary},
+                        context_instane=RequestContext(request))
 
 
 
@@ -554,9 +565,10 @@ def getdonations(request):
   
   domain = "https://" + request.get_host()
   
-  return direct_to_template(request, 'control/getdonations.html',
+  return render_to_response('control/getdonations.html',
                             {'username' : user.username,
-                             'domain' : domain})
+                             'domain' : domain},
+                            context_instance=RequestContext(request))
 
 
 
@@ -589,7 +601,7 @@ def get_resources(request):
     except UnableToAcquireResourcesError, err:
       action_summary = "Unable to acquire vessels at this time."
       if str(err) == 'Acquiring NAT vessels is currently disabled. ':
-        link = """<a href="https://seattle.cs.washington.edu/blog">blog</a>"""
+        link = """<a href="{{ TESTBED_URL }}}blog">blog</a>"""
         action_detail += str(err) + 'Please check our '+ link  +' to see when we have re-enabled NAT vessels.'
       else:
         action_detail += str(err)
@@ -758,9 +770,10 @@ def change_key(request):
     return _show_failed_get_geniuser_page(request)
   info = ""
   if request.method == 'GET':
-    return direct_to_template(request, 'control/change_key.html',
+    return render_to_response('control/change_key.html',
                               {'username' : user.username,
-                               'error_msg' : ""})
+                               'error_msg' : ""},
+                              context_instance=RequestContext(request))
 
   # This is a POST, so figure out if a file was uploaded or if we are supposed
   # to generate a new key for the user.
@@ -774,18 +787,13 @@ def change_key(request):
     if file is None:
       msg = "You didn't select a public key file to upload." 
       return profile(request, info, msg)
-      #return direct_to_template(request, 'control/change_key.html',
-      #                          {'username' : user.username,
-      #                           'error_msg' : msg})
+
     
     if file.size == 0 or file.size > forms.MAX_PUBKEY_UPLOAD_SIZE:
       msg = "Invalid file uploaded. The file size limit is " 
       msg += str(forms.MAX_PUBKEY_UPLOAD_SIZE) + " bytes."
       return profile(request, info, msg) 
-      #direct_to_template(request, 'control/change_key.html',
-      #                          {'username' : user.username,
-      #                           'error_msg' : msg})
-    
+          
     pubkey = file.read()
     
     try:
@@ -793,9 +801,6 @@ def change_key(request):
     except ValidationError:
       msg = "Invalid public key uploaded."
       return profile(request, info, msg)
-      #direct_to_template(request, 'control/change_key.html',
-      #                          {'username' : user.username,
-      #                           'error_msg' : msg})
     
     # If we made it here, the uploaded key is good.
     interface.change_user_keys(user, pubkey=pubkey)
@@ -814,29 +819,22 @@ def api_info(request):
     return _show_failed_get_geniuser_page(request)
   
   if request.method == 'GET':
-    return direct_to_template(request, 'control/api_info.html',
+    return render_to_response('control/api_info.html',
                               {'username' : user.username,
                                'api_key' : user.api_key,
-                               'msg' : ""})
+                               'msg' : ""},
+                              context_instance=RequestContext(request))
 
   # This is a POST, so it should be generation of an API key.
   if not request.POST.get('generate_api_key', False):
     msg = "Sorry, we didn't understand your request."
     return profile(request, info, msg) 
-    #direct_to_template(request, 'control/api_info.html',
-    #                          {'username' : user.username,
-    #                           'api_key' : user.api_key,
-    #                           'msg' : msg})
     
   interface.regenerate_api_key(user)
   msg = "Your API key has been regenerated. Your old one will no longer work."
   msg += " You should update any places you are using the API key"
   msg += " (e.g. in programs using the XML-RPC client)."
   return profile(request,msg)
-  #direct_to_template(request, 'control/api_info.html',
-  #                         {'username' : user.username,
-  #                           'api_key' : user.api_key,
-  #                           'msg' : msg})
 
 
 
@@ -871,7 +869,8 @@ def priv_key(request):
     return _show_failed_get_geniuser_page(request)
   
   response = HttpResponse(user.user_privkey, mimetype='text/plain')
-  response['Content-Disposition'] = 'attachment; filename=' + str(user.username) + '.privatekey'
+  response['Content-Disposition'] = 'attachment; filename=' + \
+          str(user.username) + '.privatekey'
   return response
 
 
@@ -887,7 +886,8 @@ def pub_key(request):
     return _show_failed_get_geniuser_page(request)
   
   response = HttpResponse(user.user_pubkey, mimetype='text/plain')
-  response['Content-Disposition'] = 'attachment; filename=' + str(user.username) + '.publickey'
+  response['Content-Disposition'] = 'attachment; filename=' + \
+            str(user.username) + '.publickey'
   return response
 
 
@@ -912,7 +912,8 @@ def download(request, username):
   # information in the URL.   
   #templatedict['android_installer_link'] = urllib.quote(urllib.quote(domain,safe=''),safe='')
 
-  return direct_to_template(request, 'download/installers.html', templatedict)
+  return render_to_response('download/installers.html', templatedict,
+          context_instance=RequestContext(request))
 
 
 
@@ -1128,7 +1129,8 @@ def _build_installer(username, platform):
 
 
 def donations_help(request, username):
-  return direct_to_template(request, 'download/help.html', {'username' : username})
+  return render_to_response('download/help.html', {'username' : username},
+          context_instance=RequestContext(request))
 
 
 

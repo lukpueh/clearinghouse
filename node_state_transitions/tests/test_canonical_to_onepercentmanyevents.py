@@ -15,20 +15,20 @@
   Aug 21, 2009
 """
 
-# The seattlegeni testlib must be imported first.
-from seattlegeni.tests import testlib
+# The clearinghouse testlib must be imported first.
+from clearinghouse.tests import testlib
 
-from seattlegeni.node_state_transitions import node_transition_lib
-from seattlegeni.node_state_transitions import transition_canonical_to_onepercentmanyevents
+from clearinghouse.node_state_transitions import node_transition_lib
+from clearinghouse.node_state_transitions import transition_canonical_to_onepercentmanyevents
 
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import maindb
 
-from seattlegeni.node_state_transitions.tests import mockutil
+from clearinghouse.node_state_transitions.tests import mockutil
 
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 
 
@@ -41,7 +41,7 @@ vessels_dict[mockutil.extra_vessel_name] = {"userkeys" : [node_transition_lib.ca
                                    "ownerinfo" : "",
                                    "status" : "",
                                    "advertise" : True}
-vessels_dict["vessel_non_seattlegeni"] = {"userkeys" : [node_transition_lib.canonicalpublickey],
+vessels_dict["vessel_non_clearinghouse"] = {"userkeys" : [node_transition_lib.canonicalpublickey],
                                    "ownerkey" : mockutil.donor_key,
                                    "ownerinfo" : "",
                                    "status" : "",
@@ -229,7 +229,7 @@ def run_moving2onepercent_to_canonical_test():
   for i in range(9):
     vessels_dict["vessel"+str(i)]={}
     vessels_dict["vessel"+str(i)]["userkeys"] = []
-    vessels_dict["vessel"+str(i)]["ownerkey"] = rsa_string_to_publickey(node.owner_pubkey)
+    vessels_dict["vessel"+str(i)]["ownerkey"] = rsa.rsa_string_to_publickey(node.owner_pubkey)
     vessels_dict["vessel"+str(i)]["ownerinfo"] = ""
     vessels_dict["vessel"+str(i)]["status"] = ""
     vessels_dict["vessel"+str(i)]["advertise"] = True
@@ -239,7 +239,7 @@ def run_moving2onepercent_to_canonical_test():
 
 
   vessels_dict[mockutil.extra_vessel_name]["userkeys"] = [node_transition_lib.movingtoonepercentmanyeventspublickey]
-  vessels_dict[mockutil.extra_vessel_name]["ownerkey"] = rsa_string_to_publickey(node.owner_pubkey)
+  vessels_dict[mockutil.extra_vessel_name]["ownerkey"] = rsa.rsa_string_to_publickey(node.owner_pubkey)
 
   mockutil.mock_nodemanager_get_node_info(mockutil.nodeid_key, "10.0test", vessels_dict)
   mockutil.mock_backend_set_vessel_owner_key()

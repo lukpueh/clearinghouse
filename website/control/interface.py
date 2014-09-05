@@ -26,7 +26,7 @@
 <Notes>
   * All references to user here are to our GeniUser model, not to the django user.
   
-  * The functions that modify the seattlegeni database or perform actions on
+  * The functions that modify the clearinghouse database or perform actions on
     nodes all do an extra check to ensure the user is valid after obtaining a
     user lock. This is to ensure that user has not been deleted and to see other
     changes to the user that were made between the time that the request was
@@ -43,25 +43,25 @@ import datetime
 
 import django.contrib.auth
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.api import backend
-from seattlegeni.common.api import keygen
-from seattlegeni.common.api import lockserver
-from seattlegeni.common.api import maindb
+from clearinghouse.common.api import backend
+from clearinghouse.common.api import keygen
+from clearinghouse.common.api import lockserver
+from clearinghouse.common.api import maindb
 
-from seattlegeni.common.util import validations
+from clearinghouse.common.util import validations
 
-from seattlegeni.common.util.assertions import *
+from clearinghouse.common.util.assertions import *
 
-from seattlegeni.common.util.action_log_decorators import log_action
+from clearinghouse.common.util.action_log_decorators import log_action
 
-from seattlegeni.common.util.decorators import log_function_call
-from seattlegeni.common.util.decorators import log_function_call_and_only_first_argument
-from seattlegeni.common.util.decorators import log_function_call_without_arguments
-from seattlegeni.common.util.decorators import log_function_call_without_return
+from clearinghouse.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call_and_only_first_argument
+from clearinghouse.common.util.decorators import log_function_call_without_arguments
+from clearinghouse.common.util.decorators import log_function_call_without_return
 
-from seattlegeni.website.control import vessels
+from clearinghouse.website.control import vessels
 
 
 
@@ -1182,7 +1182,7 @@ def get_vessel_infodict_list(vessel_list):
     which is safe for public display.
     
     This function needs to return lists of dictionaries with a minimum of the
-    following, according to https://seattle.cs.washington.edu/wiki/SeattleGeniAPI:
+    following, according to https://seattle.poly.edu/wiki/SeattleGeniApi:
       {'node_ip':node_ip, 'node_port':node_port, 'vessel_id':vessel_id, 
       'node_id':node_id, 'handle':handle}
   <Arguments>

@@ -40,26 +40,26 @@ import django.db
 
 # The config module contains the authcode that is required for performing
 # privileged operations.
-import seattlegeni.backend.config
+import clearinghouse.backend.config
 
-from seattlegeni.common.api import keydb
-from seattlegeni.common.api import keygen
+from clearinghouse.common.api import keydb
+from clearinghouse.common.api import keygen
 # The lockserver is needed by the vessel cleanup thread.
-from seattlegeni.common.api import lockserver
-from seattlegeni.common.api import maindb
-from seattlegeni.common.api import nodemanager
+from clearinghouse.common.api import lockserver
+from clearinghouse.common.api import maindb
+from clearinghouse.common.api import nodemanager
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.common.util import log
-from seattlegeni.common.util import parallel
+from clearinghouse.common.util import log
+from clearinghouse.common.util import parallel
 
-from seattlegeni.common.util.assertions import *
+from clearinghouse.common.util.assertions import *
 
-from seattlegeni.common.util.decorators import log_function_call
-from seattlegeni.common.util.decorators import log_function_call_without_first_argument
+from clearinghouse.common.util.decorators import log_function_call
+from clearinghouse.common.util.decorators import log_function_call_without_first_argument
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
 
 
 # The port that we'll listen on.
@@ -126,7 +126,7 @@ def _assert_number_of_arguments(functionname, args, exact_number):
 
 
 def _assert_valid_authcode(authcode):
-  if authcode != seattlegeni.backend.config.authcode:
+  if authcode != clearinghouse.backend.config.authcode:
     raise InvalidRequestError("The provided authcode (" + authcode + ") is invalid.")
 
 

@@ -34,20 +34,20 @@
 
 import os
 
-from seattlegeni.common.api import lockserver
-from seattlegeni.common.api import maindb
-from seattlegeni.common.api import nodemanager
+from clearinghouse.common.api import lockserver
+from clearinghouse.common.api import maindb
+from clearinghouse.common.api import nodemanager
 
-from seattlegeni.common.util import log as log_module
+from clearinghouse.common.util import log as log_module
 
-from seattlegeni.common.exceptions import *
+from clearinghouse.common.exceptions import *
 
-from seattlegeni.website import settings
+from clearinghouse.website import settings
 
 from seattle.repyportability import *
 add_dy_support(locals())
 
-dy_import_module_symbols("rsa.r2py")
+rsa = dy_import_module("rsa.r2py")
 
 
 # Restore the log module as repy's log function is copied into our
@@ -86,7 +86,7 @@ statekeyfiles = {"acceptdonation" : "acceptdonation.publickey",
 statekeys = {}
 for keyname in statekeyfiles:
   keyfilefullpath = os.path.join(settings.SEATTLECLEARINGHOUSE_STATE_KEYS_DIR, statekeyfiles[keyname])
-  statekeys[keyname] = rsa_string_to_publickey(_readfilecontents(keyfilefullpath))
+  statekeys[keyname] = rsa.rsa_string_to_publickey(_readfilecontents(keyfilefullpath))
 
 
 
@@ -310,7 +310,7 @@ def check_node(node, readonly=True, lockserver_handle=None):
       return
     
     try:
-      nodekey_str = rsa_publickey_to_string(nodeinfo["nodekey"])
+      nodekey_str = rsa.rsa_publickey_to_string(nodeinfo["nodekey"])
     except ValueError:
       _mark_node_broken(readonly, node)
       _report_node_problem(node, "Invalid nodekey: " + str(nodeinfo["nodekey"]))
@@ -393,7 +393,7 @@ def check_node(node, readonly=True, lockserver_handle=None):
       vessel_ownerkey = nodeinfo["vessels"][actualvesselname]["ownerkey"]
       
       try:
-        vessel_ownerkey_str = rsa_publickey_to_string(vessel_ownerkey)
+        vessel_ownerkey_str = rsa.rsa_publickey_to_string(vessel_ownerkey)
       except ValueError:
         # At this point we aren't sure it's our node, but let's assume that if
         # there's an invalid key then the node is broken, period.
@@ -419,7 +419,7 @@ def check_node(node, readonly=True, lockserver_handle=None):
       vesselinfo = nodeinfo["vessels"][vessel.name]
   
       try:
-        vessel_ownerkey_str = rsa_publickey_to_string(vesselinfo["ownerkey"])
+        vessel_ownerkey_str = rsa.rsa_publickey_to_string(vesselinfo["ownerkey"])
       except ValueError:
         _mark_node_broken(readonly, node)
         _report_node_problem(node, "Invalid vessel ownerkey on a vessel in our db: " + str(vessel_ownerkey))
@@ -446,7 +446,7 @@ def check_node(node, readonly=True, lockserver_handle=None):
                               str(len(vesselinfo["userkeys"])) + " user keys, but we expected " + str(len(users_with_access)))
           
         for user in users_with_access:
-          if rsa_string_to_publickey(user.user_pubkey) not in vesselinfo["userkeys"]:
+          if rsa.rsa_string_to_publickey(user.user_pubkey) not in vesselinfo["userkeys"]:
             _release_vessel(readonly, vessel)
             _report_node_problem(node, "The vessel '" + vessel.name + "' doesn't have the userkey for user " + user.username + ".")
 
