@@ -18,6 +18,7 @@ DEPENDENCIES/common/utf/*
 DEPENDENCIES/common/seattleclearinghouse_xmlrpc.py
 DEPENDENCIES/affix/*
 DEPENDENCIES/affix/components/*
+DEPENDENCIES/nodemanager/runonce.py
 
 # Needed so we can create state transition keys
 ./node_state_transitions/generate_state_keys.sh
