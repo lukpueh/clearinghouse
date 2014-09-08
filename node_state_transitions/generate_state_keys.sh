@@ -1,5 +1,5 @@
 #!/bin/bash
-# 098765432109876543210987654321098765432109876543210987654321098765432109876543
+#
 # generate_state_keys.sh -- Generate the seven state keys required by the 
 #   Seattle Clearinghouse backend. For details please see
 #   https://seattle.poly.edu/wiki/SeattleBackend and
