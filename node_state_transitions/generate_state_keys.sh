@@ -17,6 +17,8 @@
 #  (2) The generatekeys.py script from Seattle's softwareupdater, see
 #      https://github.com/SeattleTestbed/softwareupdater/
 
+# TODO: Error handling, e.g. when the target path doesn't exist.
+
 echo Generating state keys into directory "$1"
 
 for STATE_NAME in acceptdonation movingto_canonical canonical movingto_onepercentmanyevents onepercentmanyevents movingto_twopercent twopercent ; 
