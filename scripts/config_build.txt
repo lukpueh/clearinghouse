@@ -20,7 +20,7 @@ DEPENDENCIES/affix/*
 DEPENDENCIES/affix/components/*
 
 # Needed so we can create state transition keys
-DEPENDENCIES/clearinghouse/node_state_transitions/generate_state_keys.sh
+./node_state_transitions/generate_state_keys.sh
 DEPENDENCIES/softwareupdater/generatekeys.py
 
 # Tests
