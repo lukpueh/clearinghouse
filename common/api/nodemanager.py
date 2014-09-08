@@ -56,7 +56,7 @@ add_dy_support(locals())
 ###### code to enable affixes #########
 affix_stack = dy_import_module('affix_stack.r2py')
 
-affix_obj = AffixStack('(CoordinationAffix)(NamingAndResolverAffix)')
+affix_obj = affix_stack.AffixStack('(CoordinationAffix)(NamingAndResolverAffix)')
 
 openconnection = affix_obj.openconnection
 
