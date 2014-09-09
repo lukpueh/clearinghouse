@@ -100,7 +100,7 @@ def main():
 
   # Create the directory we will deploy to.
   print("Creating directory {0}".format(deployroot))
-  os.mkdir(deployroot)
+  os.makedirs(deployroot)
 
   # Copy over the clearinghouse files from the repository to the deploy
   # directory.
