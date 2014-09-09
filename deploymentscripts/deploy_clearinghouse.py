@@ -69,9 +69,10 @@ def main():
   if not len(sys.argv) == 3:
     exit_with_message(2, 
             "Usage: python deploy_clearinghouse.py <path/to/clearinghouse/repo <dir/to/deploy/to>")
-  
-  repodir = sys.argv[1]
-  deployroot = sys.argv[2]
+
+  # Use absolute paths to avoid ambiguity in os.makedirs below
+  repodir = os.path.realpath(sys.argv[1])
+  deployroot = os.path.realpath(sys.argv[2])
   
   if not os.path.isdir(repodir):
     exit_with_message(1, 
