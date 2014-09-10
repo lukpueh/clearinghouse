@@ -550,7 +550,7 @@ def myvessels(request, get_form=False, action_summary="", action_detail="", remo
                              'free_vessel_credits' : my_free_vessel_credits,
                              'total_vessel_credits' : my_total_vessel_credits,
                              'remove_summary' : remove_summary},
-                        context_instane=RequestContext(request))
+                        context_instance=RequestContext(request))
 
 
 
