@@ -18,14 +18,17 @@
 #    SIGTERM to this process.
 
 # The user account hosting and running the clearinghouse Django app
-CLEARINGHOUSE_USER=clearinghouse
+CLEARINGHOUSE_USER=ch
 
 # The directory deployed to by deploymentscripts/deploy_clearinghouse.sh
-CLEARINGHOUSE_DIR="/home/clearinghouse/deployment/clearinghouse"
+CLEARINGHOUSE_DIR="/home/ch/deployment/clearinghouse"
+
+# The path to the RepyV2 runtime
+REPY_RUNTIME_DIR="$CLEARINGHOUSE_DIR/../seattle"
 
 # PYTHONPATH takes the deployed clearinghouse's parent dir, and the path to 
 # the RepyV2 runtime.
-export PYTHONPATH="$CLEARINGHOUSE_DIR/..:$CLEARINGHOUSE_DIR/../seattle"
+export PYTHONPATH="$CLEARINGHOUSE_DIR/..:$REPY_RUNTIME_DIR"
 
 export DJANGO_SETTINGS_MODULE="clearinghouse.website.settings"
 
@@ -81,7 +84,7 @@ sleep 1 # Wait a moment to make sure it has started (lockserver is used by other
 
 echo "Starting backend."
 # We use dylink to enable affixes.  Dylink only imports from the current directory...
-cd $CLEARINGHOUSE_DIR/backend/ && $SUDO_CMD python backend_daemon.py >>$LOG_DIR/backend.log 2>&1 &
+cd $REPY_RUNTIME_DIR && $SUDO_CMD python $CLEARINGHOUSE_DIR/backend/backend_daemon.py >>$LOG_DIR/backend.log 2>&1 &
 sleep 1 # Wait a moment to make sure it has started (backend is used by other components).
 
 echo "Gracefully restarting Apache."
@@ -89,7 +92,7 @@ apache2ctl graceful
 
 echo "Starting check_active_db_nodes.py."
 # We use dylink to enable affixes.  Dylink only imports from the current directory...
-cd $CLEARINGHOUSE_DIR/polling/ && $SUDO_CMD python check_active_db_nodes.py >>$LOG_DIR/check_active_db_nodes.log 2>&1 &
+cd $REPY_RUNTIME_DIR && $SUDO_CMD python $CLEARINGHOUSE_DIR/polling/check_active_db_nodes.py >>$LOG_DIR/check_active_db_nodes.log 2>&1 &
 sleep 1 # We need to wait for each process to start before beginning the next
         # because repyhelper has an issue with concurrent file access. 
         # (OBSOLETE?)
@@ -100,7 +103,7 @@ sleep 1 # We need to wait for each process to start before beginning the next
 for TRANSITION_NAME in transition_donation_to_canonical transition_canonical_to_twopercent transition_twopercent_to_twopercent transition_onepercentmanyevents_to_canonical ;
   do echo "Starting transition script $TRANSITION_NAME"
   # We use dylink to enable affixes.  Dylink only imports from the current directory...
-  cd $CLEARINGHOUSE_DIR/node_state_transitions/ && $SUDO_CMD python $TRANSITION_NAME.py >>$LOG_DIR/$TRANSITION_NAME.log 2>&1 &
+  cd $REPY_RUNTIME_DIR && $SUDO_CMD python $CLEARINGHOUSE_DIR/node_state_transitions/$TRANSITION_NAME.py >>$LOG_DIR/$TRANSITION_NAME.log 2>&1 &
   sleep 1
 done
 
