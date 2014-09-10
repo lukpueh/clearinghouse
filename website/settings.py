@@ -240,7 +240,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
   # backends holds the list of backend names supported.  Each value is grouped by backend type openid, oauth2 and oauth
   'social_auth.context_processors.social_auth_by_type_backends',
   # Add context processor for TESTBED etc. tags; configure these below.
-  'website.context_processor.customizable_strings',
+  'clearinghouse.website.context_processor.customizable_strings',
 )
 #  Social_auth follows each of these in order and passes along a object with
 #  information gathered to each function.
