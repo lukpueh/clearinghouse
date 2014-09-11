@@ -32,6 +32,9 @@ log.set_log_level(SEATTLECLEARINGHOUSE_LOG_LEVEL)
 # on the end of the url.
 APPEND_SLASH = False
 
+# Required for mod_wsgi (which replaces mod_python), the Apache Python interface
+WSGI_APPLICATION = "clearinghouse.website.wsgi.application"
+
 # The directory the settings.py file is in is what we consider the root of the website. 
 SEATTLECLEARINGHOUSE_WEBSITE_ROOT = os.path.dirname(__file__)
 

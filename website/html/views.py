@@ -280,7 +280,7 @@ def profile(request, info="", error_msg="", messages=""):
   #port_range_min = port_range[0]
   #port_range_max = port_range[-1]
   
-  return render_to_response('cotrol/profile.html',
+  return render_to_response('control/profile.html',
                             {'email_form' : email_form,
                              'affiliation_form' : affiliation_form,
                              'password_form' : password_form,
@@ -550,7 +550,7 @@ def myvessels(request, get_form=False, action_summary="", action_detail="", remo
                              'free_vessel_credits' : my_free_vessel_credits,
                              'total_vessel_credits' : my_total_vessel_credits,
                              'remove_summary' : remove_summary},
-                        context_instane=RequestContext(request))
+                        context_instance=RequestContext(request))
 
 
 
