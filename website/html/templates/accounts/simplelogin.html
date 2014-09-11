@@ -6,7 +6,7 @@
 <div class="simpleloginoutter">
     <br><h2 style="text-align:left"><b>{{ TESTBED }} {{ CLEARINGHOUSE }} Portal Login:</b></h2>
 	  <div id="simplelogininner">
-		  <form method="post" action="{{ CLEARINGHOUSE_URL }}geni/accounts/login">
+		  <form method="post" action="{{ CLEARINGHOUSE_URL }}geni/accounts/login">{% csrf_token %}
 		  {% if err %}
 		  <p><font color="red">{{ err }}</font></p><br>
 		  {% endif %}

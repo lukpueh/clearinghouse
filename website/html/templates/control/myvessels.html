@@ -106,7 +106,7 @@ donation on your behalf grants 10 vessels.
 				</span>
 			<br/>
 				{% ifnotequal get_form None %}
-				<form method="POST" action="{% url 'get_resources' %}">
+				<form method="post" action="{% url 'get_resources' %}">{% csrf_token %}
 				  <span id="caption">Get more resources</span>
 					<font color="red">	{{ get_form.num.errors }}</font>
 					<font color="red">	{{ get_form.env.errors }}</font>
@@ -139,7 +139,7 @@ donation on your behalf grants 10 vessels.
 				<tr class="odd">
 					{% ifnotequal num_vessels 0 %}
 					  <th>
-					  <form method="POST" action="{% url 'del_all_resources' %}">
+					  <form method="post" action="{% url 'del_all_resources' %}">{% csrf_token %}
 						<input type="submit" value="remove all"> </input>
 					  </form>
 					  </th>
@@ -150,7 +150,7 @@ donation on your behalf grants 10 vessels.
 					<th>Expires In</th>
 					{% ifnotequal num_vessels 0 %}
 					  <th>
-					  <form method="POST" action="{% url 'renew_all_resources' %}">
+					  <form method="post" action="{% url 'renew_all_resources' %}">{% csrf_token %}
 						<input type="submit" value="renew all"> </input>
 					  </form>
 					  </th>
@@ -160,7 +160,7 @@ donation on your behalf grants 10 vessels.
 				{% for vessel in my_vessels %}
   				<tr class="{% cycle 'odd' 'even' %}">
   					<td>
-  					  <form method="POST" action="{% url 'del_resource' %}">
+  					  <form method="post" action="{% url 'del_resource' %}">{% csrf_token %}
   				    	<input type="image" src="{{ MEDIA_URL }}images/delete.png" alt="Remove" />
   				    	<input type="hidden" name="handle" value="{{ vessel.handle }}" />
   					  </form>
@@ -174,7 +174,7 @@ donation on your behalf grants 10 vessels.
   					<td> {{ vessel.vessel_id }} </td>
   					<td> {{ vessel.expires_in }} </td>
   					<td>
-  					  <form method="POST" action="{% url 'renew_resource' %}">
+  					  <form method="post" action="{% url 'renew_resource' %}">{% csrf_token %}
   				    	<input type="image" src="{{ MEDIA_URL }}images/reload.png" alt="Renew" />
   				    	<input type="hidden" name="handle" value="{{ vessel.handle }}" />
   					  </form>

@@ -42,7 +42,7 @@ API Info - {{ TESTBED }} {{ CLEARINGHOUSE }}
 			{% endif %}
 			
 			<div id="apikeygenform">
-			<form action="{% url 'api_info' %}" method="post">
+			<form action="{% url 'api_info' %}" method="post">{% csrf_token %}
 			<input type="hidden" name="generate_api_key" value="yes">
 			<input type="submit" value="Generate a new API key">
 			</form>
