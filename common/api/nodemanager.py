@@ -167,7 +167,7 @@ def get_node_info(ip, port):
     finally:
       nmclient.nmclient_destroyhandle(nmhandle)
     
-  except NMClientException:
+  except nmclient.NMClientException:
     nodestr = str((ip, port))
     message = "Failed to communicate with node " + nodestr + ": "
     raise NodemanagerCommunicationError(message + traceback.format_exc())
@@ -260,7 +260,7 @@ def get_vessel_resources(ip, port, vesselname):
     resourcesdict["usableports"] = _get_vessel_usableports(resourcedata)
     
     
-  except NMClientException:
+  except nmclient.NMClientException:
     nodestr = str((ip, port))
     message = "Failed to communicate with node " + nodestr + ": "
     raise NodemanagerCommunicationError(message + traceback.format_exc())
@@ -520,7 +520,7 @@ def _do_signed_call(privkeystring, nodeid_ip_port_pubkey_tuple, *callargs):
     finally:
       nmclient.nmclient_destroyhandle(nmhandle)
     
-  except NMClientException:
+  except nmclient.NMClientException:
     nodestr = str((nodeid, ip, port))
     message = "NodeManager request failed with node " + nodestr + ": "
     raise NodemanagerCommunicationError(message + traceback.format_exc())
