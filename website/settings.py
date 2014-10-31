@@ -107,9 +107,9 @@ DATABASES = {
         # you can use django.db.backends.sqlite3 instead of mysql. If you
         # decide to do so, you can leave the other fields empty
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'FILL_THIS_IN',
-        'USER': 'FILL_THIS_IN',
-        'PASSWORD': 'FILL_THIS_IN',
+        'NAME': 'clearinghouse',
+        'USER': 'clearinghouse',
+        'PASSWORD': 'clearinghouse',
         'HOST': '',
         'PORT': '',
     }
@@ -122,7 +122,7 @@ if DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
 
 # Make this unique, and don't share it with anybody.
 # Fill this in!
-SECRET_KEY = ''
+SECRET_KEY = 'schwupsdiwups'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -280,12 +280,12 @@ SESSION_COOKIE_AGE = 3600
 # Use session cookies, not persistent cookies.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-TESTBED = 'Seattle'
-TESTBED_URL = 'https://seattle.poly.edu/'
+TESTBED = 'Gramatneusiedl'
+TESTBED_URL = 'https://gramatneusiedl.at/'
 TESTBED_DEVELOPERS_MAIL = 'mailto:seattle-devel@googlegroups.com'
 TESTBED_USERS_MAIL = 'mailto:seattle-devel@googlegroups.com'
 
-CLEARINGHOUSE = 'Clearinghouse'
+CLEARINGHOUSE = 'Marktamt'
 CLEARINGHOUSE_URL = 'https://seattleclearinghouse.poly.edu/'
 
-DEMOKIT = 'Demokit'
+DEMOKIT = 'Koffer'
