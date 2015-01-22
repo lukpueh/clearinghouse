@@ -17,4 +17,4 @@ https://github.com/SeattleTestbed/portability ../DEPENDENCIES/portability
 https://github.com/SeattleTestbed/affix.git ../DEPENDENCIES/affix
 https://github.com/SeattleTestbed/seash.git ../DEPENDENCIES/seash
 https://github.com/SeattleTestbed/resource.git ../DEPENDENCIES/resource
-
+https://github.com/SeattleTestbed/utf ../DEPENDENCIES/utf

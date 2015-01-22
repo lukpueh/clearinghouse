@@ -14,7 +14,7 @@ DEPENDENCIES/seattlelib_v2/*
 DEPENDENCIES/repy_v2/*
 DEPENDENCIES/portability/*
 DEPENDENCIES/common/*
-DEPENDENCIES/common/utf/*
+DEPENDENCIES/utf/*
 DEPENDENCIES/common/seattleclearinghouse_xmlrpc.py
 DEPENDENCIES/affix/*
 DEPENDENCIES/affix/components/*
@@ -25,7 +25,7 @@ DEPENDENCIES/nodemanager/runonce.py
 DEPENDENCIES/softwareupdater/generatekeys.py
 
 # Tests
-test DEPENDENCIES/common/utf/*
+test DEPENDENCIES/utf/*
 test DEPENDENCIES/seattlelib_v2/tests/*
 test DEPENDENCIES/clearinghouse/tests/*
 test DEPENDENCIES/repy_v2/testsV2/*
