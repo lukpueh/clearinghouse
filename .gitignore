@@ -52,3 +52,5 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# State Keys
+node_state_transitions/

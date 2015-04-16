@@ -1,0 +1,103 @@
+{% extends "accounts/accounts_base.html" %}
+
+{% comment %}
+<Program>
+  accounts/home.html
+
+<Author>
+  Originally by?:
+  Justin Samuel 2009
+
+  Modified:
+  Sai Kaushik Borra 2015
+
+<Purpose>
+  Django template file for {{ TESTBED }} {{ CLEARINGHOUSE }}'s 'home' page.  This home page
+  is for non-logged in users only.
+
+<Extends>
+  accounts/accounts_base.html
+
+<Stylesheet>
+  common.css
+  account.css
+  help.css
+
+<Scripts>
+  jquery.js
+
+<Template Variables>
+  None
+
+{% endcomment %}
+
+{% block style %}
+{{ block.super }}
+<link href="{{ MEDIA_URL }}css/help.css" rel="stylesheet" type="text/css" />
+{% endblock style %}
+
+{% block title %}
+home - {{ CLEARINGHOUSE }}
+{% endblock title %}
+
+{% block nav_home %}
+<td class="active"><a href="{% url 'home' %}">Home</a></td>
+{% endblock nav_home %}
+
+{% block content %}
+	<div id="main">
+		<div id="middle">
+			<!--<div id="toc">-->
+				<!--<h3>Table of Contents</h3>-->
+				<!--<ul>-->
+					<!--<li><a href="#introduction" title="What is {{ CLEARINGHOUSE }}">What is {{ CLEARINGHOUSE }}</a></li>-->
+					<!--<li><a href="#register" title="How to Register">How to Register</a></li>-->
+					<!--<li><a href="#login" title="How to Login">How to Login</a></li>-->
+					<!--<li><a href="#passwords" title="Lost passwords">Lost passwords</a></li>-->
+					<!--<li><a href="#contact" title="Who to contact">Who to contact for more help</a></li>-->
+				<!--</ul>-->
+			<!--</div>-->
+			<h2>Project Overview</h2>
+
+			<p>
+			  The Sensibility Testbed enables researchers to use the sensing capabilities of smartphones and tablets.  Researchers use the platform to conduct their own experiments by gathering sensor data from mobile devices such as smartphones and tablets. Sensor data is gathered from devices that have been made available by people interested in helping the Sensibility community conduct research to improve the security of mobile devices and better understand these systems and their users. The Sensibility Clearinghouse is maintained by the Sensibility Testbed Consortium, a group of researchers and computer scientists who design and develop the Testbed. Researchers register their experiments on the Clearinghouse pages (this website) and Consortium members moderate these experiments to ensure that shared sensors are used in ways that protect device owners’ privacy.
+                </p>
+            <p>
+                The Clearinghouse pages provide information for both researchers and device owners to learn more about the Sensibility Testbed.
+			</p>
+
+            <p>
+                <strong>Information for Researchers</strong> <br/>
+                <ul>
+                    <li><a href="">Terms of use for researchers</a></li>
+                    <li><a href="IRBnuts">IRB in a nutshell</a></li>
+                </ul>
+
+            </p>
+
+            <p>
+                <strong>Information for Device Owners</strong> <br/>
+                <ul>
+                    <li><a href="">Terms of participation / consent for device owners</a></li>
+                    <li><a href="">Technical Information of Interest to Device Owners</a></li>
+                </ul>
+
+            </p>
+
+            <hr/>
+
+            <p>
+            <center>
+                <a href="">To get the Sensibility Testbed App</a>
+                &nbsp; | &nbsp;
+                <a href="">To register an experiment</a>
+            </center>
+            </p>
+
+            {% include "common/footer.html" %}
+
+		</div>
+	</div>
+
+
+{% endblock content %}
