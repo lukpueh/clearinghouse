@@ -2,7 +2,7 @@
 
 {% comment %}
 <Program>
-  accounts/home.html
+  accounts/IRBnuts.html
 
 <Author>
   Originally by?:
@@ -37,7 +37,7 @@
 {% endblock style %}
 
 {% block title %}
-home - {{ CLEARINGHOUSE }}
+IRB in a nutshell - {{ CLEARINGHOUSE }}
 {% endblock title %}
 
 {% block nav_home %}
@@ -47,51 +47,48 @@ home - {{ CLEARINGHOUSE }}
 {% block content %}
 	<div id="main">
 		<div id="middle">
-			<!--<div id="toc">-->
-				<!--<h3>Table of Contents</h3>-->
-				<!--<ul>-->
-					<!--<li><a href="#introduction" title="What is {{ CLEARINGHOUSE }}">What is {{ CLEARINGHOUSE }}</a></li>-->
-					<!--<li><a href="#register" title="How to Register">How to Register</a></li>-->
-					<!--<li><a href="#login" title="How to Login">How to Login</a></li>-->
-					<!--<li><a href="#passwords" title="Lost passwords">Lost passwords</a></li>-->
-					<!--<li><a href="#contact" title="Who to contact">Who to contact for more help</a></li>-->
-				<!--</ul>-->
-			<!--</div>-->
-			<h2>Project Overview</h2>
+
+			<h2>Institutional Review Boards (IRBs) in a Nutshell</h2>
 
 			<p>
-			  The Sensibility Testbed enables researchers to use the sensing capabilities of smartphones and tablets.  Researchers use the platform to conduct their own experiments by gathering sensor data from mobile devices such as smartphones and tablets. Sensor data is gathered from devices that have been made available by people interested in helping the Sensibility community conduct research to improve the security of mobile devices and better understand these systems and their users. The Sensibility Clearinghouse is maintained by the Sensibility Testbed Consortium, a group of researchers and computer scientists who design and develop the Testbed. Researchers register their experiments on the Clearinghouse pages (this website) and Consortium members moderate these experiments to ensure that shared sensors are used in ways that protect device owners’ privacy.
-                </p>
+                <strong>What is an IRB?</strong> <br/>
+			    An institutional review board (IRB) is a committee that has been formally designated to approve, monitor, and
+                review research involving humans (link). Universities and many research organizations have their own IRBs.
+                Each IRB is the designated body within an institution that ensures that researchers follow strict protocols to
+                protect their human subjects from potential harms, and that researchers have in place appropriate procedures that
+                mitigate risks that may surround the research. For example, medical and psychological research has provided major
+                benefits to the public and to individuals, but this research has also moved forward with some risks to both groups and
+                individuals. Virtual research presents new challenges in trying to protect human subjects from potential harms. Prompted
+                in part by past research that engaged in questionable and sometimes quite harmful methods, all research that involves
+                human subjects now requires IRB approval from the researcher’s home or host institution. In general, this is an
+                international standard with national and institutional variations in implementation. We follow U.S. and New York
+                University protocols.
+            </p>
+
             <p>
-                The Clearinghouse pages provide information for both researchers and device owners to learn more about the Sensibility Testbed.
+                <strong>Why does running an experiment on the Sensibility Testbed require IRB approval?</strong> <br/>
+                The Sensibility Testbed gives researchers access to sensors that are embedded on devices that people use and carry with them everyday. Therefore, researchers are required to follow strict protocols to ensure that appropriate steps are taken to protect the privacy and security of device owners and associated data while they participate in research experiments hosted on the Sensibility Testbed.
 			</p>
 
             <p>
-                <strong>Information for Researchers</strong> <br/>
-                <ul>
-                    <li><a href="">Terms of use for researchers</a></li>
-                    <li><a href="">IRB in a nutshell</a></li>
-                </ul>
-
+                Issues that IRBs will be concerned with, for research done using the Sensibility Testbed, include: </p>
+                <ol>
+                    <li>How device owners’ privacy and confidentiality will be protected.</li>
+                    <li>That participants who allow researchers to run experiments on their devices have given properly informed consent.</li>
+                    <li>That participants have the option of leaving the experiment whenever they wish and for any reason.</li>
+                    <li>Assurances that researchers will store the collected data using appropriate protocols that protect research subjects’ privacy, confidentiality, and identities.</li>
+                </ol>
+            <p>
+                When researchers register their experiments through the Clearinghouse, they provide explicit details and we help simplify the IRB submission process by generating text that may be used for your IRB application. The Consortium also technically enforces the limitations and rules specified in your experiment description and IRB approval letter.  This means that, for example, if the IRB approval letter indicates that the experiment only needs to read GPS location once per minute, that experimenter will not be able to read the data more frequently.
             </p>
 
             <p>
-                <strong>Information for Device Owners</strong> <br/>
-                <ul>
-                    <li><a href="">Terms of participation / consent for device owners</a></li>
-                    <li><a href="">Technical Information of Interest to Device Owners</a></li>
-                </ul>
+                <strong>How long will IRB approval take?</strong> <br/>
 
-            </p>
+                Every institution’s IRB is different; therefore it is not possible to predict the timeframe of any experiment’s approval process. However, we do recommend that researchers submit an initial IRB application that is as complete as possible and adheres to the institutions requirements. It may also be helpful to have a preliminary conversation with your IRB officer.
+                <br/>
+                Researchers are welcome to experiment using their own devices while waiting for IRB approval to conduct research using others’ devices. (link)
 
-            <hr/>
-
-            <p>
-            <center>
-                <a href="">To get the Sensibility Testbed App</a>
-                &nbsp; | &nbsp;
-                <a href="">To register an experiment</a>
-            </center>
             </p>
 
             {% include "common/footer.html" %}

@@ -2,7 +2,7 @@
 
 {% comment %}
 <Program>
-  accounts/home.html
+  accounts/about.html
 
 <Author>
   Originally by?:
@@ -37,62 +37,40 @@
 {% endblock style %}
 
 {% block title %}
-home - {{ CLEARINGHOUSE }}
+About - {{ CLEARINGHOUSE }}
 {% endblock title %}
 
 {% block nav_home %}
-<td class="active"><a href="{% url 'home' %}">Home</a></td>
+<td><a href="{% url 'home' %}">Home</a></td>
 {% endblock nav_home %}
 
 {% block content %}
 	<div id="main">
 		<div id="middle">
-			<!--<div id="toc">-->
-				<!--<h3>Table of Contents</h3>-->
-				<!--<ul>-->
-					<!--<li><a href="#introduction" title="What is {{ CLEARINGHOUSE }}">What is {{ CLEARINGHOUSE }}</a></li>-->
-					<!--<li><a href="#register" title="How to Register">How to Register</a></li>-->
-					<!--<li><a href="#login" title="How to Login">How to Login</a></li>-->
-					<!--<li><a href="#passwords" title="Lost passwords">Lost passwords</a></li>-->
-					<!--<li><a href="#contact" title="Who to contact">Who to contact for more help</a></li>-->
-				<!--</ul>-->
-			<!--</div>-->
-			<h2>Project Overview</h2>
 
+			<h2>About the Sensibility Testbed & Consortium</h2>
 			<p>
-			  The Sensibility Testbed enables researchers to use the sensing capabilities of smartphones and tablets.  Researchers use the platform to conduct their own experiments by gathering sensor data from mobile devices such as smartphones and tablets. Sensor data is gathered from devices that have been made available by people interested in helping the Sensibility community conduct research to improve the security of mobile devices and better understand these systems and their users. The Sensibility Clearinghouse is maintained by the Sensibility Testbed Consortium, a group of researchers and computer scientists who design and develop the Testbed. Researchers register their experiments on the Clearinghouse pages (this website) and Consortium members moderate these experiments to ensure that shared sensors are used in ways that protect device owners’ privacy.
-                </p>
+			    The philosophy behind the Sensibility Testbed is to enable researchers to use the sensing capabilities of smartphones and tablets in a way that protects those devices and preserves device owners’ privacy. Researchers conduct experiments by collecting data from mobile devices’ sensors such as accelerometers, GPS, WiFi network interfaces, cameras, etc. By accessing sensors on remotely located devices, researchers can passively gather and measure real-time data that describes real world phenomena rather than lab situations. For example, smartphone accelerometers are able to detect vibrations within the frequency and intensity range of seismic waves, which can improve earthquake detection. WiFi-based location services could be used by researchers to build better indoor navigation applications.
+            </p>
             <p>
-                The Clearinghouse pages provide information for both researchers and device owners to learn more about the Sensibility Testbed.
+                The Sensibility Testbed Consortium manages the Testbed and ensures the security and privacy of device owners (and their devices) who make their mobile devices available to the Sensibility research community. Researchers register their experiments on the Sensibility Clearinghouse and Consortium members moderate all experiments to ensure that shared sensors are used in ways that protect device owners’ privacy. The policies in place to ensure this privacy/security are described more fully at [link to: Terms of Participation, for Device Owners], [link to: Terms of Use for Researchers].
+            </p>
+
+
+
+            <h2>For Additional Information</h2>
+            <p>
+                <a href="mailto:sensibility-testbed-users@googlegroups.com">sensibility-testbed-users@googlegroups.com</a>
 			</p>
 
-            <p>
-                <strong>Information for Researchers</strong> <br/>
-                <ul>
-                    <li><a href="">Terms of use for researchers</a></li>
-                    <li><a href="IRBnuts">IRB in a nutshell</a></li>
-                </ul>
-
-            </p>
-
-            <p>
-                <strong>Information for Device Owners</strong> <br/>
-                <ul>
-                    <li><a href="">Terms of participation / consent for device owners</a></li>
-                    <li><a href="">Technical Information of Interest to Device Owners</a></li>
-                </ul>
-
-            </p>
-
-            <hr/>
-
-            <p>
-            <center>
-                <a href="">To get the Sensibility Testbed App</a>
-                &nbsp; | &nbsp;
-                <a href="">To register an experiment</a>
-            </center>
-            </p>
+            <h2>Consortium Members & Affiliated Institutions</h2>
+                <p>
+                    Justin <br/>
+                    Yanyan <br/>
+                    Albert <br/>
+                    …  <br/>
+                    NYU Poly
+                </p>
 
             {% include "common/footer.html" %}
 

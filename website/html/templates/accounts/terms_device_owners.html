@@ -1,0 +1,118 @@
+{% extends "accounts/accounts_base.html" %}
+
+{% comment %}
+<Program>
+  accounts/terms_device_owners.html
+
+<Author>
+  Originally by?:
+  Sai Kaushik Borra 2015
+
+<Purpose>
+  Django template file for {{ TESTBED }} {{ CLEARINGHOUSE }}'s 'home' page.  This home page
+  is for non-logged in users only.
+
+<Extends>
+  accounts/accounts_base.html
+
+<Stylesheet>
+  common.css
+  account.css
+  help.css
+
+<Scripts>
+  jquery.js
+
+<Template Variables>
+  None
+
+{% endcomment %}
+
+{% block style %}
+{{ block.super }}
+<link href="{{ MEDIA_URL }}css/help.css" rel="stylesheet" type="text/css" />
+{% endblock style %}
+
+{% block title %}
+Terms of  Participation for Device Owners - {{ CLEARINGHOUSE }}
+{% endblock title %}
+
+{% block nav_home %}
+<td class="active"><a href="{% url 'home' %}">Home</a></td>
+{% endblock nav_home %}
+
+{% block content %}
+	<div id="main">
+		<div id="middle">
+			<h2>Terms of  Participation for Device Owners & Consent to Participate</h2>
+
+			<p>
+			  The Sensibility Testbed is a network testbed that enables researchers to use the sensing capabilities of smartphones and tablets and conduct their own experiments by gathering sensor data from mobile devices.  The Sensibility Testbed provides a platform that facilitates research in various areas, by allowing researchers to gather sensor data from other people’s mobile devices. Researchers  can use the collected data to identify opportunities for improving current network protocols or systems and to implement or evaluate new services, algorithms, and new research ideas.
+                </p>
+            <p>
+                Participants are invited to read the page “<a href="">Technical Information for Device Owners</a>” to learn more about the Sensibility Testbed, Consortium, and Clearinghouse.
+			</p>
+
+
+            <h3>Definitions</h3>
+                <ul>
+                    <li><strong>Smartphone sensors</strong> are broadly defined as the hardware components that can record phenomena about the physical world.</li>
+                    <li><strong>Passive experiments</strong> run in the background of a device and do not need user input or interactions.</li>
+                    <li><strong>Device owners or participants</strong> refer to people who have agreed to make their mobile devices available to Sensibility Testbed researchers.</li>
+                    <li><strong>The Sensibility Testbed Consortium</strong> is composed of researchers and programmers, at affiliated institutions, who are responsible for developing and maintaining the testbed and managing the provided services. The Consortium is also responsible for ensuring that researchers adhere to IRB approved parameters for their individual experiments and that device owners are properly informed of the risks/benefits of participating in Sensibility Testbed experiments.
+</li>
+                    <li><strong>The Sensibility Testbed Clearinghouse</strong> is a web-based portal for managing Sensibility Testbed resources. It keeps track of experimenters and mediates experimenter access to available devices. Its key role is to facilitate device sharing, which relieves individual experimenters from having to recruit devices for their experiments. It also sets up and enforces policies for sensor data access to protect device owners’ privacy.</li>
+                </ul>
+
+            <h3>How Device Owners Participate</h3>
+
+                <p>The Sensibility Testbed App can be downloaded from the Google Play Store, as are participants’ informed consent agreements. Device owners who agree to share their devices sign and upload their consent form and may then install the Sensibility Testbed App on their smartphones or tablets. Device owners also</p>
+                <ul>
+                    <li>Volunteer to make their mobile device(s) available to any researcher who has met the Sensibility Testbed Consortium requirements for conducting experiments. Device owners download and install the Sensibility Testbed app after reading and signing the <a href="">consent form</a>.</li>
+                    <li>Have the option to opt out of individual experiments (managed by the Clearinghouse).</li>
+                    <li>Have the option to disable or stop the Sensibility Testbed app at any time, for any reason, and without any repercussions.</li>
+                    <li>Have the option to leave the Sensibility Testbed at any time, for any reason, and without any consequences.</li>
+                </ul>
+
+            <h3>Types of Experiments that Use the Sensibility Testbed</h3>
+
+                <p>Sensors that are accessible to experimenters using the Sensibility Testbed report on environmental data around the device, such as temperature, motion, geographic location, etc, but do not snoop on smartphone or network data. For example, no network packet payload or MAC addresses will be collected through a WiFi interface. Sensors and types of data collected by a researcher may include:</p>
+                <ul>
+                    <li>Accelerometer, magnetometer, gyroscope, orientation sensors; microphones; etc.</li>
+                    <li>Information about batteries, such as plugin type, battery technology and level, etc.;</li>
+                    <li>Device location using GPS, network, or passive location provider (cached location data on the device);</li>
+                    <li>Network information about Bluetooth, cellular and WiFi connections and the connection quality (data rate, signal strength, etc).</li>
+                </ul>
+
+                <p>Researchers use data they collect to improve network protocols, services or systems. For example, transportation agencies can use sensor data to monitor traffic in an area. Application developers can monitor how programs perform in the field. Wireless network researchers can observe public WiFi and cellular network coverage, and use this information to improve public networks. Environmental scientists might use sensor data to report on the noise level in different areas of a city.</p>
+
+            <h3>Types of Data to be Collected</h3>
+                <p>Researchers use the Sensibility Testbed to conduct passive experiments and collect sensor data in order to test new research ideas and evaluate mobile device prototypes. Researchers may collect some or all of the following types of data: device environment variables; information about batteries (plugin type, battery technology and level); device location (using Bluetooth and WiFi); and motion sensors (accelerometers, magnetometers, light, and orientation).</p>
+
+                <p>The Sensibility Testbed app contains an automated tool that filters or blurs sensor data to reduce its precision and frequency. The type and degree of filtering or blurring is determined by a researcher’s experiment context and associated IRB parameters. No information will be collected that precisely identifies a device’s activity or that has as its goal tracing users’ identities, information, or activities.</p>
+
+            <h3>Potential Benefits to Device Owners</h3>
+                <p>Researchers use data they collect to identify opportunities for improving current network protocols or systems and to implement or evaluate new services, algorithms, and new research ideas. For example, transportation agencies can use sensor data to monitor traffic in a specific area or during emergencies and disseminate important messages to the public. Application developers are able to monitor how programs perform in the field, which in turn helps developers improve the usability of their applications. Wireless network researchers can observe public WiFi and cellular network mappings, discover locations that show weak signals, and use this information to improve public networks. Environmental science researchers might use sensor data to report on the noise level in different areas of a city.</p>
+
+
+            <h3>Potential Risks to Device Owners and Their Devices</h3>
+                <p>The risks of participating in this research are minimal for device owners. A researcher’s experiment will run code on the mobile device. To protect device owner’s privacy, the Sensibility Testbed ensures that researchers collect only data that has been approved by the researcher’s IRB. To achieve this, the Sensibility Testbed app employs a filtering technique that restricts or blurs sensor data as it is collected by researchers, according to the specification in the researcher’s IRB.</p>
+
+            <p>The main security risk to devices stems from potential bugs in a program, which could create opportunities for a malicious party to bypass a device's security protections. The Sensibility Testbed app has a sandbox to contain and securely execute experimenters’ code. [see “How We Ensure Devices’ Security” for additional technical information].</p>
+
+
+            <h3>What Researchers Must Do Before Conducting Experiments</h3>
+                <p>Prior to running an experiment on the Sensibility Testbed, a researcher must submit to the Consortium a detailed research plan [link] through the Clearinghouse. The research plan will describe the purpose of the research; the type of data to be collected; how that data will be used, stored, and protected; and how research participants’ (device owners) confidentiality and privacy will be protected. The Clearinghouse provides information to help researchers prepare their Institutional Review Board (IRB) applications. The IRB at the researcher’s home university or research lab will approve the research once they determine that there is no significant privacy risk to participants.</p>
+
+                <p>After receiving IRB approval, researchers register their experiments on the Clearinghouse and request resources (remote mobile devices) to collect data. Following the specific experiment’s specifications and the related IRB documents, the Clearinghouse sets up data filtering policies to be implemented on the requested remote devices; these filters are customized to the specific experiment. This data filtering technique protects device owners and their devices and ensures that researchers will not be able to conduct experiments that extend beyond what their IRB approved. The Sensibility Testbed protocol for research with human subjects has been approved by the IRB at New York University [a link to Consortium’s approval letter or ref #].</p>
+
+            <h3>Future Use and Research Protocol Revisions</h3>
+                <p>We may, in the future, implement modifications to our protocols for data collection and use. All registered device owners will be notified and have the opportunity to accept or decline future participation, based on any new terms, before they take effect.</p>
+
+            {% include "common/footer.html" %}
+
+		</div>
+	</div>
+
+
+{% endblock content %}

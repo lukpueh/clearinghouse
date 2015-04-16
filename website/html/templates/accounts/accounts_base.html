@@ -53,17 +53,22 @@
 		<div id="tabs">
 			<table>
 				<tr>
-				  {% block nav_login %}
-				  <td><a href="{% url 'login' %}">Login</a></td>
-				  {% endblock nav_login %}
+                  {% block nav_home %}
+				  <td><a href="{% url 'home' %}">Home</a></td>
+				  {% endblock nav_home %}
 
 				  {% block nav_register %}
-				  <td><a href="{% url 'register' %}">Register</a></td>
+				  <td><a href="{% url 'register' %}">Register an Experiment</a></td>
 				  {% endblock nav_register %}
 
 				  {% block nav_help %}
 				  <td><a href="{% url 'accounts_help' %}">Help</a></td>
 				  {% endblock nav_help %}
+
+				  {% block nav_login %}
+				  <td><a href="{% url 'login' %}">Login</a></td>
+				  {% endblock nav_login %}
+
 				</tr>
 			</table>
 		</div>
