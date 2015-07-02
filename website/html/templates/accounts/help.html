@@ -50,12 +50,35 @@ Help - {{ CLEARINGHOUSE }}
 			<div id="toc">
 				<h3>Table of Contents</h3>
 				<ul>
+					<li><a href="#introduction" title="What is {{ CLEARINGHOUSE }}">What is {{ CLEARINGHOUSE }}</a></li>
 					<li><a href="#register" title="How to Register">How to Register</a></li>
 					<li><a href="#login" title="How to Login">How to Login</a></li>
 					<li><a href="#passwords" title="Lost passwords">Lost passwords</a></li>		
-					<li><a href="#morehelp" title="more help">Have a question NOT answered on our site?</a></li>
+					<li><a href="#contact" title="Who to contact">Who to contact for more help</a></li>
 				</ul>
 			</div>
+			<h2><a name="introduction">What is {{ CLEARINGHOUSE }}</a></h2>
+
+			<p>
+			  {{ CLEARINGHOUSE }} is a web-based portal for
+			  managing <a href="{{ TESTBED_URL }}">{{ TESTBED }}</a>
+			  resources. These resources are donated by
+			  users who have installed {{ TESTBED }} on their
+			  machines. In return these users are allowed
+			  to use resources donated by others. {{ CLEARINGHOUSE }}
+			  enables users of donated resources to
+			  acquire nodes around the world on which they
+			  can then execute programs written
+			  in <a href="{{ TESTBED_URL }}wiki/RepyTutorial">Repy</a>,
+			  the {{ TESTBED }} platform programming
+			  language. {{ CLEARINGHOUSE }} also lets users to share
+			  their resources with other users, and
+			  perform a variety of other tasks. For more
+			  information about about how {{ CLEARINGHOUSE }} fits with
+			  the rest of the {{ TESTBED }} platform,
+			  see <a href="{{ TESTBED_URL }}wiki/SeattleComponents">this
+			    page</a>.
+			</p>
 			
 			<h2><a name="register">How to Register</a></h2>
 
@@ -97,7 +120,7 @@ Help - {{ CLEARINGHOUSE }}
 			<h2><a name="login">How to Login</a></h2>
 			
 			<p>Enter your username and password to log
-			  into the portal. There is a “login” button at the top of every page.</p>
+			  into the portal.</p>
 			
 			<h2><a name="passwords">Lost passwords</a></h2>
 			
@@ -105,27 +128,9 @@ Help - {{ CLEARINGHOUSE }}
 			  please email <a href="{{ TESTBED_DEVELOPERS_MAIL }}">{{ TESTBED_DEVELOPERS_MAIL }}</a>.   For password reset requests,
 			  we validate that you are able to receive mail from 
 			  the email address listed under the account.
-            </p>
-
-            <h2><a name="More Help">Have a question NOT answered on our site?</a></h2>
-
-            <p>There are two ways to get more information</p>
-            <ul>
-                <li>
-                    <strong>Use our mailing list</strong>
-                    <br/>
-                    Feel free to email us at: <a href="mailto:sensibility-testbed-users@googlegroups.com">sensibility-testbed-users@googlegroups.com</a> with questions!
-                </li>
-                <li>
-                    <strong>Read our wiki</strong>
-                    <br/>
-                    We have a growing collection of helpful resources for users of the Sensibility Testbed. Visit our <a href="https://sensibilitytestbed.com/">main page</a> to get started, or jump to more specific page for a <a href="https://sensibilitytestbed.com/projects/project/wiki/demo">demo</a>.
-                </li>
-            </ul>
-
-
+			  </p>
 			
-			{% include "common/footer.html" %}
+			{% include "common/help_contact.html" %}
 		</div>
 	</div>
 
