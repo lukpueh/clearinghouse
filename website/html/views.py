@@ -9,6 +9,7 @@
   Ivan Beschastnikh
   Jason Chen
   Justin Samuel
+  Sai Kaushik Borra
 
 <Purpose>
   This module defines the functions that correspond to each possible request
@@ -22,6 +23,7 @@ import sys
 import shutil
 import subprocess
 import xmlrpclib
+import re
 
 # Needed to escape characters for the Android referrer...
 import urllib
@@ -31,9 +33,11 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.core.context_processors import csrf
 
-#Used to display meaningful OpenID/OAuth error messages to the user
+# Used to display meaningful OpenID/OAuth error messages to the user
 from django.contrib.messages.api import get_messages
+from django.contrib import messages
 from django.shortcuts import render_to_response, redirect
 from social_auth.utils import setting
 from django.template import RequestContext
@@ -75,8 +79,11 @@ add_dy_support(locals())
 
 rsa = dy_import_module("rsa.r2py")
 
+# Importing models
+from control.models import Sensor, SensorAttribute
 
-
+# Importing forms
+from .forms import ExperimentInfoForm, ExperimentSensorForm, ExperimentSensorAttributeForm
 
 
 class LoggedInButFailedGetGeniUserError(Exception):
@@ -193,7 +200,7 @@ def auto_register(request,backend=None,error_msgs=''):
     If a user passes in a valid username he continues the pipeline and moves
     forward in the auto register process.
   """
-  # Check if a username is provided 
+  # Check if a username is provided
   username_form = forms.AutoRegisterForm()
   if request.method == 'POST' and request.POST.get('username'):
     name = setting('SOCIAL_AUTH_PARTIAL_PIPELINE_KEY', 'partial_pipeline')
@@ -264,7 +271,7 @@ def profile(request, info="", error_msg="", messages=""):
          interface.change_user_email(user, new_email)
          info ="Email has been successfully changed to %s." % (user.email)
     elif 'password1' in request.POST:
-       password_form = forms.EditUserPasswordForm( request.POST, instance=user)
+       password_form = forms.EditUserPasswordForm(request.POST, instance=user)
        if password_form.is_valid():
          new_password = password_form.cleaned_data['password1']
          interface.change_user_password(user, new_password)
@@ -459,14 +466,136 @@ def help(request):
           context_instance=RequestContext(request))
 
 
-
-
-
 def accounts_help(request):
   return render_to_response('accounts/help.html', {}, 
           context_instance=RequestContext(request))
 
+def home(request):
+  return render_to_response('accounts/home.html', {},
+          context_instance=RequestContext(request))
 
+def irbnuts(request):
+  return render_to_response('accounts/IRBnuts.html', {},
+          context_instance=RequestContext(request))
+
+def about(request):
+  return render_to_response('accounts/about.html', {},
+          context_instance=RequestContext(request))
+
+def experimentregistration(request):
+    # Obtain the context from the HTTP request.
+    context_instance = RequestContext(request)
+    import collections
+
+    # Forms
+    experimentinfoform = ExperimentInfoForm(request.POST or None)
+    experimentsensorform = ExperimentSensorForm(request.POST or None)
+    experimentsensorattributeform = ExperimentSensorAttributeForm(request.POST or None)
+
+    context_dict = {}
+    errors = []
+    post_data = []
+    post_dict = {}
+
+    if request.method == 'POST':
+        if ExperimentInfoForm(request.POST):
+            if experimentinfoform.is_valid():
+                # print "Success"
+                experimentinfoform.save()
+                messages.success(request, 'Experiment Info created successfully')
+            else:
+                messages.error(request, 'Experiment Info Form is NOT valid')
+                experimentinfoform = ExperimentInfoForm()
+
+        # if not request.POST.get('usage-1'):
+
+        def slicedict(d, s):
+            return {k:v for k,v in d.iteritems() if k.startswith(s)}
+
+        sel_sensors = []
+        final_dict = {}
+
+        s_prefix = ['usage', 'frequency', 'frequency_other', 'frequency_unit', 'sensor_precision_other']
+        sa_prefix = ['sensorattr_precision', 'sensorattr_precision_value']
+        for key, value in request.POST.iteritems():
+            # Collecting and storing the selected sensors
+            prefix = key.split('-')
+            if prefix[0] == 'select_sensor':
+                sel_sensors.append(prefix[1])
+                if sel_sensors:
+                    for attrib in s_prefix:
+                        s_attrib = slicedict(request.POST, attrib+'-'+prefix[1])
+                        if s_attrib:
+                            if prefix[1] in final_dict:
+                                final_dict[prefix[1]].append(s_attrib)
+                            else:
+                                final_dict[prefix[1]] = [s_attrib]
+                        else:
+                            print attrib + '-' + prefix[1] + ' is NOT FOUND'
+                            # print prefix + ' form has not been filled properly'
+                            # break
+
+                    # sa_list = []
+                    sa_dict = {}
+                    for key, value in request.POST.iteritems():
+                        # Collecting and storing the selected sensors
+                        new_prefix = key.split('-')
+                        if new_prefix[0] == 'sensorattr' and new_prefix[1] == prefix[1]:
+                            # sa_list.append(sa_prefix[2])
+
+                            for attrib in sa_prefix:
+                                sa_attrib = slicedict(request.POST, attrib+'-'+new_prefix[1]+'-'+new_prefix[2])
+                                if sa_attrib:
+                                    if new_prefix[2] in sa_dict:
+                                        sa_dict[new_prefix[2]].append(sa_attrib)
+                                    else:
+                                        sa_dict[new_prefix[2]] = [sa_attrib]
+                                else:
+                                    print attrib + '-' + new_prefix[1] + '-' + new_prefix[2] + ' is NOT FOUND'
+                    if sa_dict:
+                        if prefix[1] in final_dict:
+                            final_dict[prefix[1]].append({'sa_info':sa_dict})
+                        else:
+                            final_dict[prefix[1]] = {'sa_info':sa_dict}
+
+            post_dict = {'key': key, 'value': value}
+            post_data.append(post_dict)
+
+        if not sel_sensors:
+            # DO SOMETHING
+            print '************NO_SENSORS***************'
+
+
+
+        print '###################'
+        print final_dict
+        print '###################'
+
+    # cc = collections.defaultdict(list)
+    sensors = []
+
+    # Query the database for a list of ALL sensors currently stored.
+    # Place the list in our context_dict dictionary which will be passed to the template engine.
+    sensor_list = Sensor.objects.all()
+    # print sensor_list;
+    # print "*****************"
+
+    for sensor in sensor_list:
+        d = {'sensor': (sensor.sensor_id, sensor.sensor_name)}
+        # print "*****************"
+        temp_list = []
+        for sensorAtt in SensorAttribute.objects.filter(sensor_id=sensor.sensor_id):
+            # cc[(sensor.sensor_id, sensor.sensor_name)].append((sensorAtt.sensor_attribute_id, sensorAtt.sensor_attribute_name))
+            temp_list.append((sensorAtt.sensor_attribute_id, sensorAtt.sensor_attribute_name))
+        d['sensor_attributes'] = temp_list
+        sensors.append(d)
+
+    context_dict = {'sensor_data': sensors, "experimentinfoform": experimentinfoform,
+                "experimentsensorform": experimentsensorform, "experimentsensorattributeform": experimentsensorattributeform,
+                "post_data":post_data}
+    # context_dict['errors'] = ExperimentInfoForm
+    return render_to_response('accounts/experimentregistration.html', context_dict,
+                              context_instance)
 
 @login_required
 def mygeni(request):
@@ -522,7 +651,7 @@ def myvessels(request, get_form=False, action_summary="", action_detail="", remo
   
   # this user's number of donations, max vessels, total vessels and free credits
   my_donations = interface.get_donations(user)
-  my_max_vessels = interface.get_available_vessel_credits(user)	
+  my_max_vessels = interface.get_available_vessel_credits(user) 
   my_free_vessel_credits = interface.get_free_vessel_credits_amount(user)
   my_total_vessel_credits = interface.get_total_vessel_credits(user)
 
