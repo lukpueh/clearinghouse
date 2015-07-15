@@ -497,79 +497,137 @@ def experimentregistration(request):
     post_data = []
     post_dict = {}
 
-    if request.method == 'POST':
+    for key, value in request.POST.iteritems():
+        post_dict = {'key': key, 'value': value}
+        post_data.append(post_dict)
+
+    def slicedict_starts(d, p, s):
+        if p:
+            return {p:v for k,v in d.iteritems() if k.startswith(s)}
+        else:
+            return {k:v for k,v in d.iteritems() if k.startswith(s)}
+
+    def slicedict_ends(d, p, s):
+        return {p:v for k,v in d.iteritems() if k.endswith(s)}
+
+    def processExperimentInfoForm(experimentinfoform):
         if ExperimentInfoForm(request.POST):
             if experimentinfoform.is_valid():
                 # print "Success"
-                experimentinfoform.save()
+                exp_id = experimentinfoform.save()
                 messages.success(request, 'Experiment Info created successfully')
+                return exp_id.pk
             else:
                 messages.error(request, 'Experiment Info Form is NOT valid')
                 experimentinfoform = ExperimentInfoForm()
+                return None
+        else:
+            return None
 
-        # if not request.POST.get('usage-1'):
+    def processExperimentSensorForm(experiment_id, s_data):
+        for key, value in s_data.iteritems():
+            if value['frequency_unit'] == 'hours':
+                value['frequency'] = value['frequency'] * 60 * 60
+            if value['frequency_unit'] == 'minutes':
+                value['frequency'] = value['frequency'] * 60
 
-        def slicedict(d, s):
-            return {k:v for k,v in d.iteritems() if k.startswith(s)}
+            s_fdata = {
+                'experiment_id': experiment_id,
+                'sensor_id': key,
+                'frequency': value['frequency'],
+                'usage_policy': value['usage'],
+                'downloadable': False
+            }
+            s_form = ExperimentSensorForm(s_fdata)
 
-        sel_sensors = []
-        final_dict = {}
+            if s_form.is_valid():
+                s_form.save()
+                messages.success(request, 'Experiment Sensor '+key+' created successfully')
+            else:
+                messages.error(request, 'Experiment Sensor '+key+' Form is NOT valid')
+            s_fdata.clear()
 
-        s_prefix = ['usage', 'frequency', 'frequency_other', 'frequency_unit', 'sensor_precision_other']
-        sa_prefix = ['sensorattr_precision', 'sensorattr_precision_value']
-        for key, value in request.POST.iteritems():
-            # Collecting and storing the selected sensors
-            prefix = key.split('-')
-            if prefix[0] == 'select_sensor':
-                sel_sensors.append(prefix[1])
-                if sel_sensors:
-                    for attrib in s_prefix:
-                        s_attrib = slicedict(request.POST, attrib+'-'+prefix[1])
-                        if s_attrib:
-                            if prefix[1] in final_dict:
-                                final_dict[prefix[1]].append(s_attrib)
-                            else:
-                                final_dict[prefix[1]] = [s_attrib]
-                        else:
-                            print attrib + '-' + prefix[1] + ' is NOT FOUND'
-                            # print prefix + ' form has not been filled properly'
-                            # break
+    def processExperimentSensorAttributeForm(experiment_id, sa_data):
+        for key, value in sa_data.iteritems():
+            if value['sensorattr_precision'] == 'full':
+                value['sensorattr_precision_value'] = 0000
+            else:
+                value['sensorattr_precision_value'] = 0000
 
-                    # sa_list = []
-                    sa_dict = {}
-                    for key, value in request.POST.iteritems():
-                        # Collecting and storing the selected sensors
-                        new_prefix = key.split('-')
-                        if new_prefix[0] == 'sensorattr' and new_prefix[1] == prefix[1]:
-                            # sa_list.append(sa_prefix[2])
+            sa_fdata = {
+                'experiment_id': experiment_id,
+                'sensor_attribute_id': key,
+                'precision': value['sensorattr_precision_value']
+            }
 
-                            for attrib in sa_prefix:
-                                sa_attrib = slicedict(request.POST, attrib+'-'+new_prefix[1]+'-'+new_prefix[2])
-                                if sa_attrib:
-                                    if new_prefix[2] in sa_dict:
-                                        sa_dict[new_prefix[2]].append(sa_attrib)
-                                    else:
-                                        sa_dict[new_prefix[2]] = [sa_attrib]
-                                else:
-                                    print attrib + '-' + new_prefix[1] + '-' + new_prefix[2] + ' is NOT FOUND'
-                    if sa_dict:
-                        if prefix[1] in final_dict:
-                            final_dict[prefix[1]].append({'sa_info':sa_dict})
-                        else:
-                            final_dict[prefix[1]] = {'sa_info':sa_dict}
+            sa_form = ExperimentSensorAttributeForm(sa_fdata)
 
-            post_dict = {'key': key, 'value': value}
-            post_data.append(post_dict)
+            if sa_form.is_valid():
+                sa_form.save()
+                messages.success(request, 'Experiment SensorAttr '+key+' created successfully')
+            else:
+                messages.error(request, 'Experiment SensorAttr '+key+' Info Form is NOT valid')
+            sa_fdata.clear()
 
-        if not sel_sensors:
-            # DO SOMETHING
-            print '************NO_SENSORS***************'
+    def getData(post_data):
+
+        raw = post_data.copy()
+        sensor_data = {}
+        sensor_attr_data = {}
+
+        # s_prefix = ['select_sensor', 'usage', 'frequency', 'frequency_other', 'frequency_unit', 'sensor_precision_other']
+        # sa_prefix = ['sensorattr', 'sensorattr_precision', 'sensorattr_precision_value']
+
+        # Collect all the sensors
+        sensor_list = []
+        sensors = slicedict_starts(raw, None, 'select_sensor')
+        for key, value in sensors.iteritems():
+            sensor_list.append(value)
+
+        # Collect all sensor attributes
+        sensor_attr_list = []
+        for sensor in sensor_list:
+            sensor_attrs = slicedict_starts(raw, None, 'sensorattr-'+sensor)
+            for key, value in sensor_attrs.iteritems():
+                if value not in sensor_attr_list:
+                    sensor_attr_list.append(value)
+
+        # Collect Sensor Data
+        for key, value in raw.iteritems():
+            # sensor_item = {}
+            split_item = key.split('-')
+
+            # Collecting sensor data
+            if len(split_item) == 2 and split_item[1] in sensor_list:
+                if split_item[1] in sensor_data:
+                    sensor_data[split_item[1]].update({split_item[0]:value})
+                else:
+                    sensor_data[split_item[1]] = {split_item[0]:value}
+
+            # Collecting Sensor Attribute Data
+            elif len(split_item) == 3 and split_item[2] in sensor_attr_list:
+                if split_item[2] in sensor_attr_data:
+                    sensor_attr_data[split_item[2]].update({split_item[0]:value})
+                else:
+                    sensor_attr_data[split_item[2]] = {split_item[0]:value}
+
+        return sensor_data, sensor_attr_data
 
 
+    if request.method == 'POST':
+        s_data, sa_data = getData(request.POST)
+        print '#############'
+        print s_data
+        print '#############'
+        print sa_data
 
-        print '###################'
-        print final_dict
-        print '###################'
+        if s_data and sa_data:
+            experiment_id = processExperimentInfoForm(experimentinfoform)
+            if experiment_id:
+                processExperimentSensorForm(experiment_id, s_data)
+                processExperimentSensorAttributeForm(experiment_id, sa_data)
+        else:
+            print 'Error: Data could not be caught properly'
 
     # cc = collections.defaultdict(list)
     sensors = []
@@ -651,7 +709,7 @@ def myvessels(request, get_form=False, action_summary="", action_detail="", remo
   
   # this user's number of donations, max vessels, total vessels and free credits
   my_donations = interface.get_donations(user)
-  my_max_vessels = interface.get_available_vessel_credits(user) 
+  my_max_vessels = interface.get_available_vessel_credits(user)	
   my_free_vessel_credits = interface.get_free_vessel_credits_amount(user)
   my_total_vessel_credits = interface.get_total_vessel_credits(user)
 

@@ -24,7 +24,7 @@
 ********************/
 
 * {
-	margin: 0;
+	margin: 5px;
 	padding: 0;
 }
 
@@ -212,7 +212,7 @@ ul.errorlist li {
     list-style-position: inside;
 }
 
-#learn-about-seattle {
+#learn-about-seattle, #intro{
    /* max-width : 70%;*/
     text-align : center;
     background-color : #ded;
@@ -221,4 +221,27 @@ ul.errorlist li {
     margin-top : 1em;
     margin-bottom : 1em;
     font-size : 1.3em;
+}
+
+#footer {
+    text-align: right;
+}
+
+.btn {
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 14px;
+  background: #302f2e;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
 }

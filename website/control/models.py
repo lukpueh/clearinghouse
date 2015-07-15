@@ -30,8 +30,6 @@ from clearinghouse.common.util import log
 
 
 
-
-
 # First, we want to register a signal. This page recommends putting this code
 # in models.py: http://docs.djangoproject.com/en/dev/topics/signals/
 
@@ -53,10 +51,83 @@ else:
             "perform custom database connection initialization. (See settings.py)")
 
 
+# SENSIBILITY
+
+# experiment_info(experiment_id, experiment_name, researcher_name, resercher_email, researcher_address, irb_officer_name, irb_officer_email)
+class ExperimentInfo(models.Model):
+    experiment_id = models.AutoField(primary_key=True)
+    experiment_name = models.CharField(max_length=30)
+    researcher_name = models.CharField(max_length=30)
+    researcher_email = models.EmailField()
+    researcher_address = models.CharField(max_length=64)
+    irb_officer_name = models.CharField(max_length=30)
+    irb_officer_email = models.EmailField()
+    experiment_goal = models.CharField(max_length=256)
+
+    class Meta:
+        verbose_name_plural = "Experiment info"
+
+# sensors(sensor_id, sensor_name)
+class Sensor(models.Model):
+    sensor_id = models.AutoField(primary_key=True)
+    sensor_name = models.CharField(max_length=30)
+
+    def __unicode__(self):
+        return "%d" %(self.sensor_id)
+
+# sensor_attributes(sensor_attribute_id, sensor_id, sensor_attribute_name)
+# sensor_id refers sensors
+class SensorAttribute(models.Model):
+    sensor_attribute_id = models.AutoField(primary_key=True)
+    sensor_id = models.ForeignKey(Sensor)
+    sensor_attribute_name = models.CharField(max_length=30)
+
+    def __unicode__(self):
+        return "%d" %(self.sensor_attribute_id)
+
+# experiment_sensors(experiment_id, sensor_id, frequency, usage_policy, downloadable)
+# experiment_id refers experiment_info
+# sensor_id refers sensors
+class ExperimentSensor(models.Model):
+    experiment_sensor_id = models.AutoField(primary_key=True)
+    experiment_id = models.ForeignKey(ExperimentInfo)
+    sensor_id = models.ForeignKey(Sensor)
+    frequency = models.IntegerField(max_length=30)
+    usage_policy = models.CharField(max_length=512)
+    downloadable = models.BooleanField(default=True)
+
+    def __unicode__(self):
+        return "%d" %(self.experiment_sensor_id)
+
+# experiment_sensor_attributes(experiment_id, sensor_attribute_id, precision)
+# experiment_id refers experiment_info
+# sensor_attribute_id refers sensor_attributes
+class ExperimentSensorAttribute(models.Model):
+    experiment_sensor_attribute_id = models.AutoField(primary_key=True)
+    # experiment_sensor_id = models.ForeignKey(ExperimentSensor)
+    experiment_id = models.ForeignKey(ExperimentInfo)
+    sensor_attribute_id = models.ForeignKey(SensorAttribute)
+    precision = models.IntegerField(max_length=30)
+
+    def __unicode__(self):
+        return "%d" %(self.experiment_sensor_attribute_id)
+
+# location_blur(experiment_id, blur_level)
+# experiment_id refers experiment_info
+class LocationBlur(models.Model):
+    BLUR_CHOICES = (
+        ('city', 'City'),
+        ('state', 'State'),
+        ('country', 'country')
+    )
+    experiment_id = models.ForeignKey(ExperimentInfo)
+    blur_level = models.CharField(max_length=10,
+                                  choices=BLUR_CHOICES)
+
+# SENSIBILITY
 
 
-
-
+# SEATTLE MODELS
 class GeniUser(DjangoUser):
   """
   Defines the GeniUser model. A GeniUser record represents a SeattleGeni user.
@@ -438,3 +509,5 @@ class ActionLogVesselDetails(models.Model):
     """
     return "ActionLogVesselDetails:[%s]:[%s]:[%s]" % (self.event, self.node_address,
                                                       self.vessel_name)
+
+# SEATTLE MODELS

@@ -20,6 +20,9 @@ from clearinghouse.common.util import log
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+STATIC_URL = '/static/'
+# STATIC_ROOT = "/var/www/example.com/static/"
+
 # The log level used by the clearinghouse log module. All messages at this level
 # or more severe will be logged.
 SEATTLECLEARINGHOUSE_LOG_LEVEL = log.LOG_LEVEL_DEBUG
@@ -107,10 +110,10 @@ DATABASES = {
         # you can use django.db.backends.sqlite3 instead of mysql. If you
         # decide to do so, you can leave the other fields empty
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'FILL_THIS_IN',
-        'USER': 'FILL_THIS_IN',
-        'PASSWORD': 'FILL_THIS_IN',
-        'HOST': '',
+        'NAME': 'FILL_THIS IN',
+        'USER': 'FILL_THIS IN',
+        'PASSWORD': 'FILL_THIS IN',
+        'HOST': 'FILL_THIS IN',
         'PORT': '',
     }
 }
@@ -194,6 +197,8 @@ INSTALLED_APPS = (
   'django.contrib.sessions',
   'django.contrib.sites',
   'django.contrib.messages',
+  # since admin_media_prefix has been deprecated since 1.4
+  'django.contrib.staticfiles',
   # Needed for OpenID/OAuth login so must be listed. 
   'social_auth',
 
@@ -280,7 +285,7 @@ SESSION_COOKIE_AGE = 3600
 # Use session cookies, not persistent cookies.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-TESTBED = 'Seattle'
+TESTBED = 'Sensibility'
 TESTBED_URL = 'https://seattle.poly.edu/'
 TESTBED_DEVELOPERS_MAIL = 'mailto:seattle-devel@googlegroups.com'
 TESTBED_USERS_MAIL = 'mailto:seattle-devel@googlegroups.com'
