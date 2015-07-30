@@ -10,7 +10,12 @@ import clearinghouse.website.html.views as htmlviews
 urlpatterns = patterns('clearinghouse.website.html.views',
 
                        # Previously defined in accounts/urls.py.                       
-                       (r'^register$', htmlviews.register,{},'register'),
+                       (r'^home$', htmlviews.home, {},'home'),
+                       (r'^IRBnuts$', htmlviews.irbnuts, {},'irbnuts'),
+                       (r'^about$', htmlviews.about, {},'about'),
+
+                       (r'^experimentregistration$', htmlviews.experimentregistration, {},'experimentregistration'),
+                       (r'^register$', htmlviews.register, {},'register'),
                        (r'^login$', htmlviews.login, {}, 'login'), 
                        (r'^logout$', htmlviews.logout, {},'logout'),
                        (r'^accounts_help$', htmlviews.accounts_help ,

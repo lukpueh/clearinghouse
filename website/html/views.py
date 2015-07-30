@@ -9,6 +9,7 @@
   Ivan Beschastnikh
   Jason Chen
   Justin Samuel
+  Sai Kaushik Borra
 
 <Purpose>
   This module defines the functions that correspond to each possible request
@@ -22,6 +23,7 @@ import sys
 import shutil
 import subprocess
 import xmlrpclib
+import re
 
 # Needed to escape characters for the Android referrer...
 import urllib
@@ -31,9 +33,11 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.core.context_processors import csrf
 
-#Used to display meaningful OpenID/OAuth error messages to the user
+# Used to display meaningful OpenID/OAuth error messages to the user
 from django.contrib.messages.api import get_messages
+from django.contrib import messages
 from django.shortcuts import render_to_response, redirect
 from social_auth.utils import setting
 from django.template import RequestContext
@@ -75,8 +79,11 @@ add_dy_support(locals())
 
 rsa = dy_import_module("rsa.r2py")
 
+# Importing models
+from control.models import Sensor, SensorAttribute
 
-
+# Importing forms
+from .forms import ExperimentInfoForm, ExperimentSensorForm, ExperimentSensorAttributeForm
 
 
 class LoggedInButFailedGetGeniUserError(Exception):
@@ -193,7 +200,7 @@ def auto_register(request,backend=None,error_msgs=''):
     If a user passes in a valid username he continues the pipeline and moves
     forward in the auto register process.
   """
-  # Check if a username is provided 
+  # Check if a username is provided
   username_form = forms.AutoRegisterForm()
   if request.method == 'POST' and request.POST.get('username'):
     name = setting('SOCIAL_AUTH_PARTIAL_PIPELINE_KEY', 'partial_pipeline')
@@ -264,7 +271,7 @@ def profile(request, info="", error_msg="", messages=""):
          interface.change_user_email(user, new_email)
          info ="Email has been successfully changed to %s." % (user.email)
     elif 'password1' in request.POST:
-       password_form = forms.EditUserPasswordForm( request.POST, instance=user)
+       password_form = forms.EditUserPasswordForm(request.POST, instance=user)
        if password_form.is_valid():
          new_password = password_form.cleaned_data['password1']
          interface.change_user_password(user, new_password)
@@ -459,14 +466,194 @@ def help(request):
           context_instance=RequestContext(request))
 
 
-
-
-
 def accounts_help(request):
   return render_to_response('accounts/help.html', {}, 
           context_instance=RequestContext(request))
 
+def home(request):
+  return render_to_response('accounts/home.html', {},
+          context_instance=RequestContext(request))
 
+def irbnuts(request):
+  return render_to_response('accounts/IRBnuts.html', {},
+          context_instance=RequestContext(request))
+
+def about(request):
+  return render_to_response('accounts/about.html', {},
+          context_instance=RequestContext(request))
+
+def experimentregistration(request):
+    # Obtain the context from the HTTP request.
+    context_instance = RequestContext(request)
+    import collections
+
+    # Forms
+    experimentinfoform = ExperimentInfoForm(request.POST or None)
+    experimentsensorform = ExperimentSensorForm(request.POST or None)
+    experimentsensorattributeform = ExperimentSensorAttributeForm(request.POST or None)
+
+    context_dict = {}
+    errors = []
+    post_data = []
+    post_dict = {}
+
+    for key, value in request.POST.iteritems():
+        post_dict = {'key': key, 'value': value}
+        post_data.append(post_dict)
+
+    def slicedict_starts(d, p, s):
+        if p:
+            return {p:v for k,v in d.iteritems() if k.startswith(s)}
+        else:
+            return {k:v for k,v in d.iteritems() if k.startswith(s)}
+
+    def slicedict_ends(d, p, s):
+        return {p:v for k,v in d.iteritems() if k.endswith(s)}
+
+    def processExperimentInfoForm(experimentinfoform):
+        if ExperimentInfoForm(request.POST):
+            if experimentinfoform.is_valid():
+                # print "Success"
+                exp_id = experimentinfoform.save()
+                messages.success(request, 'Experiment Info created successfully')
+                return exp_id.pk
+            else:
+                messages.error(request, 'Experiment Info Form is NOT valid')
+                experimentinfoform = ExperimentInfoForm()
+                return None
+        else:
+            return None
+
+    def processExperimentSensorForm(experiment_id, s_data):
+        for key, value in s_data.iteritems():
+            if value['frequency_unit'] == 'hours':
+                value['frequency'] = value['frequency'] * 60 * 60
+            if value['frequency_unit'] == 'minutes':
+                value['frequency'] = value['frequency'] * 60
+
+            s_fdata = {
+                'experiment_id': experiment_id,
+                'sensor_id': key,
+                'frequency': value['frequency'],
+                'usage_policy': value['usage'],
+                'downloadable': False
+            }
+            s_form = ExperimentSensorForm(s_fdata)
+
+            if s_form.is_valid():
+                s_form.save()
+                messages.success(request, 'Experiment Sensor '+key+' created successfully')
+            else:
+                messages.error(request, 'Experiment Sensor '+key+' Form is NOT valid')
+            s_fdata.clear()
+
+    def processExperimentSensorAttributeForm(experiment_id, sa_data):
+        for key, value in sa_data.iteritems():
+            if value['sensorattr_precision'] == 'full':
+                value['sensorattr_precision_value'] = 0000
+            else:
+                value['sensorattr_precision_value'] = 0000
+
+            sa_fdata = {
+                'experiment_id': experiment_id,
+                'sensor_attribute_id': key,
+                'precision': value['sensorattr_precision_value']
+            }
+
+            sa_form = ExperimentSensorAttributeForm(sa_fdata)
+
+            if sa_form.is_valid():
+                sa_form.save()
+                messages.success(request, 'Experiment SensorAttr '+key+' created successfully')
+            else:
+                messages.error(request, 'Experiment SensorAttr '+key+' Info Form is NOT valid')
+            sa_fdata.clear()
+
+    def getData(post_data):
+
+        raw = post_data.copy()
+        sensor_data = {}
+        sensor_attr_data = {}
+
+        # s_prefix = ['select_sensor', 'usage', 'frequency', 'frequency_other', 'frequency_unit', 'sensor_precision_other']
+        # sa_prefix = ['sensorattr', 'sensorattr_precision', 'sensorattr_precision_value']
+
+        # Collect all the sensors
+        sensor_list = []
+        sensors = slicedict_starts(raw, None, 'select_sensor')
+        for key, value in sensors.iteritems():
+            sensor_list.append(value)
+
+        # Collect all sensor attributes
+        sensor_attr_list = []
+        for sensor in sensor_list:
+            sensor_attrs = slicedict_starts(raw, None, 'sensorattr-'+sensor)
+            for key, value in sensor_attrs.iteritems():
+                if value not in sensor_attr_list:
+                    sensor_attr_list.append(value)
+
+        # Collect Sensor Data
+        for key, value in raw.iteritems():
+            # sensor_item = {}
+            split_item = key.split('-')
+
+            # Collecting sensor data
+            if len(split_item) == 2 and split_item[1] in sensor_list:
+                if split_item[1] in sensor_data:
+                    sensor_data[split_item[1]].update({split_item[0]:value})
+                else:
+                    sensor_data[split_item[1]] = {split_item[0]:value}
+
+            # Collecting Sensor Attribute Data
+            elif len(split_item) == 3 and split_item[2] in sensor_attr_list:
+                if split_item[2] in sensor_attr_data:
+                    sensor_attr_data[split_item[2]].update({split_item[0]:value})
+                else:
+                    sensor_attr_data[split_item[2]] = {split_item[0]:value}
+
+        return sensor_data, sensor_attr_data
+
+
+    if request.method == 'POST':
+        s_data, sa_data = getData(request.POST)
+        print '#############'
+        print s_data
+        print '#############'
+        print sa_data
+
+        if s_data and sa_data:
+            experiment_id = processExperimentInfoForm(experimentinfoform)
+            if experiment_id:
+                processExperimentSensorForm(experiment_id, s_data)
+                processExperimentSensorAttributeForm(experiment_id, sa_data)
+        else:
+            print 'Error: Data could not be caught properly'
+
+    # cc = collections.defaultdict(list)
+    sensors = []
+
+    # Query the database for a list of ALL sensors currently stored.
+    # Place the list in our context_dict dictionary which will be passed to the template engine.
+    sensor_list = Sensor.objects.all()
+    # print sensor_list;
+    # print "*****************"
+
+    for sensor in sensor_list:
+        d = {'sensor': (sensor.sensor_id, sensor.sensor_name)}
+        # print "*****************"
+        temp_list = []
+        for sensorAtt in SensorAttribute.objects.filter(sensor_id=sensor.sensor_id):
+            # cc[(sensor.sensor_id, sensor.sensor_name)].append((sensorAtt.sensor_attribute_id, sensorAtt.sensor_attribute_name))
+            temp_list.append((sensorAtt.sensor_attribute_id, sensorAtt.sensor_attribute_name))
+        d['sensor_attributes'] = temp_list
+        sensors.append(d)
+
+    context_dict = {'sensor_data': sensors, "experimentinfoform": experimentinfoform,
+                "experimentsensorform": experimentsensorform, "experimentsensorattributeform": experimentsensorattributeform,
+                "post_data":post_data}
+    # context_dict['errors'] = ExperimentInfoForm
+    return render_to_response('accounts/experimentregistration.html', context_dict,
+                              context_instance)
 
 @login_required
 def mygeni(request):

@@ -26,6 +26,9 @@ from clearinghouse.website.control.models import VesselUserAccessMap
 from clearinghouse.website.control.models import ActionLogEvent
 from clearinghouse.website.control.models import ActionLogVesselDetails
 
+# sensibility clearinghouse
+from models import Sensor, SensorAttribute, ExperimentInfo, ExperimentSensor, ExperimentSensorAttribute
+
 from django.contrib import admin
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib import messages
@@ -231,8 +234,26 @@ class ActionLogVesselDetailsAdmin(admin.ModelAdmin):
   ordering = ["-event"]
 
 
+# Customized Admin View for all Clearinghouse Models
+class SensorAdmin(admin.ModelAdmin):
+    list_display = ["sensor_id", "sensor_name"]
+    search_fields = ["sensor_id", "sensor_name"]
 
+class SensorAttributeAdmin(admin.ModelAdmin):
+    list_display = ["sensor_attribute_id", "sensor_id", "sensor_attribute_name"]
+    search_fields = ["sensor_attribute_id", "sensor_id", "sensor_attribute_name"]
 
+class ExperimentInfoAdmin(admin.ModelAdmin):
+    list_display = ["experiment_id", "experiment_name", "researcher_name", "researcher_email", "researcher_address", "irb_officer_name", "irb_officer_email"]
+    search_fields = ["experiment_id", "experiment_name", "researcher_name", "researcher_email", "irb_officer_name", "irb_officer_email"]
+
+class ExperimentSensorAdmin(admin.ModelAdmin):
+    list_display = ["experiment_id", "sensor_id", "frequency", "usage_policy", "downloadable"]
+    search_fields = ["experiment_id", "sensor_id"]
+
+class ExperimentSensorAttributeAdmin(admin.ModelAdmin):
+    list_display = ["experiment_id", "sensor_attribute_id", "precision"]
+    search_fields = ["experiment_id", "sensor_attribute_id", "precision"]
 
 # Register/associate each custom admin view defined above with the
 # corresponding model defined in clearinghouse.website.control.models
@@ -244,3 +265,8 @@ admin.site.register(VesselPort, VesselPortAdmin)
 admin.site.register(VesselUserAccessMap, VesselUserAccessMapAdmin)
 admin.site.register(ActionLogEvent, ActionLogEventAdmin)
 admin.site.register(ActionLogVesselDetails, ActionLogVesselDetailsAdmin)
+admin.site.register(Sensor, SensorAdmin)
+admin.site.register(SensorAttribute, SensorAttributeAdmin)
+admin.site.register(ExperimentSensor, ExperimentSensorAdmin)
+admin.site.register(ExperimentSensorAttribute, ExperimentSensorAttributeAdmin)
+admin.site.register(ExperimentInfo, ExperimentInfoAdmin)

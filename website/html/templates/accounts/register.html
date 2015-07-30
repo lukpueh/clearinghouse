@@ -154,8 +154,42 @@ Register - {{ CLEARINGHOUSE }}
                           <td class="value">{{ form.goal }}</td>
                           <td>{{ form.goal.errors }}</td>
                       </tr>
+
+                      <tr title='Goal of Research Experiment'>
+                          <td class="key">{{ form.expgoal.label_tag }}</td>
+                          <td class="value">{{ form.expgoal }}</td>
+                          <td>{{ form.expgoal.errors }}</td>
+                      </tr>
+
                       <tr>
                           <td>B. What type(s) of smartphone sensors will you use (check all that apply)? A list of available sensors may be found at: <a href="https://sensibilitytestbed.com/projects/project/wiki/sensors">https://sensibilitytestbed.com/projects/project/wiki/sensors</a></td>
+                      </tr>
+
+                      <tr>
+                          <td>
+                              {{ form.battery }} {{ form.battery.label }}
+                              <div style="padding-left:10%">
+                                  <!--<td class="key">{{ form.if_battery_present.label_tag }}</td>-->
+                                  <!--<td class="value">{{ form.if_battery_present }}</td>-->
+                                  <!--<td>{{ form.if_battery_present.errors }}</td>-->
+                                  <hr/>
+                                  {{ form.if_battery_present }} {{ form.if_battery_present.label }} <br/>
+                                  {{ form.battery_health }} {{ form.battery_health.label }} <br/>
+                                  {{ form.battery_level }} {{ form.battery_level.label }} <br/>
+                                  {{ form.battery_plug_type }} {{ form.battery_plug_type.label }} <br/>
+                                  {{ form.battery_status }} {{ form.battery_status.label }} <br/>
+                                  {{ form.battery_technology }} {{ form.battery_technology.label }} <br/>
+
+                                  {{ form.battery_frequency.label}} <br/>
+                                  {{ form.battery_frequency }} {{ form.battery_frequency_unit }} <br/>
+
+                                  {{ form.battery_usage_policy.label }} <br/>
+                                  {{ form.battery_usage_policy }}
+
+
+
+                              </div>
+                          </td>
                       </tr>
 
                   </table>
