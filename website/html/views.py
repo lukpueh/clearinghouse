@@ -80,7 +80,7 @@ add_dy_support(locals())
 rsa = dy_import_module("rsa.r2py")
 
 # Importing models
-from control.models import Sensor, SensorAttribute
+from ..control.models import Sensor, SensorAttribute
 
 # Importing forms
 from .forms import ExperimentInfoForm, ExperimentSensorForm, ExperimentSensorAttributeForm
@@ -709,7 +709,7 @@ def myvessels(request, get_form=False, action_summary="", action_detail="", remo
   
   # this user's number of donations, max vessels, total vessels and free credits
   my_donations = interface.get_donations(user)
-  my_max_vessels = interface.get_available_vessel_credits(user)	
+  my_max_vessels = interface.get_available_vessel_credits(user) 
   my_free_vessel_credits = interface.get_free_vessel_credits_amount(user)
   my_total_vessel_credits = interface.get_total_vessel_credits(user)
 

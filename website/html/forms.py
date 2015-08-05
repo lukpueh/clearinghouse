@@ -11,14 +11,20 @@
   
   Jason Chen
   jchen@cs.washington.edu
+
+  Sai Kaushik Borra
+  skb386@nyu.edu
 <Purpose>
 
 <Usage>
   For more information on forms in django see:
   http://docs.djangoproject.com/en/dev/topics/forms/
 """
+
 # from clearinghouse.website.control.models import GeniUser, Sensors, SensorAttributes
 from clearinghouse.website.control.models import GeniUser, Sensor, SensorAttribute, ExperimentInfo, ExperimentSensor, ExperimentSensorAttribute
+
+# from control.models import GeniUser, Sensor, SensorAttribute, ExperimentInfo, ExperimentSensor, ExperimentSensorAttribute
 
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
 import django.forms as forms
@@ -58,14 +64,17 @@ class ExperimentInfoForm(forms.ModelForm):
     experiment_goal = forms.CharField(label="What is the goal of your research experiment? What do you want to find out?", widget=forms.Textarea, error_messages={'required': 'Enter the goal of your research experiment'}, max_length=256)
     class Meta:
         model = ExperimentInfo
+        fields = '__all__'
 
 class ExperimentSensorForm(forms.ModelForm):
     class Meta:
         model = ExperimentSensor
+        fields = '__all__'
 
 class ExperimentSensorAttributeForm(forms.ModelForm):
     class Meta:
         model = ExperimentSensorAttribute
+        fields = '__all__'
 
 class ExperimentRegistrationForm(forms.ModelForm):
     experimentname = forms.CharField(label="Experiment Name", error_messages={'required': 'Enter an Experiment Name'}, max_length=64)
