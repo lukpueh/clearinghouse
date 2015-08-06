@@ -1,4 +1,8 @@
+import django
+django.setup()
+
 import os
+from clearinghouse.website.control.models import Sensor, SensorAttribute
 
 def populate():
 
@@ -59,35 +63,36 @@ def populate():
 
     for sensor, sensor_attribs in sensors.items():
         s = add_sensor(sensor)
-        print s.sensor_id
+        # print s.id
         if s:
             try:
-                print s.sensor_name + " sensor has been added successfully!!"
-                print "Adding attributes to Sensor: " + s.sensor_name
+                print s.name + " sensor has been added successfully!!"
+                print "Adding attributes to Sensor: " + s.name
             except s.DoesNotExist:
                 print "Sensor NOT found to add a Sensor Attribute"
             else:
+                # print 'add attrib'
                 for attribute in sensor_attribs:
-                    sa = add_sensor_attribute(s.sensor_id, attribute)
+                    sa = add_sensor_attribute(s.id, attribute)
                     if sa:
                         try:
-                            print sa.sensor_attribute_name + " : Sensor Attribute has been added successfully"
+                            print sa.name + " : Sensor Attribute has been added successfully"
                         except sa.DoesNotExist:
                             print attribute + ": Adding Sensor Attribute FAILED !!"
 
 
 def add_sensor_attribute(sensor_id, sensor_attribute_name):
     # print sensor_id
-    sa = SensorAttribute.objects.get_or_create(sensor_id_id=sensor_id, sensor_attribute_name=sensor_attribute_name)[0]
+    sa = SensorAttribute.objects.get_or_create(sensor_id=sensor_id, name=sensor_attribute_name)[0]
     return sa
 
 def add_sensor(sensor_name):
-    s = Sensor.objects.get_or_create(sensor_name=sensor_name)[0]
+    s = Sensor.objects.get_or_create(name=sensor_name)[0]
     return s
 
 # Start execution here!
 if __name__ == '__main__':
     print "Starting Sensibility population script..."
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'website.settings')
-    from control.models import Sensor, SensorAttribute
+
     populate()

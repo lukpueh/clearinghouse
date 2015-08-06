@@ -24,15 +24,15 @@
 
 <Template Variables>
   page_top_errors:
-		Error messages to display.
+    Error messages to display.
 
   form:
-		New user registration form.  See GeniUserCreationForm in forms.py for more info.
+    New user registration form.  See GeniUserCreationForm in forms.py for more info.
     .username:
-		.password1:
-		.password2:
+    .password1:
+    .password2:
     .affiliation:
-		.email:
+    .email:
     .pubkey:
     .gen_upload_choice:
 
@@ -51,12 +51,12 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 {% endblock nav_register %}
 
 {% block content %}
-	<div id="main">
-		<div id="middle">
+  <div id="main">
+    <div id="middle">
 
-		    <div id="intro">
-		        Any researcher who would like to perform experiments using smartphone sensors may register on the Sensibility Testbed Clearinghouse site.
-		    </div>
+        <div id="intro">
+            Any researcher who would like to perform experiments using smartphone sensors may register on the Sensibility Testbed Clearinghouse site.
+        </div>
 
             {% if messages %}
                 <div class="row">
@@ -65,6 +65,11 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                     {% endfor %}
                 </div>
             {% endif %}
+
+            <div class="alert alert-failure">
+                {{ form.errors }}
+                {{ form.non_field_errors }}
+            </div>
 
             <div class="well">
                 {% for data in post_data %}
@@ -97,11 +102,11 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                   <!--<label for="ExperimentName">Experiment Name</label>-->
                                   <!--<input type="text" class="form-control" id="ExperimentName" placeholder="Enter an Experiment Name">-->
                                   <!--{{experimentinfoform.experiment_name.label}} {{experimentinfoform.experiment_name}}-->
-                              <label class="control-label" for="id-{{ experimentinfoform.experiment_name.name }}">{{ experimentinfoform.experiment_name.label }}</label>
+                              <label class="control-label" for="id-{{ experimentinfoform.name.name }}">{{ experimentinfoform.name.label }}</label>
                               <input type="text" class="form-control"
-                                  name="{{ experimentinfoform.experiment_name.name }}"
-                                  id="id-{{ experimentinfoform.experiment_name.name }}"
-                                  placeholder="Enter {{ experimentinfoform.experiment_name.label }}" required>
+                                  name="{{ experimentinfoform.name.name }}"
+                                  id="id-{{ experimentinfoform.name.name }}"
+                                  placeholder="Enter {{ experimentinfoform.name.label }}" required>
                           </div>
 
                           <div class="form-group">
@@ -172,10 +177,10 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                       <!--<input type="text" class="form-control" id="goal" placeholder="Enter the goal of your experiment">-->
                                   <!--</div>-->
 
-                                  <label for="id-{{ experimentinfoform.experiment_goal.name }}">{{ experimentinfoform.experiment_goal.label }}</label>
+                                  <label for="id-{{ experimentinfoform.goal.name }}">{{ experimentinfoform.goal.label }}</label>
                                   <input type="text" class="form-control"
-                                    name="{{ experimentinfoform.experiment_goal.name }}"
-                                    id="id-{{ experimentinfoform.experiment_goal.name }}"
+                                    name="{{ experimentinfoform.goal.name }}"
+                                    id="id-{{ experimentinfoform.goal.name }}"
                                     placeholder="Enter the goal of your experiment" required>
                               </li>
                               <li>
@@ -314,7 +319,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
               </form>
           </div>
 
-		</div>
+    </div>
     </div>
 
 {% endblock content %}

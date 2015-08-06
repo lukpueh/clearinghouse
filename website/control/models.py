@@ -7,6 +7,7 @@
 
 <Author>
   Justin Samuel
+  Sai Kaushik Borra
 
 <Purpose>
   This file contains definitions of model classes for the main database
@@ -26,8 +27,7 @@ import django
 from django.db import models
 from django.contrib.auth.models import User as DjangoUser
 
-from clearinghouse.common.util import log
-
+from common.util import log
 
 
 # First, we want to register a signal. This page recommends putting this code
@@ -35,94 +35,94 @@ from clearinghouse.common.util import log
 
 # Called when new database connections are created (see below).
 def _prepare_newly_created_db_connection(sender, **kwargs):
-  from clearinghouse.common.api import maindb
-  maindb.init_maindb()
+    from common.api import maindb
+    maindb.init_maindb()
 
 # If this is a modern-enough version of django to support specifying a function
 # to be called on database connection creation, then have it call init_maindb()
 # at that time. This is to help prevent init_maindb() from accidentally not
 # being called when it should be.
-if django.VERSION >= (1,1):
-  # connection_created only exists with django >= 1.1
-  import django.db.backends.signals
-  django.db.backends.signals.connection_created.connect(_prepare_newly_created_db_connection)
+if django.VERSION >= (1.1):
+    # connection_created only exists with django >= 1.1
+    import django.db.backends.signals
+    django.db.backends.signals.connection_created.connect(_prepare_newly_created_db_connection)
 else:
-  log.error("You must use django >= 1.1 in order to support automatically " +
+    log.error("You must use django >= 1.1 in order to support automatically " +
             "perform custom database connection initialization. (See settings.py)")
 
 
 # SENSIBILITY
 
 # experiment_info(experiment_id, experiment_name, researcher_name, resercher_email, researcher_address, irb_officer_name, irb_officer_email)
-class ExperimentInfo(models.Model):
-    experiment_id = models.AutoField(primary_key=True)
-    experiment_name = models.CharField(max_length=30)
+class Experiment(models.Model):
+    # experiment_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=30)
     researcher_name = models.CharField(max_length=30)
     researcher_email = models.EmailField()
     researcher_address = models.CharField(max_length=64)
     irb_officer_name = models.CharField(max_length=30)
     irb_officer_email = models.EmailField()
-    experiment_goal = models.CharField(max_length=256)
+    goal = models.CharField(max_length=256)
 
     class Meta:
         verbose_name_plural = "Experiment info"
 
 # sensors(sensor_id, sensor_name)
 class Sensor(models.Model):
-    sensor_id = models.AutoField(primary_key=True)
-    sensor_name = models.CharField(max_length=30)
+    # sensor_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=30)
 
     def __unicode__(self):
-        return "%d" %(self.sensor_id)
+        return "%d" %(self.id)
 
 # sensor_attributes(sensor_attribute_id, sensor_id, sensor_attribute_name)
 # sensor_id refers sensors
 class SensorAttribute(models.Model):
-    sensor_attribute_id = models.AutoField(primary_key=True)
-    sensor_id = models.ForeignKey(Sensor)
-    sensor_attribute_name = models.CharField(max_length=30)
+    # sensor_attribute_id = models.AutoField(primary_key=True)
+    sensor = models.ForeignKey(Sensor)
+    name = models.CharField(max_length=30)
 
     def __unicode__(self):
-        return "%d" %(self.sensor_attribute_id)
+        return "%d" %(self.id)
 
 # experiment_sensors(experiment_id, sensor_id, frequency, usage_policy, downloadable)
 # experiment_id refers experiment_info
 # sensor_id refers sensors
 class ExperimentSensor(models.Model):
-    experiment_sensor_id = models.AutoField(primary_key=True)
-    experiment_id = models.ForeignKey(ExperimentInfo)
-    sensor_id = models.ForeignKey(Sensor)
-    frequency = models.IntegerField(max_length=30)
+    # experiment_sensor_id = models.AutoField(primary_key=True)
+    experiment = models.ForeignKey(Experiment)
+    sensor = models.ForeignKey(Sensor)
+    frequency = models.IntegerField()
     usage_policy = models.CharField(max_length=512)
     downloadable = models.BooleanField(default=True)
 
     def __unicode__(self):
-        return "%d" %(self.experiment_sensor_id)
+        return "%d" % self.id
 
 # experiment_sensor_attributes(experiment_id, sensor_attribute_id, precision)
 # experiment_id refers experiment_info
 # sensor_attribute_id refers sensor_attributes
 class ExperimentSensorAttribute(models.Model):
-    experiment_sensor_attribute_id = models.AutoField(primary_key=True)
-    # experiment_sensor_id = models.ForeignKey(ExperimentSensor)
-    experiment_id = models.ForeignKey(ExperimentInfo)
-    sensor_attribute_id = models.ForeignKey(SensorAttribute)
-    precision = models.IntegerField(max_length=30)
+    # experiment_sensor_attribute_id = models.AutoField(primary_key=True)
+    # experiment_sensor = models.ForeignKey(ExperimentSensor)
+    experiment = models.ForeignKey(Experiment)
+    sensor_attribute = models.ForeignKey(SensorAttribute)
+    precision = models.IntegerField()
 
     def __unicode__(self):
-        return "%d" %(self.experiment_sensor_attribute_id)
+        return "%d" %(self.id)
 
 # location_blur(experiment_id, blur_level)
 # experiment_id refers experiment_info
-class LocationBlur(models.Model):
-    BLUR_CHOICES = (
-        ('city', 'City'),
-        ('state', 'State'),
-        ('country', 'country')
-    )
-    experiment_id = models.ForeignKey(ExperimentInfo)
-    blur_level = models.CharField(max_length=10,
-                                  choices=BLUR_CHOICES)
+# class LocationBlur(models.Model):
+#     BLUR_CHOICES = (
+#         ('city', 'City'),
+#         ('state', 'State'),
+#         ('country', 'country')
+#     )
+#     experiment_id = models.ForeignKey(Experiment)
+#     blur_level = models.CharField(max_length=10,
+#                                   choices=BLUR_CHOICES)
 
 # SENSIBILITY
 
@@ -131,7 +131,7 @@ class LocationBlur(models.Model):
 class GeniUser(DjangoUser):
   """
   Defines the GeniUser model. A GeniUser record represents a SeattleGeni user.
-  
+
   By extending the DjangoUser model, django will still create a separate table
   in the database for the GeniUser model but will take care of making it look
   the same to us.
@@ -497,7 +497,7 @@ class ActionLogVesselDetails(models.Model):
 
   # To know the port despite the fact that this may change for the
   # node record itself.
-  node_port = models.IntegerField("Node port", max_length=100, db_index=True)
+  node_port = models.IntegerField("Node port", db_index=True)
 
   # We store the vessel name rather than a foreign key to the vessels table
   # because vessels can be deleted from the database, whereas nodes can't.

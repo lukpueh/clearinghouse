@@ -22,9 +22,8 @@
 """
 
 # from clearinghouse.website.control.models import GeniUser, Sensors, SensorAttributes
-from clearinghouse.website.control.models import GeniUser, Sensor, SensorAttribute, ExperimentInfo, ExperimentSensor, ExperimentSensorAttribute
-
-# from control.models import GeniUser, Sensor, SensorAttribute, ExperimentInfo, ExperimentSensor, ExperimentSensorAttribute
+from clearinghouse.website.control.models import GeniUser, Sensor, SensorAttribute, Experiment, ExperimentSensor, ExperimentSensorAttribute
+# from control.models import GeniUser, Sensor, SensorAttribute, Experiment, ExperimentSensor, ExperimentSensorAttribute
 
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
 import django.forms as forms
@@ -56,58 +55,62 @@ class PubKeyField(forms.FileField):
             raise forms.ValidationError, str(err)
         return pubkey
 
-class ExperimentInfoForm(forms.ModelForm):
+class ExperimentForm(forms.ModelForm):
+    name = forms.CharField(label="Name of the Experiment", error_messages={'required': 'Enter the name of the experiment'})
     researcher_address = forms.CharField(label="Name and address of researcher\'s home institution", error_messages={'required': 'Enter the address of Researchers home institution'})
     researcher_email = forms.EmailField(label="Researcher\'s E-mail Address", error_messages={'required': 'Enter Researchers E-mail Address'})
     irb_officer_name = forms.CharField(label="Name of the home institution\'s IRB officer or contact person", error_messages={'required': 'Enter Contact Person\'s Name'})
     irb_officer_email = forms.CharField(label="Email address of home institution\'s IRB officer or contact person", error_messages={'required': 'Enter contact persons E-mail Address'})
-    experiment_goal = forms.CharField(label="What is the goal of your research experiment? What do you want to find out?", widget=forms.Textarea, error_messages={'required': 'Enter the goal of your research experiment'}, max_length=256)
+    goal = forms.CharField(label="What is the goal of your research experiment? What do you want to find out?", widget=forms.Textarea, error_messages={'required': 'Enter the goal of your research experiment'}, max_length=256)
     class Meta:
-        model = ExperimentInfo
+        model = Experiment
         fields = '__all__'
 
 class ExperimentSensorForm(forms.ModelForm):
     class Meta:
         model = ExperimentSensor
         fields = '__all__'
+    def clean(self):
+        data = self.cleaned_data
+        return data
 
 class ExperimentSensorAttributeForm(forms.ModelForm):
     class Meta:
         model = ExperimentSensorAttribute
         fields = '__all__'
 
-class ExperimentRegistrationForm(forms.ModelForm):
-    experimentname = forms.CharField(label="Experiment Name", error_messages={'required': 'Enter an Experiment Name'}, max_length=64)
-    researchername = forms.CharField(label="Researcher Name", error_messages={'required': 'Enter a Researcher Name'}, max_length=64)
-    address = forms.CharField(label="Name and address of researchers home institution", error_messages={'required': 'Enter the Researchers home institution'}, max_length=64)
-    researcheremail = forms.CharField(label="Researchers E-mail Address", error_messages={'required': 'Enter Researchers E-mail Address'})
-    irbofficername = forms.CharField(label="Name of home institutions IRB officer or contact person", error_messages={'required': 'Enter Contact Persons Name'}, max_length=64)
-    irbofficeremail = forms.CharField(label="Email address of of home institutions IRB officer or contact person", error_messages={'required': 'Enter contact persons E-mail Address'})
-    expgoal = forms.CharField(label="What is the goal of your research experiment? What do you want to find out?", widget=forms.Textarea, error_messages={'required': 'Enter the goal of your research experiment'}, max_length=256)
-
-    battery = forms.BooleanField(label="Battery", initial=False)
-    if_battery_present = forms.BooleanField(label="if_battery_present", initial=False)
-    battery_health = forms.BooleanField(label="battery_health", initial=False)
-    battery_level = forms.BooleanField(label="battery_level", initial=False)
-    battery_plug_type = forms.BooleanField(label="battery_plug_type", initial=False)
-    battery_status = forms.BooleanField(label="battery_status", initial=False)
-    battery_technology = forms.BooleanField(label="battery_technology", initial=False)
-    battery_frequency = forms.IntegerField(label="How often will you need to access battery sensor data? Once every ", initial=1, min_value=1)
-    FREQUENCY_CHOICES = (
-        ('hours', 'hours'),
-        ('minutes', 'minutes'),
-        ('seconds', 'seconds'),
-    )
-    battery_frequency_unit = forms.ChoiceField(choices=FREQUENCY_CHOICES, initial='hours')
-    battery_usage_policy = forms.CharField(label="What will these battery sensor data be used for?", widget=forms.Textarea, error_messages={'required': 'Enter the usage policy of this sensor data in your experiment'}, max_length=256)
-
-    def clean_email(self):
-        value = self.cleaned_data['email']
-        try:
-            validations.validate_email(value)
-        except ValidationError, err:
-            raise forms.ValidationError, str(err)
-        return value
+# class ExperimentRegistrationForm(forms.ModelForm):
+#     experimentname = forms.CharField(label="Experiment Name", error_messages={'required': 'Enter an Experiment Name'}, max_length=64)
+#     researchername = forms.CharField(label="Researcher Name", error_messages={'required': 'Enter a Researcher Name'}, max_length=64)
+#     address = forms.CharField(label="Name and address of researchers home institution", error_messages={'required': 'Enter the Researchers home institution'}, max_length=64)
+#     researcheremail = forms.CharField(label="Researchers E-mail Address", error_messages={'required': 'Enter Researchers E-mail Address'})
+#     irbofficername = forms.CharField(label="Name of home institutions IRB officer or contact person", error_messages={'required': 'Enter Contact Persons Name'}, max_length=64)
+#     irbofficeremail = forms.CharField(label="Email address of of home institutions IRB officer or contact person", error_messages={'required': 'Enter contact persons E-mail Address'})
+#     expgoal = forms.CharField(label="What is the goal of your research experiment? What do you want to find out?", widget=forms.Textarea, error_messages={'required': 'Enter the goal of your research experiment'}, max_length=256)
+#
+#     battery = forms.BooleanField(label="Battery", initial=False)
+#     if_battery_present = forms.BooleanField(label="if_battery_present", initial=False)
+#     battery_health = forms.BooleanField(label="battery_health", initial=False)
+#     battery_level = forms.BooleanField(label="battery_level", initial=False)
+#     battery_plug_type = forms.BooleanField(label="battery_plug_type", initial=False)
+#     battery_status = forms.BooleanField(label="battery_status", initial=False)
+#     battery_technology = forms.BooleanField(label="battery_technology", initial=False)
+#     battery_frequency = forms.IntegerField(label="How often will you need to access battery sensor data? Once every ", initial=1, min_value=1)
+#     FREQUENCY_CHOICES = (
+#         ('hours', 'hours'),
+#         ('minutes', 'minutes'),
+#         ('seconds', 'seconds'),
+#     )
+#     battery_frequency_unit = forms.ChoiceField(choices=FREQUENCY_CHOICES, initial='hours')
+#     battery_usage_policy = forms.CharField(label="What will these battery sensor data be used for?", widget=forms.Textarea, error_messages={'required': 'Enter the usage policy of this sensor data in your experiment'}, max_length=256)
+#
+#     def clean_email(self):
+#         value = self.cleaned_data['email']
+#         try:
+#             validations.validate_email(value)
+#         except ValidationError, err:
+#             raise forms.ValidationError, str(err)
+#         return value
 
 class GeniUserCreationForm(DjangoUserCreationForm):
     affiliation = forms.CharField(error_messages={'required': 'Enter an Affiliation'})

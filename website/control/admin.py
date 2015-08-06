@@ -7,6 +7,7 @@
 
 <Author>
   Justin Samuel
+  Sai Kaushik Borra
 
 <Purpose>
   This module provides classes that tell django how to represent the models
@@ -15,19 +16,19 @@
   See http://docs.djangoproject.com/en/dev/ref/contrib/admin/
 """
 
-from clearinghouse.common.api import maindb
+from common.api import maindb
 
-from clearinghouse.website.control.models import Donation
-from clearinghouse.website.control.models import GeniUser
-from clearinghouse.website.control.models import Node
-from clearinghouse.website.control.models import Vessel
-from clearinghouse.website.control.models import VesselPort
-from clearinghouse.website.control.models import VesselUserAccessMap
-from clearinghouse.website.control.models import ActionLogEvent
-from clearinghouse.website.control.models import ActionLogVesselDetails
+from models import Donation
+from models import GeniUser
+from models import Node
+from models import Vessel
+from models import VesselPort
+from models import VesselUserAccessMap
+from models import ActionLogEvent
+from models import ActionLogVesselDetails
 
 # sensibility clearinghouse
-from models import Sensor, SensorAttribute, ExperimentInfo, ExperimentSensor, ExperimentSensorAttribute
+from models import Sensor, SensorAttribute, Experiment, ExperimentSensor, ExperimentSensorAttribute
 
 from django.contrib import admin
 from django.contrib.auth.forms import AdminPasswordChangeForm
@@ -236,16 +237,16 @@ class ActionLogVesselDetailsAdmin(admin.ModelAdmin):
 
 # Customized Admin View for all Clearinghouse Models
 class SensorAdmin(admin.ModelAdmin):
-    list_display = ["sensor_id", "sensor_name"]
-    search_fields = ["sensor_id", "sensor_name"]
+    list_display = ["id", "name"]
+    search_fields = ["id", "name"]
 
 class SensorAttributeAdmin(admin.ModelAdmin):
-    list_display = ["sensor_attribute_id", "sensor_id", "sensor_attribute_name"]
-    search_fields = ["sensor_attribute_id", "sensor_id", "sensor_attribute_name"]
+    list_display = ["id", "sensor", "name"]
+    search_fields = ["id", "sensor", "name"]
 
-class ExperimentInfoAdmin(admin.ModelAdmin):
-    list_display = ["experiment_id", "experiment_name", "researcher_name", "researcher_email", "researcher_address", "irb_officer_name", "irb_officer_email"]
-    search_fields = ["experiment_id", "experiment_name", "researcher_name", "researcher_email", "irb_officer_name", "irb_officer_email"]
+class ExperimentAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "researcher_name", "researcher_email", "researcher_address", "irb_officer_name", "irb_officer_email"]
+    search_fields = ["id", "name", "researcher_name", "researcher_email", "irb_officer_name", "irb_officer_email"]
 
 class ExperimentSensorAdmin(admin.ModelAdmin):
     list_display = ["experiment_id", "sensor_id", "frequency", "usage_policy", "downloadable"]
@@ -269,4 +270,4 @@ admin.site.register(Sensor, SensorAdmin)
 admin.site.register(SensorAttribute, SensorAttributeAdmin)
 admin.site.register(ExperimentSensor, ExperimentSensorAdmin)
 admin.site.register(ExperimentSensorAttribute, ExperimentSensorAttributeAdmin)
-admin.site.register(ExperimentInfo, ExperimentInfoAdmin)
+admin.site.register(Experiment, ExperimentAdmin)

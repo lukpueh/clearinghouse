@@ -83,7 +83,7 @@ rsa = dy_import_module("rsa.r2py")
 from ..control.models import Sensor, SensorAttribute
 
 # Importing forms
-from .forms import ExperimentInfoForm, ExperimentSensorForm, ExperimentSensorAttributeForm
+from .forms import ExperimentForm, ExperimentSensorForm, ExperimentSensorAttributeForm
 
 
 class LoggedInButFailedGetGeniUserError(Exception):
@@ -488,7 +488,7 @@ def experimentregistration(request):
     import collections
 
     # Forms
-    experimentinfoform = ExperimentInfoForm(request.POST or None)
+    experimentinfoform = ExperimentForm(request.POST or None)
     experimentsensorform = ExperimentSensorForm(request.POST or None)
     experimentsensorattributeform = ExperimentSensorAttributeForm(request.POST or None)
 
@@ -510,8 +510,8 @@ def experimentregistration(request):
     def slicedict_ends(d, p, s):
         return {p:v for k,v in d.iteritems() if k.endswith(s)}
 
-    def processExperimentInfoForm(experimentinfoform):
-        if ExperimentInfoForm(request.POST):
+    def processExperimentForm(experimentinfoform):
+        if ExperimentForm(request.POST):
             if experimentinfoform.is_valid():
                 # print "Success"
                 exp_id = experimentinfoform.save()
@@ -519,7 +519,7 @@ def experimentregistration(request):
                 return exp_id.pk
             else:
                 messages.error(request, 'Experiment Info Form is NOT valid')
-                experimentinfoform = ExperimentInfoForm()
+                experimentinfoform = ExperimentForm()
                 return None
         else:
             return None
@@ -532,13 +532,16 @@ def experimentregistration(request):
                 value['frequency'] = value['frequency'] * 60
 
             s_fdata = {
-                'experiment_id': experiment_id,
-                'sensor_id': key,
+                'experiment': experiment_id,
+                'sensor': key,
                 'frequency': value['frequency'],
                 'usage_policy': value['usage'],
                 'downloadable': False
             }
             s_form = ExperimentSensorForm(s_fdata)
+            print '################@@@@@@@@@@'
+            print s_form.data
+            print '################@@@@@@@@@@'
 
             if s_form.is_valid():
                 s_form.save()
@@ -555,8 +558,8 @@ def experimentregistration(request):
                 value['sensorattr_precision_value'] = 0000
 
             sa_fdata = {
-                'experiment_id': experiment_id,
-                'sensor_attribute_id': key,
+                'experiment': experiment_id,
+                'sensor_attribute': key,
                 'precision': value['sensorattr_precision_value']
             }
 
@@ -622,7 +625,7 @@ def experimentregistration(request):
         print sa_data
 
         if s_data and sa_data:
-            experiment_id = processExperimentInfoForm(experimentinfoform)
+            experiment_id = processExperimentForm(experimentinfoform)
             if experiment_id:
                 processExperimentSensorForm(experiment_id, s_data)
                 processExperimentSensorAttributeForm(experiment_id, sa_data)
@@ -639,19 +642,19 @@ def experimentregistration(request):
     # print "*****************"
 
     for sensor in sensor_list:
-        d = {'sensor': (sensor.sensor_id, sensor.sensor_name)}
+        d = {'sensor': (sensor.id, sensor.name)}
         # print "*****************"
         temp_list = []
-        for sensorAtt in SensorAttribute.objects.filter(sensor_id=sensor.sensor_id):
-            # cc[(sensor.sensor_id, sensor.sensor_name)].append((sensorAtt.sensor_attribute_id, sensorAtt.sensor_attribute_name))
-            temp_list.append((sensorAtt.sensor_attribute_id, sensorAtt.sensor_attribute_name))
+        for sensorAtt in SensorAttribute.objects.filter(sensor_id=sensor.id):
+            # cc[(sensor.id, sensor.sensor_name)].append((sensorAtt.sensor_attribute_id, sensorAtt.sensor_attribute_name))
+            temp_list.append((sensorAtt.id, sensorAtt.name))
         d['sensor_attributes'] = temp_list
         sensors.append(d)
 
     context_dict = {'sensor_data': sensors, "experimentinfoform": experimentinfoform,
                 "experimentsensorform": experimentsensorform, "experimentsensorattributeform": experimentsensorattributeform,
                 "post_data":post_data}
-    # context_dict['errors'] = ExperimentInfoForm
+    # context_dict['errors'] = ExperimentForm
     return render_to_response('accounts/experimentregistration.html', context_dict,
                               context_instance)
 
