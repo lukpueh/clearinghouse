@@ -11,13 +11,19 @@
   
   Jason Chen
   jchen@cs.washington.edu
+
+  Sai Kaushik Borra
+  skb386@nyu.edu
 <Purpose>
 
 <Usage>
   For more information on forms in django see:
   http://docs.djangoproject.com/en/dev/topics/forms/
 """
+
 from clearinghouse.website.control.models import GeniUser
+
+# from control.models import GeniUser, Sensor, SensorAttribute, ExperimentInfo, ExperimentSensor, ExperimentSensorAttribute
 
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
 import django.forms as forms
@@ -43,6 +49,7 @@ class PubKeyField(forms.FileField):
     except ValidationError, err:
       raise forms.ValidationError, str(err)
     return pubkey
+
 
 
 
