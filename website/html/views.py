@@ -80,7 +80,7 @@ add_dy_support(locals())
 rsa = dy_import_module("rsa.r2py")
 
 # Importing models
-from ..control.models import Sensor, SensorAttribute
+from ..control.models import Sensor, SensorAttribute, Experiment, ExperimentSensor, ExperimentSensorAttribute
 
 # Importing forms
 from .forms import ExperimentForm, ExperimentSensorForm, ExperimentSensorAttributeForm
@@ -253,8 +253,8 @@ def profile(request, info="", error_msg="", messages=""):
   except LoggedInButFailedGetGeniUserError:
     return _show_failed_get_geniuser_page(request)
   
-  email_form = forms.gen_edit_user_form(instance=user)
-  affiliation_form = forms.gen_edit_user_form(instance=user)
+  email_form = forms.gen_edit_user_form(('email',),instance=user)
+  affiliation_form = forms.gen_edit_user_form(('affiliation',),instance=user)
   password_form = forms.EditUserPasswordForm()
     
   if request.method == 'POST':
@@ -478,10 +478,39 @@ def irbnuts(request):
   return render_to_response('accounts/IRBnuts.html', {},
           context_instance=RequestContext(request))
 
+def rterms(request):
+  return render_to_response('accounts/rterms.html', {},
+          context_instance=RequestContext(request))
+
+def doterms(request):
+  return render_to_response('accounts/doterms.html', {},
+          context_instance=RequestContext(request))
+
+def dotechinfo(request):
+  return render_to_response('accounts/dotechinfo.html', {},
+          context_instance=RequestContext(request))
+
 def about(request):
   return render_to_response('accounts/about.html', {},
           context_instance=RequestContext(request))
 
+def experiments(request):
+    context_instance = RequestContext(request)
+    id = request.GET.get('id')
+    if id is None:
+        experiments_list = Experiment.objects.all()
+        context_dict = {'experiments': experiments_list}
+    else:
+        experiment = Experiment.objects.filter(id=id)
+        experiment_sensors = ExperimentSensor.objects.filter(experiment=id)
+        experiment_sensor_attribs = ExperimentSensorAttribute.objects.filter(experiment=id)
+        context_dict = {'exp_info': experiment, 'exp_sensors': experiment_sensors,
+                        'exp_sensor_attribs': experiment_sensor_attribs}
+
+    return render_to_response('accounts/experiments.html', context_dict,
+                                  context_instance)
+
+@login_required
 def experimentregistration(request):
     # Obtain the context from the HTTP request.
     context_instance = RequestContext(request)
@@ -539,9 +568,9 @@ def experimentregistration(request):
                 'downloadable': False
             }
             s_form = ExperimentSensorForm(s_fdata)
-            print '################@@@@@@@@@@'
-            print s_form.data
-            print '################@@@@@@@@@@'
+            # print '################@@@@@@@@@@'
+            # print s_form.data
+            # print '################@@@@@@@@@@'
 
             if s_form.is_valid():
                 s_form.save()
@@ -619,10 +648,10 @@ def experimentregistration(request):
 
     if request.method == 'POST':
         s_data, sa_data = getData(request.POST)
-        print '#############'
-        print s_data
-        print '#############'
-        print sa_data
+        # print '#############'
+        # print s_data
+        # print '#############'
+        # print sa_data
 
         if s_data and sa_data:
             experiment_id = processExperimentForm(experimentinfoform)
@@ -655,7 +684,7 @@ def experimentregistration(request):
                 "experimentsensorform": experimentsensorform, "experimentsensorattributeform": experimentsensorattributeform,
                 "post_data":post_data}
     # context_dict['errors'] = ExperimentForm
-    return render_to_response('accounts/experimentregistration.html', context_dict,
+    return render_to_response('control/experimentregistration.html', context_dict,
                               context_instance)
 
 @login_required
@@ -712,7 +741,7 @@ def myvessels(request, get_form=False, action_summary="", action_detail="", remo
   
   # this user's number of donations, max vessels, total vessels and free credits
   my_donations = interface.get_donations(user)
-  my_max_vessels = interface.get_available_vessel_credits(user) 
+  my_max_vessels = interface.get_available_vessel_credits(user)	
   my_free_vessel_credits = interface.get_free_vessel_credits_amount(user)
   my_total_vessel_credits = interface.get_total_vessel_credits(user)
 
@@ -1354,3 +1383,5 @@ def _show_failed_get_geniuser_page(request):
   err += "If you are logged in as an administrator, you'll need to logout, and login with a Seattle Clearinghouse account. "
   err += "If you aren't logged in as an administrator, then this is a bug. Please contact us!"
   return _show_login(request, 'accounts/login.html', {'err' : err})
+
+

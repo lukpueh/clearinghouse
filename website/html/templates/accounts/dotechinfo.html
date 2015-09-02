@@ -1,0 +1,74 @@
+{% extends "accounts/accounts_base.html" %}
+
+{% comment %}
+<Program>
+  accounts/IRBnuts.html
+
+<Author>
+  Sai Kaushik Borra 2015
+
+<Purpose>
+  Django template file for {{ TESTBED }} {{ CLEARINGHOUSE }}'s 'home' page.  This home page
+  is for non-logged in users only.
+
+<Extends>
+  accounts/accounts_base.html
+
+<Stylesheet>
+  common.css
+  account.css
+  help.css
+
+<Scripts>
+  jquery.js
+
+<Template Variables>
+  None
+
+{% endcomment %}
+
+{% block style %}
+{{ block.super }}
+<link href="{{ MEDIA_URL }}css/help.css" rel="stylesheet" type="text/css" />
+{% endblock style %}
+
+{% block title %}
+Technical Information for Device owners - {{ CLEARINGHOUSE }}
+{% endblock title %}
+
+{% block nav_home %}
+<td class="inactive"><a href="{% url 'home' %}">Home</a></td>
+{% endblock nav_home %}
+
+{% block content %}
+	<div id="main">
+		<div id="middle">
+
+			<h2>Technical Information for Device Owners</h2>
+
+            <h3>Security Features Provided by the Sensibility Testbed</h3>
+            <p>The Sensibility Testbed provides a secured experiment environment that protects device owners from a number of potential threats when they make their devices available to researchers. Research done on the Sensibility Testbed is constrained to using mobile device sensors to collect data for research purposes only. The data will never be used for marketing purposes. The protections we provide are twofold: to ensure device owners’ privacy, and to secure devices from potential damage by inadvertent or malicious bugs in experiment code.</p>
+
+            <p>The Sensibility Testbed provides features that make running experiments on any device largely risk free. Below we describe potential privacy and security risks, as well as how the Sensibility Testbed protects participating device owners and their devices.</p>
+
+            <h3>Protecting Device Owners’ Privacy</h3>
+            <p>To minimize privacy risks, the Sensibility Testbed ensures that researchers are allowed to collect only data that has been approved by the researcher’s IRB. Prior to running an experiment on the Sensibility Testbed, a researcher must submit to the Clearinghouse a detailed research plan [link]. This research plan describes the purpose of the research, the type of data to be collected, how that data will be used and protected, and how research participants’ (device owners’) privacy will be protected. The IRB at the researcher’s home university or research lab will only approve the research once they determine that there is no significant privacy risk to participants.</p>
+
+            <p>Once approved by the IRB, the researcher registers the experiment on the Sensibility Testbed Clearinghouse, which sets up policies customized to the experiment. The researcher then requests a number of devices from the Clearinghouse, which then instructs each of these devices to restrict access to various types of sensor. This ensures that the researcher cannot conduct experiments that extend beyond what was approved. For example, the Clearinghouse might set up a policy to restrict the location data precision available to researchers, by instructing each device in this experiment to collect GPS location data that only identifies the country, rather than users’ exact locations. The Sensibility Testbed protocol for research with human subjects has been approved by the IRB at New York University [link to NYU’s IRB].</p>
+
+            <p>The Sensibility Testbed is meant to facilitate research that accesses the least amount of sensor information possible, aims to support well-intentioned projects, and does not support research that seeks to exploit personal information. Device owners retain the right to opt out of the Testbed whenever they so chose. At any time and for any reason, a device owner can disable data collection either by disabling an individual experiment, or stopping the Sensibility application (all experiments will stop collecting data), or by uninstalling the application (no researchers will be able to access the device).</p>
+
+            <h3>Ensuring Devices’ Security</h3>
+            <p>Ensuring that research done using the Sensibility Testbed does-no-harm is our first priority. The main security risk to devices stems from potential bugs in a program, which could create opportunities for a malicious party to bypass a device's security protections. To minimize the possibility of such a security breach, the Sensibility Testbed provides a sandbox to securely execute experimenters’ code. (Please read this if you would like to read about this security design).  The sandbox ensures device system’s safety even if experimenters’ code contains bugs or attempts malicious attacks to the device system. This isolation isolates buggy or malicious experiments and prevents them from harming a device.</p>
+
+            <p>Additionally, the sandbox also isolates each experiment in order to prevent interference across experimenters who collect data from the same devices. The sandbox uses operating system hooks (such as system call interposition) to monitor and control the amount of a device’s storage, network bandwidth, memory, battery power, and CPU resources that are used by any sandboxed program. Therefore, we ensure that device resources are used minimally and in a non-intrusive manner and that experiment programs are isolated.</p>
+
+
+            {% include "common/footer.html" %}
+
+		</div>
+	</div>
+
+
+{% endblock content %}
+

@@ -1,4 +1,5 @@
 #!/bin/bash
+# set -x
 #
 # <Program>
 #   start_clearinghouse_components.sh
@@ -28,7 +29,7 @@ REPY_RUNTIME_DIR="$CLEARINGHOUSE_DIR/../seattle"
 
 # PYTHONPATH takes the deployed clearinghouse's parent dir, and the path to 
 # the RepyV2 runtime.
-export PYTHONPATH="$CLEARINGHOUSE_DIR/..:$REPY_RUNTIME_DIR"
+export PYTHONPATH="$CLEARINGHOUSE_DIR/..:$REPY_RUNTIME_DIR:$CLEARINGHOUSE_DIR"
 
 export DJANGO_SETTINGS_MODULE="clearinghouse.website.settings"
 
@@ -54,7 +55,8 @@ fi
 
 # Count the number of other instances of this script already running, besides 
 # ours. In the count, ignore our own grep, and also ignore screen instances.
-ALREADY_RUNNING_COUNT=`ps -ef | grep start_clearinghouse_components.sh | grep -v grep | grep -v -i screen | grep -v $$ | wc -l`
+ALREADY_RUNNING_COUNT=`ps -ef | grep start_clearinghouse_components.sh | grep -v grep | grep -v -i screen | grep -v $$ | grep -v sudo | wc -l`
+
 
 if [ "$ALREADY_RUNNING_COUNT" != "0" ]; then
   echo "There appears to already be a copy of start_clearinghouse_components.sh running."
@@ -103,7 +105,7 @@ sleep 1 # We need to wait for each process to start before beginning the next
 for TRANSITION_NAME in transition_donation_to_canonical transition_canonical_to_twopercent transition_twopercent_to_twopercent transition_onepercentmanyevents_to_canonical ;
   do echo "Starting transition script $TRANSITION_NAME"
   # We use dylink to enable affixes.  Dylink only imports from the current directory...
-  cd $REPY_RUNTIME_DIR && $SUDO_CMD python $CLEARINGHOUSE_DIR/node_state_transitions/$TRANSITION_NAME.py >>$LOG_DIR/$TRANSITION_NAME.log 2>&1 &
+  cd $REPY_RUNTIME_DIR && $SUDO_CMD python $CLEARINGHOUSE_DIR/node_state_transitions/$TRANSITION_NAME.py >>$LOG_DIR/$TRANSITION_NAME.log 2>&1 & 
   sleep 1
 done
 
@@ -112,6 +114,7 @@ done
 echo "All components started. Kill this process (CTRL-C or 'kill $$') to stop all started components (except apache)."
 
 
-
+jobs
 # Wait for all background processes to terminate.
 wait
+

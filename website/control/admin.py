@@ -249,12 +249,12 @@ class ExperimentAdmin(admin.ModelAdmin):
     search_fields = ["id", "name", "researcher_name", "researcher_email", "irb_officer_name", "irb_officer_email"]
 
 class ExperimentSensorAdmin(admin.ModelAdmin):
-    list_display = ["experiment_id", "sensor_id", "frequency", "usage_policy", "downloadable"]
-    search_fields = ["experiment_id", "sensor_id"]
+    list_display = ["experiment", "sensor", "frequency", "usage_policy", "downloadable"]
+    search_fields = ["experiment", "sensor"]
 
 class ExperimentSensorAttributeAdmin(admin.ModelAdmin):
-    list_display = ["experiment_id", "sensor_attribute_id", "precision"]
-    search_fields = ["experiment_id", "sensor_attribute_id", "precision"]
+    list_display = ["experiment", "sensor_attribute", "precision"]
+    search_fields = ["experiment", "sensor_attribute", "precision"]
 
 # Register/associate each custom admin view defined above with the
 # corresponding model defined in clearinghouse.website.control.models

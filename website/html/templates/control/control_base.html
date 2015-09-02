@@ -31,13 +31,16 @@
 {% endcomment %}
 
 {% block script %}
-<script type="text/javascript" src="{{ MEDIA_URL}}scripts/jquery.js" charset="utf-8"></script>
+    {{ block.super }}
+<!--<script type="text/javascript" src="{{ MEDIA_URL}}scripts/jquery.js" charset="utf-8"></script>-->
 {% endblock script %}
 
 {% block navigation %}
+
 	<div id="navigator">
+        <span id="meta">Logged in as {{ username }}, <a class="logout" href="{% url 'logout' %}">Logout</a></span>
 		<div id="tabs">
-			<span id="meta">Logged in as {{ username }}, <a class="logout" href="{% url 'logout' %}">Logout</a></span>
+
 			<table>
 				<tr>
 					{% block nav_profile %}
@@ -52,6 +55,10 @@
 					  <td><a href="{% url 'getdonations' %}">Get Donations</a></td>
           {% endblock nav_getdonations %}
 
+                    {% block nav_experimentregistration %}
+					  <td><a href="{% url 'experimentregistration' %}">Register an Experiment</a></td>
+		      {% endblock nav_experimentregistration %}
+
 		      {% block nav_help %}
 					  <td><a href="{% url 'help' %}">Help</a></td>
 		      {% endblock nav_help %}
@@ -60,3 +67,4 @@
 		</div>
 	</div>
 {% endblock navigation %}
+

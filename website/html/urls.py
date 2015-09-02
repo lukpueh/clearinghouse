@@ -12,9 +12,13 @@ urlpatterns = patterns('clearinghouse.website.html.views',
                        # Previously defined in accounts/urls.py.                       
                        (r'^home$', htmlviews.home, {},'home'),
                        (r'^IRBnuts$', htmlviews.irbnuts, {},'irbnuts'),
+                       (r'^rterms$', htmlviews.rterms, {},'rterms'),
+                       (r'^doterms$', htmlviews.doterms, {},'doterms'),
+                       (r'^dotechinfo$', htmlviews.dotechinfo, {},'dotechinfo'),
                        (r'^about$', htmlviews.about, {},'about'),
 
                        (r'^experimentregistration$', htmlviews.experimentregistration, {},'experimentregistration'),
+                       (r'^experiments$', htmlviews.experiments, {},'experiments'),
                        (r'^register$', htmlviews.register, {},'register'),
                        (r'^login$', htmlviews.login, {}, 'login'), 
                        (r'^logout$', htmlviews.logout, {},'logout'),
@@ -94,3 +98,4 @@ urlpatterns = patterns('clearinghouse.website.html.views',
                        #(r'^ajax_createshare$', 'ajax_createshare', {}, 'ajax_createshare'),
                        #(r'^ajax_getvessels$', 'ajax_getvessels', {}, 'ajax_getvesseles'),
                       )
+

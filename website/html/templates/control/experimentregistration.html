@@ -1,4 +1,4 @@
-{% extends "accounts/accounts_base.html" %}
+{% extends "control/control_base.html" %}
 
 {% comment %}
 <Program>
@@ -43,8 +43,9 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 
 {% block script %}
 {{ block.super }}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script type="text/javascript" src="{{MEDIA_URL}}scripts/register.js" charset="utf-8"></script>
+    <!--<script type="text/javascript" src="{{MEDIA_URL}}scripts/register.js" charset="utf-8"></script>-->
+    <script type="text/javascript" src="{{MEDIA_URL}}scripts/exp_register.js" charset="utf-8"></script>
+    <!--<script type="text/javascript">$('.collapse').collapse();</script>-->
 {% endblock script %}
 
 {% block nav_register %}
@@ -200,7 +201,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                               </label>
                                           </div>
 
-                                          <div class="well sensor_atrributes collapse" id="sensorattr-{{sensor_dict.sensor.0}}">
+                                          <div class="well sensor_atrributes collapse in" id="sensorattr-{{sensor_dict.sensor.0}}">
 
                                               {% for sensor_att in sensor_dict.sensor_attributes %}
                                                   <input type = "checkbox"
@@ -324,3 +325,4 @@ Experiment Registration - {{ CLEARINGHOUSE }}
     </div>
 
 {% endblock content %}
+

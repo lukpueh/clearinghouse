@@ -1,0 +1,195 @@
+{% extends "accounts/accounts_base.html" %}
+
+{% comment %}
+<Program>
+  accounts/IRBnuts.html
+
+<Author>
+  Sai Kaushik Borra 2015
+
+<Purpose>
+  Django template file for {{ TESTBED }} {{ CLEARINGHOUSE }}'s 'home' page.  This home page
+  is for non-logged in users only.
+
+<Extends>
+  accounts/accounts_base.html
+
+<Stylesheet>
+  common.css
+  account.css
+  help.css
+
+<Scripts>
+  jquery.js
+
+<Template Variables>
+  None
+
+{% endcomment %}
+
+{% block style %}
+{{ block.super }}
+<link href="{{ MEDIA_URL }}css/help.css" rel="stylesheet" type="text/css" />
+{% endblock style %}
+
+{% block title %}
+Terms of Use for Researchers - {{ CLEARINGHOUSE }}
+{% endblock title %}
+
+{% block nav_home %}
+<td class="inactive"><a href="{% url 'home' %}">Home</a></td>
+{% endblock nav_home %}
+
+{% block content %}
+	<div id="main">
+		<div id="middle">
+
+            <h2>Terms of Use for Researchers</h2>
+            <h3>Conducting Research Using Shared Devices</h3>
+
+            <p>The Sensibility Testbed is a network testbed that enables researchers to use the sensing capabilities of smartphones and tablets and conduct their own experiments by gathering sensor data from mobile devices.  The Sensibility Testbed provides a platform that facilitates research in various areas, by allowing researchers to gather sensor data from other people’s mobile devices. Researchers  can use the collected data to identify opportunities for improving current network protocols or systems and to implement or evaluate new services, algorithms, and new research ideas.</p>
+
+            <h3>Definitions</h3>
+            <p><strong>Smartphone sensors</strong> are broadly defined as hardware components that can record phenomena about the physical world.</p>
+            <p><strong>Passive experiments</strong> are defined as experiments that run in the background of a device and do not need user input or interactions.</p>
+            <p><strong>Device owners or participants</strong> refer to people who have agreed to make their mobile devices available to Sensibility Testbed researchers.</p>
+            <p><strong>The Sensibility Testbed Consortium</strong> is composed of researchers and programmers, at affiliated institutions, who are responsible for developing and maintaining the testbed and managing the provided services. The Consortium is also responsible for ensuring that researchers adhere to IRB approved protocols for their individual experiments and that device owners are properly informed of the risks/benefits of participating in Sensibility Testbed experiments.</p>
+            <p><strong>The Sensibility Testbed Clearinghouse</strong> is a web-based portal for managing Sensibility Testbed resources. It keeps track of experiments and mediates experimenter access to available devices. Its key role is to facilitate device sharing, which relieves individual experimenters from having to recruit devices for their experiments. It also sets up and enforces policies for sensor data access, in order to protect device owners’ privacy.</p>
+
+            <p>The Sensibility Testbed App can be downloaded from the Google Play Store, as are participants’ informed consent agreements. Device owners can agree to share their devices and sign their consent form via the Sensibility Testbed App on their smartphones or tablets. Device owners may stop data collection or leave the Sensibility Testbed whenever they so chose, for any reason, and without any ramifications.</p>
+
+            <h3>Types of Experiments that Use the Sensibility Testbed</h3>
+            <p>Sensors that are accessible to experimenters using the Sensibility Testbed report on environmental data around the device such as temperature, motion, geographic location, etc., but do not snoop on smartphone or network data. For example, no network packet payload or MAC addresses will be collected through a WiFi interface. Sensors and types of data collected by a researcher may include:
+                <ul>
+                    <li>Accelerometer, magnetometer, gyroscope, orientation sensors; microphones; etc.</li>
+                    <li>Information about batteries, such as plugin type, battery technology and level, etc.</li>
+                    <li>Device location using GPS, network, or passive (cached location data on the device)</li>
+                    <li>Network information about Bluetooth, cellular and WiFi connections and the connection quality (data rate, signal strength, etc)</li>
+                </ul>
+            </p>
+
+            <p>Researchers use data they collect to improve network protocols, services or systems. For example, transportation agencies can use sensor data to monitor traffic in an area. Application developers can monitor how programs perform in the field. Wireless network researchers can observe public WiFi and cellular network coverage, and use this information to improve public networks. Environmental scientists might use sensor data to report on the noise level in different areas of a city.</p>
+            <h3>License and Warranty</h3>
+            <p>Copyright (c) 2015 NYU</p>
+
+            <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+            <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+            <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+
+            <h3>Security Features Provided by the Sensibility Testbed</h3>
+            <p>The Sensibility Testbed provides a secured experiment environment that protects device owners from a number of potential threats when they make their devices available to researchers. Prior to running an experiment on the Sensibility Testbed, a researcher must provide the Consortium with a detailed research plan through the Clearinghouse. The research plan will describe the purpose of the research; the type of data to be collected; how that data will be used, stored, and protected; and how research participants’ (device owners) confidentiality and privacy will be protected. The Clearinghouse provides information to help researchers prepare their Institutional Review Board (IRB) applications. The IRB at the researcher’s home university or research lab will approve the research once they determine that there is no significant privacy risk to participants.</p>
+
+            <p>After receiving IRB approval, researchers register their experiments on the Clearinghouse and request resources (remote mobile devices) to collect data. Following the specific experiment’s specifications and the related IRB protocols, the Clearinghouse will set up data filtering policies to be implemented on the requested remote devices; these filters are customized to the specific experiment. This data filtering technique protects device owners and their devices and ensures that researchers will not be able to conduct experiments that extend beyond what their IRB approved. The Sensibility Testbed protocol for research with human subjects has been approved by the IRB at New York University [a link to NYU approval letter or ref # after approval].</p>
+
+            <p>Research done on the Sensibility Testbed is constrained to using mobile device sensors to collect data for research purposes only. The data will not be used for marketing or surveillance purposes. The protections the Consortium provides are twofold: (1) we ensure device owners’ confidentiality and privacy, and (2) we secure devices from potential damage from inadvertent or malicious bugs in experimenters’ software.</p>
+
+            <h3>Protecting Device Owners’ / Research Participants’ Privacy</h3>
+            <p>Because some of the data collected in an experiment might be sensitive, the Sensibility Testbed configures remote devices to blur the accuracy of, or block, access to certain types of sensor data. For example, for research that involves GPS, and according to the specifications stated in the research plan and IRB documents, the Clearinghouse might restrict an experiment’s level of data granularity by configuring the GPS sensors to collect location data that only identifies the center of the country that a user is in, rather than the user’s exact location.</p>
+
+            <p>Device owners must be informed about the research and give their consent to participate; the Consortium ensures that device owners are appropriately informed and that they have given their consent to participate in Sensibility Testbed research. Device owners retain the right to opt out of the Testbed whenever they so chose. At any time and for any reason, a device owner can opt out of any individual experiment by disabling experiments individually, disabling all data collection by stopping the Sensibility application (all experiments stop collecting data), or by uninstalling the application (no researcher will be able to access the device).</p>
+
+            <h3>Protecting Device Security</h3>
+            <p>Ensuring that research done using the Sensibility Testbed does-no-harm is our first priority. The main security risk to devices stems from potential bugs in a program. To minimize the possibility of such a security breach, Sensibility Testbed approved experiments run in a sandbox on any remote device (please read this for the security design of the sandbox). This sandbox ensures system safety even if the experiment code is buggy or malicious and prevents unsafe code from harming a device’s system.</p>
+            <p>Additionally, the sandbox isolates experiments to prevent interference across experimenters who may be collecting data from the same devices, and across the experiments and device systems. The sandbox monitors and controls the amount of a device’s storage space, network bandwidth, memory, battery power, and CPU resources available to any sandboxed experiment. Therefore, device resources are used in a non-intrusive manner and experiment programs are both secured and isolated.</p>
+
+            <h3>Researchers’ Responsibilities and Rights</h3>
+            <p>Researchers must adhere to specific protocols to protect research participants (device owners) and their devices. Prior to conducting experiments on the Sensibility Testbed, researchers must have their research approved by their home institutions’ Institutional Review Boards (IRB) and register their experiments on the Sensibility Testbed Clearinghouse site. Researchers agree to adhere to experiment parameters as delineated by their IRB and to comply with any other limits that the Sensibility Consortium places on data collection or the use of resources.</p>
+
+            <p>Researchers who use the Sensibility Testbed may collect a subset of the following sensors to capture some or all of the following types of data:</p>
+
+            <ul>
+                <li>Battery
+                    <ul>
+                        <li>if_battery_present</li>
+                        <li>battery_health</li>
+                        <li>battery_level</li>
+                        <li>battery_plug_type</li>
+                        <li>battery_status</li>
+                        <li>battery_technology</li>
+                    </ul>
+                </li>
+                <li>Bluetooth
+                    <ul>
+                        <li>bluetooth_state (if Bluetooth is enabled)</li>
+                        <li>bluetooth_get_scan_mode (connectable? discoverable?)</li>
+                        <li>bluetooth_get_local_name (visible device name)</li>
+                    </ul>
+                </li>
+                <li>Cellular (all return null if the device has no service plan)
+                    <ul>
+                        <li>start_listen_phone_state</li>
+                        <li>check_network_roaming (returns true if the device is considered roaming on the current network, for GSM purposes)</li>
+                        <li>get_cellID (details about cell ID http://en.wikipedia.org/wiki/Cell_ID )</li>
+                        <li>get_location_area_code</li>
+                        <li>get_mobile_country_code (mobile country code, or MCC)</li>
+                        <li>get_mobile_network_code (mobile network code, or MNC)</li>
+                        <li>get_network_operator (returns the numeric name, MCC+MNC, of current registered operator. See how MCC+MNC identify a unique operator http://en.wikipedia.org/wiki/Mobile_country_code )</li>
+                        <li>get_network_operator_name (returns the alphabetic name of current registered operator)</li>
+                        <li>get_network_type (returns a the radio technology, or network type, currently in use on the device)</li>
+                        <li>get_service_state (returns the state of cellular service: emergency call only, in service, out of service, or power off)</li>
+                        <li>get_signal_strengths</li>
+                        <li>stop_listen_phone_state</li>
+                    </ul>
+                </li>
+                <li>Location
+                    <ul>
+                        <li>read_location</li>
+                        <li>last_known_location</li>
+                        <li>geocode (Obtain a list of addresses for the given latitude and longitude)</li>
+                    </ul>
+                </li>
+                <li>Settings
+                    <ul>
+                        <li>check_airplane_mode</li>
+                        <li>check_ringer_silent_mode</li>
+                        <li>check_screen_on</li>
+                        <li>get_max_media_volume</li>
+                        <li>get_max_ringer_volume</li>
+                        <li>get_media_volume</li>
+                        <li>get_ringer_volume</li>
+                        <li>get_screen_brightness</li>
+                        <li>get_screen_timeout</li>
+                    </ul>
+                </li>
+                <li>Sensor
+                    <ul>
+                        <li>sensors (get the most recently recorded sensor data: accelerometer, magnetic and orientation)</li>
+                        <li>sensors_accuracy</li>
+                        <li>sensors_get_light (most recently received light value)</li>
+                        <li>sensors_read_accelerometer (most recently received accelerometer value)</li>
+                        <li>sensors_read_magnetometer (most recently received magnetic field value)</li>
+                        <li>sensors_read_orientation (most recently received orientation value)</li>
+                    </ul>
+                </li>
+                <li>SignalStrength
+                    <ul><li>read_signal_strengths</li></ul>
+                </li>
+                <li>WiFi
+                    <ul>
+                        <li>check_wifi_state (check WiFi state: whether it is enabled)</li>
+                        <li>wifi_get_connectionInfo (information about the currently active access point)</li>
+                        <li>wifi_get_scan_results (list of access points found during the most recent WiFi scan)</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <p>The Sensibility Testbed filters or blurs sensor data to reduce its precision and frequency; the need for and degree of filtering or blurring is determined by a researcher’s experiment context. No information will be collected that identifies a device’s activity or that traces users’ identities, information, or activities.</p>
+
+            <p>Researchers retain ownership of their data and research findings, and are responsible for storing and securing this data, according to parameters defined in their IRB application/approval.</p>
+
+            <h3>Future Use and Research Protocol Revisions</h3>
+            <p>We may, in the future, implement modifications to our protocols for data collection and use.</p>
+            <h3>Acknowledgement of Terms</h3>
+            <p>Participating researchers agree to the terms stated on the Sensibility Testbed Clearinghouse website.</p>
+
+
+            {% include "common/footer.html" %}
+
+		</div>
+	</div>
+
+
+{% endblock content %}
+
