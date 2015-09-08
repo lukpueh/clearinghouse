@@ -7,7 +7,6 @@
 
 <Author>
   Justin Samuel
-  Sai Kaushik Borra
 
 <Purpose>
   This file contains definitions of model classes for the main database
@@ -63,6 +62,7 @@ class Experiment(models.Model):
     irb_officer_name = models.CharField(max_length=30)
     irb_officer_email = models.EmailField()
     goal = models.CharField(max_length=256)
+    precision_other = models.CharField(max_length=256, default=None)
 
     class Meta:
         verbose_name_plural = "Experiment info"
@@ -81,6 +81,7 @@ class SensorAttribute(models.Model):
     # sensor_attribute_id = models.AutoField(primary_key=True)
     sensor = models.ForeignKey(Sensor)
     name = models.CharField(max_length=30)
+    precision_flag = models.BooleanField(default=False)
 
     def __unicode__(self):
         return "%d" %(self.id)
@@ -94,7 +95,7 @@ class ExperimentSensor(models.Model):
     sensor = models.ForeignKey(Sensor)
     frequency = models.IntegerField()
     usage_policy = models.CharField(max_length=512)
-    downloadable = models.BooleanField(default=True)
+    downloadable = models.BooleanField(default=False)
 
     def __unicode__(self):
         return "%d" % self.id

@@ -79,7 +79,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                 {% endfor %}
             </div>
             <div name="ExperimentRegistrationForm">
-                <form action="{% url 'experimentregistration' %}" method="post" enctype="multipart/form-data">
+                <form id="experiment" name="experiment" action="{% url 'experimentregistration' %}" onsubmit="return validate_experiment()"  method="post" enctype="multipart/form-data">
                   {% csrf_token %}
                   <!--{% if form.username.errors or form.password1.errors or form.password2.errors or form.affiliation.errors or form.email.errors or form.pubkey.errors %}-->
                       <!--<p class="warning2">-->
@@ -194,7 +194,8 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 
                                           <div class="checkbox">
                                               <label data-toggle="collapse" data-target="#sensorattr-{{sensor_dict.sensor.0}}">
-                                                  <input type="checkbox"
+                                                  <input type="checkbox" data-label={{sensor_dict.sensor.1}}
+							  class="sensors"
                                                           name="select_sensor-{{ sensor_dict.sensor.0 }}"
                                                           id="select_sensor-{{ sensor_dict.sensor.0 }}"
                                                           value="{{ sensor_dict.sensor.0 }}" > {{sensor_dict.sensor.1}}
@@ -204,11 +205,38 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                           <div class="well sensor_atrributes collapse in" id="sensorattr-{{sensor_dict.sensor.0}}">
 
                                               {% for sensor_att in sensor_dict.sensor_attributes %}
+						<label data-toggle="collapse" data-target="#precision_div-{{sensor_att.0}}">
                                                   <input type = "checkbox"
                                                          name = "sensorattr-{{ sensor_dict.sensor.0 }}-{{sensor_att.0}}"
                                                          id = "sensorattr-{{ sensor_dict.sensor.0 }}-{{sensor_att.0}}"
-                                                         value = {{sensor_att.0}} checked> {{sensor_att.1}}
-                                                  <br/>
+							class = "sensorattrs-{{ sensor_dict.sensor.0 }}"
+                                                         value = {{sensor_att.0}} checked/> {{sensor_att.1}}</label><br/>
+						{% if sensor_dict.sensor.1 == 'Location' %}
+						 <div id="precision_div-{{sensor_att.0}}" name="precision_div-{{sensor_att.0}}" class="panel panel-default collapse" {% if sensor_att.2 == False %} style="display: none;" {% endif %}>
+                                                        <div class="row">
+                                                        <div class="col-md-3"><strong>Level of Blurring</strong></div>
+                                                        <div class="col-md-3">
+								<input type="hidden" name="sensorattr_precision-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" value="truncate"/>
+								<select class="form-control" name="sensorattr_precision_value-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}">
+									<option value='01'>City</option>
+									<option value='10'>State</option>
+									<option value='11'>Country</option>
+								</select>
+	                                                </div></div></div>
+						{% else %}
+						<div id="precision_div-{{sensor_att.0}}" name="precision_div-{{sensor_att.0}}" class="panel panel-default collapse" {% if sensor_att.2 == False %} style="display: none;" {% endif %}>
+                                                        <div class="row">
+							<div class="col-md-3"><strong>Precision</strong></div>
+							<div class="col-md-3">
+                                                		<input type="radio" name="sensorattr_precision-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" value="full" checked/> Full precision
+	                                                </div>
+	                                                <div class="col-md-4">
+	                                                	<label data-toggle="collapse" data-target="#sensorattr_precision_value-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}">
+								<input type="radio" name="sensorattr_precision-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" value="truncate"/> Truncation allowed</label> <br/>
+        	                                        	<input type="text" class="col-sm-2 form-control input-sm collapse in" id="sensorattr_precision_value-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" name="sensorattr_precision_value-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" placeholder="No. of Decimal points allowed">
+	                                                </div>
+                                                </div></div>
+						{% endif %}
                                               {% endfor %}
 
                                                   <div class="form-group">
@@ -238,7 +266,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                           </li>
                                                           <li>
                                                               <strong>How precise do you need the<b><i>'{{sensor_dict.sensor.1}}'</i></b>data to be?</strong><br/>
-                                                              <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" value="full" checked="checked"/> Full precision<br/>
+                                                             <!-- <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" value="full" checked="checked"/> Full precision<br/>
 
                                                               <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" value="truncate"/> Truncation allowed
 
@@ -247,19 +275,9 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                                   <div class="panel panel-default">
                                                                       <div class="panel-body">
                                                                           {% for sensor_att in sensor_dict.sensor_attributes %}
-                                                                              <!--<li><b>{{sensor_att.1}}</b> Allow <input type="text"> decimal points</li>-->
-                                                                              <!--<div class="form-horizontal">-->
-                                                                                  <!--<div class="form-group form-group-sm">-->
-                                                                                      <!--<input class="col-sm-1" type="checkbox" name="sensor" value={{sensor_dict.sensor.0}}>-->
-                                                                                      <!--<label class="col-sm-4 control-label" for="truncate-attrib">{{sensor_att.1}}</label>-->
-                                                                                      <!--<div class="col-sm-6">-->
-                                                                                          <!--Keep <input type="text" id="truncate-attrib"> decimal points-->
-                                                                                      <!--</div>-->
-                                                                                  <!--</div>-->
-                                                                              <!--</div>-->
-
+                                                                              {% if sensor_att.2 %}
                                                                               <div class="row">
-                                                                                  <div class="col-md-3">{{ sensor_att.1 }}</div>
+                                                                                  <div class="col-md-3">{{ sensor_att.1 }} {{ sensor_att.2 }}</div>
                                                                                   <div class="col-md-3">
                                                                                       <input type="radio" name="sensorattr_precision-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" value="full" checked="checked"/> Full precision
                                                                                   </div>
@@ -272,12 +290,13 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                                                                     placeholder="No. of Decimal points allowed">
                                                                                   </div>
                                                                               </div>
+                                                                              {% endif %}
                                                                           {% endfor %}
                                                                       </div>
                                                                   </div>
                                                               </div>
 
-                                                              <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" id="sensor_precision-{{ sensor_dict.sensor.0 }}" value="other">
+                                                              <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" id="sensor_precision-{{ sensor_dict.sensor.0 }}" value="other">-->
                                                               <label for="sensor_precision_other-{{ sensor_dict.sensor.0 }}">A level of data precision that we currently do not support? Please elaborate:</label>
                                                               <input type="text" class="form-control" name="sensor_precision_other-{{ sensor_dict.sensor.0 }}" id="sensor_precision_other-{{ sensor_dict.sensor.0 }}">
                                                           </li>

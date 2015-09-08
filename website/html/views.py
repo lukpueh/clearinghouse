@@ -676,7 +676,7 @@ def experimentregistration(request):
         temp_list = []
         for sensorAtt in SensorAttribute.objects.filter(sensor_id=sensor.id):
             # cc[(sensor.id, sensor.sensor_name)].append((sensorAtt.sensor_attribute_id, sensorAtt.sensor_attribute_name))
-            temp_list.append((sensorAtt.id, sensorAtt.name))
+            temp_list.append((sensorAtt.id, sensorAtt.name, sensorAtt.precision_flag))
         d['sensor_attributes'] = temp_list
         sensors.append(d)
 
