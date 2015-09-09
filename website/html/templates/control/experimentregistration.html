@@ -206,13 +206,13 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 
                                               {% for sensor_att in sensor_dict.sensor_attributes %}
 						<label data-toggle="collapse" data-target="#precision_div-{{sensor_att.0}}">
-                                                  <input type = "checkbox"
+                                                  <input type = "checkbox" data-label="{{sensor_att.1}}"
                                                          name = "sensorattr-{{ sensor_dict.sensor.0 }}-{{sensor_att.0}}"
                                                          id = "sensorattr-{{ sensor_dict.sensor.0 }}-{{sensor_att.0}}"
 							class = "sensorattrs-{{ sensor_dict.sensor.0 }}"
-                                                         value = {{sensor_att.0}} checked/> {{sensor_att.1}}</label><br/>
+                                                         value = {{sensor_att.0}}/> {{sensor_att.1}}</label><br/>
 						{% if sensor_dict.sensor.1 == 'Location' %}
-						 <div id="precision_div-{{sensor_att.0}}" name="precision_div-{{sensor_att.0}}" class="panel panel-default collapse" {% if sensor_att.2 == False %} style="display: none;" {% endif %}>
+						 <div id="precision_div-{{sensor_att.0}}" name="precision_div-{{sensor_att.0}}" class="panel panel-default collapse in" {% if sensor_att.2 == False %} style="display: none;" {% endif %}>
                                                         <div class="row">
                                                         <div class="col-md-3"><strong>Level of Blurring</strong></div>
                                                         <div class="col-md-3">
@@ -224,7 +224,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 								</select>
 	                                                </div></div></div>
 						{% else %}
-						<div id="precision_div-{{sensor_att.0}}" name="precision_div-{{sensor_att.0}}" class="panel panel-default collapse" {% if sensor_att.2 == False %} style="display: none;" {% endif %}>
+						<div id="precision_div-{{sensor_att.0}}" name="precision_div-{{sensor_att.0}}" class="panel panel-default collapse in" {% if sensor_att.2 == False %} style="display: none;" {% endif %}>
                                                         <div class="row">
 							<div class="col-md-3"><strong>Precision</strong></div>
 							<div class="col-md-3">
