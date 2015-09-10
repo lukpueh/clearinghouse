@@ -565,7 +565,7 @@ def experimentregistration(request):
                 'sensor': key,
                 'frequency': value['frequency'],
                 'usage_policy': value['usage'],
-                'downloadable': False
+                'downloadable': value['downloadable']
             }
             s_form = ExperimentSensorForm(s_fdata)
             # print '################@@@@@@@@@@'
@@ -584,7 +584,8 @@ def experimentregistration(request):
             if value['sensorattr_precision'] == 'full':
                 value['sensorattr_precision_value'] = 0000
             else:
-                value['sensorattr_precision_value'] = 0000
+		if not value['sensorattr_precision_value']:
+			value['sensorattr_precision_value'] = 0000
 
             sa_fdata = {
                 'experiment': experiment_id,

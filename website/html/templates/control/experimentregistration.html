@@ -73,11 +73,11 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                 {{ form.non_field_errors }}
             </div>
 
-            <div class="well">
+            <!--<div class="well">
                 {% for data in post_data %}
                     {{ data.key }} | {{ data.value }} <br/>
                 {% endfor %}
-            </div>
+            </div>-->
             <div name="ExperimentRegistrationForm">
                 <form id="experiment" name="experiment" action="{% url 'experimentregistration' %}" onsubmit="return validate_experiment()"  method="post" enctype="multipart/form-data">
                   {% csrf_token %}
@@ -202,7 +202,10 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                               </label>
                                           </div>
 
-                                          <div class="well sensor_atrributes collapse in" id="sensorattr-{{sensor_dict.sensor.0}}">
+                                          <div class="panel panel-default sensor_atrributes collapse in" id="sensorattr-{{sensor_dict.sensor.0}}">
+						<div class="panel-body">
+						<h4>Select ATLEAST ONE checkbox from below</h4>
+						<div>
 
                                               {% for sensor_att in sensor_dict.sensor_attributes %}
 						<label data-toggle="collapse" data-target="#precision_div-{{sensor_att.0}}">
@@ -210,7 +213,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                          name = "sensorattr-{{ sensor_dict.sensor.0 }}-{{sensor_att.0}}"
                                                          id = "sensorattr-{{ sensor_dict.sensor.0 }}-{{sensor_att.0}}"
 							class = "sensorattrs-{{ sensor_dict.sensor.0 }}"
-                                                         value = {{sensor_att.0}}/> {{sensor_att.1}}</label><br/>
+                                                         value = {{sensor_att.0}}> {{sensor_att.1}}</label><br/>
 						{% if sensor_dict.sensor.1 == 'Location' %}
 						 <div id="precision_div-{{sensor_att.0}}" name="precision_div-{{sensor_att.0}}" class="panel panel-default collapse in" {% if sensor_att.2 == False %} style="display: none;" {% endif %}>
                                                         <div class="row">
@@ -238,11 +241,13 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                 </div></div>
 						{% endif %}
                                               {% endfor %}
+						</div>
 
                                                   <div class="form-group">
-                                                      <ol type="i">
-                                                          <li>
-                                                              <strong>How often will you need to access<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data?</strong>
+                                                      
+                                                          <div class="panel panel-default">
+                                                              <div class="panel-heading">Frequency</div>
+							      <div class="panel-body"><strong>How often will you need to access<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data?</strong>
                                                               <div class="form-inline">
                                                                   <div class="form-group">
                                                                       <label for="frequency-{{ sensor_dict.sensor.0 }}">Once every</label>
@@ -262,10 +267,12 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                                   <label for="frequency_other-{{ sensor_dict.sensor.0 }}">Other:</label>
                                                                   <input type="text" class="form-control" id="frequency_other-{{ sensor_dict.sensor.0 }}"
                                                                           name="frequency_other-{{ sensor_dict.sensor.0 }}">
-                                                              </div>
-                                                          </li>
-                                                          <li>
-                                                              <strong>How precise do you need the<b><i>'{{sensor_dict.sensor.1}}'</i></b>data to be?</strong><br/>
+                                                              </div></div>
+                                                          </div>
+                                                          
+                                                              <div class="panel panel-default">
+                                                              <div class="panel-heading">Precision</div>
+                                                              <div class="panel-body"><strong>How precise do you need the<b><i>'{{sensor_dict.sensor.1}}'</i></b>data to be?</strong><br/>
                                                              <!-- <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" value="full" checked="checked"/> Full precision<br/>
 
                                                               <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" value="truncate"/> Truncation allowed
@@ -299,16 +306,26 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                               <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" id="sensor_precision-{{ sensor_dict.sensor.0 }}" value="other">-->
                                                               <label for="sensor_precision_other-{{ sensor_dict.sensor.0 }}">A level of data precision that we currently do not support? Please elaborate:</label>
                                                               <input type="text" class="form-control" name="sensor_precision_other-{{ sensor_dict.sensor.0 }}" id="sensor_precision_other-{{ sensor_dict.sensor.0 }}">
-                                                          </li>
-                                                          <li>
-                                                              <label for="usage-{{sensor_dict.sensor.0}}">What will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be used for?</label>
+                                                          </div></div>
+							  
+							      <div class="panel panel-default">
+                                                              <div class="panel-heading">Downloadable Data ?</div>
+                                                              <div class="panel-body"><label for="downloadable-{{sensor_dict.sensor.0}}">Will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be downloaded from participant's devices?</label>
+							      <div class="row">
+								<div class="col-md-3"> <input type="radio" name="downloadable-{{ sensor_dict.sensor.0 }}" value=1> Yes </div>
+								<div class="col-md-3"> <input type="radio" name="downloadable-{{ sensor_dict.sensor.0 }}" value=0 checked> No </div>
+							      </div>
+							  </div></div>
+                                                          
+                                                              <div class="panel panel-default">
+                                                              <div class="panel-heading">Frequency</div>
+                                                              <div class="panel-body"><label for="usage-{{sensor_dict.sensor.0}}">What will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be used for?</label>
                                                               <input type="text" class="form-control" id="usage-{{sensor_dict.sensor.0}}" name="usage-{{sensor_dict.sensor.0}}"
                                                                       name="usage-{{sensor_dict.sensor.0}}" name="usage-{{sensor_dict.sensor.0}}">
-                                                          </li>
-                                                      </ol>
+                                                          </div></div>
                                                   </div>
                                           </div>
-                                      </div>
+                                      </div></div>
 
                                       <!--<label> {{key}}</label>-->
                                       <!--<input type="checkbox" name="{{key.1}}" value="{{key.1}}" label="{{key.1}}" >-->
@@ -318,22 +335,22 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                       <!--{% endfor %}-->
                                       
                                   {% endfor %}
-                                  <label for="new-sensors"><b>Other:</b>If you find sensors that we donot support, please tell us more: </label>
-                                  <input type="text" class="form-control" id="new-sensors" name="new-sensors">
+                                  <label for="{{experimentinfoform.sensor_other.name}}"><b>Other:</b>{{experimentinfoform.sensor_other.label}}: </label>
+                                  <input type="text" class="form-control" id="{{experimentinfoform.sensor_other.name}}" name="{{experimentinfoform.sensor_other.name}}">
                               </li>
-                              <li>
+                              <!--<li>
                                   <label for="downloadable">Using the sensors you identified above, what type(s) of sensor data will be downloaded from participants’ devices?</label>
                                   <input type="text" class="form-control" id="downloadable" name="downloadable">
-                              </li>
+                              </li>-->
                               <li>
-                                  <label for="store">How and where will you store and protect the collected data?</label>
-                                  <input type="text" class="form-control" id="store" name="store">
+                                  <label for="{{experimentinfoform.store_protect.name}}">{{experimentinfoform.store_protect.label}}</label>
+                                  <input type="text" class="form-control" id="{{experimentinfoform.store_protect.name}}" name="{{experimentinfoform.store_protect.name}}" required>
                               </li>
                           </ol>
                       </li>
 
                       <li>
-                          <input type="checkbox" name="Agree" value="agree" required> I have read and agree to the <a href="">Terms of Use for Researchers</a>
+                          <input type="checkbox" name="Agree" value="agree" required> I have read and agree to the <a href="{% url 'rterms' %}">Terms of Use for Researchers</a>
                       </li>
                   </ol><hr/>
                   <input type="submit" class="btn btn-primary btn-lg btn-block" value="Register my Experiment">

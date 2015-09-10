@@ -62,7 +62,8 @@ class Experiment(models.Model):
     irb_officer_name = models.CharField(max_length=30)
     irb_officer_email = models.EmailField()
     goal = models.CharField(max_length=256)
-    precision_other = models.CharField(max_length=256, default=None)
+    sensor_other = models.CharField(max_length=256, default=None, blank=True)
+    store_protect = models.CharField(max_length=512)
 
     class Meta:
         verbose_name_plural = "Experiment info"

@@ -62,6 +62,8 @@ class ExperimentForm(forms.ModelForm):
     irb_officer_name = forms.CharField(label="Name of the home institution\'s IRB officer or contact person", error_messages={'required': 'Enter Contact Person\'s Name'})
     irb_officer_email = forms.CharField(label="Email address of home institution\'s IRB officer or contact person", error_messages={'required': 'Enter contact persons E-mail Address'})
     goal = forms.CharField(label="What is the goal of your research experiment? What do you want to find out?", widget=forms.Textarea, error_messages={'required': 'Enter the goal of your research experiment'}, max_length=256)
+    sensor_other = forms.CharField(label='If you find sensors that we donot support, please tell us more', required=False, max_length=256)
+    store_protect = forms.CharField(label='How and where will you store and protect the collected data?', error_messages={'required': 'Please fill in - How and where will you store and protect the collected data'}, max_length=512)
     class Meta:
         model = Experiment
         fields = '__all__'
