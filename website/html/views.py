@@ -79,6 +79,9 @@ add_dy_support(locals())
 
 rsa = dy_import_module("rsa.r2py")
 
+# For defining custom template tags
+from django import template
+
 # Importing models
 from ..control.models import Sensor, SensorAttribute, Experiment, ExperimentSensor, ExperimentSensorAttribute
 
@@ -494,7 +497,23 @@ def about(request):
   return render_to_response('accounts/about.html', {},
           context_instance=RequestContext(request))
 
+@login_required
 def experiments(request):
+    register = template.Library()
+    @register.simple_tag
+    def get_sensor_from_id(s_id):
+	try:
+            return Sensor.objects.get(id=s_id).name
+        except Sensor.DoesNotExist:
+	    return 'Unknown Sensor'
+
+    @register.simple_tag
+    def get_sensorattr_from_id(sa_id):
+        try:
+            return SensorAttribute.objects.get(id=sa_id).name
+        except SensorAttribute.DoesNotExist:
+            return 'Unknown SensorAttribute'
+
     context_instance = RequestContext(request)
     id = request.GET.get('id')
     if id is None:
@@ -507,7 +526,7 @@ def experiments(request):
         context_dict = {'exp_info': experiment, 'exp_sensors': experiment_sensors,
                         'exp_sensor_attribs': experiment_sensor_attribs}
 
-    return render_to_response('accounts/experiments.html', context_dict,
+    return render_to_response('control/experiments.html', context_dict,
                                   context_instance)
 
 @login_required
@@ -515,6 +534,12 @@ def experimentregistration(request):
     # Obtain the context from the HTTP request.
     context_instance = RequestContext(request)
     import collections
+
+    try:
+        user = _validate_and_get_geniuser(request)
+    except LoggedInButFailedGetGeniUserError:
+        return _show_failed_get_geniuser_page(request)
+
 
     # Forms
     experimentinfoform = ExperimentForm(request.POST or None)
@@ -659,6 +684,7 @@ def experimentregistration(request):
             if experiment_id:
                 processExperimentSensorForm(experiment_id, s_data)
                 processExperimentSensorAttributeForm(experiment_id, sa_data)
+		return HttpResponseRedirect(reverse("experiments"))
         else:
             print 'Error: Data could not be caught properly'
 
@@ -681,9 +707,12 @@ def experimentregistration(request):
         d['sensor_attributes'] = temp_list
         sensors.append(d)
 
-    context_dict = {'sensor_data': sensors, "experimentinfoform": experimentinfoform,
-                "experimentsensorform": experimentsensorform, "experimentsensorattributeform": experimentsensorattributeform,
-                "post_data":post_data}
+    context_dict = {'sensor_data': sensors,
+			"username": user.username,
+			"experimentinfoform": experimentinfoform,
+			"experimentsensorform": experimentsensorform,
+			"experimentsensorattributeform": experimentsensorattributeform,
+	                "post_data":post_data}
     # context_dict['errors'] = ExperimentForm
     return render_to_response('control/experimentregistration.html', context_dict,
                               context_instance)

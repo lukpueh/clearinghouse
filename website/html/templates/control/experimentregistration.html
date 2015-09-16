@@ -140,6 +140,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                   <label class="control-label" for="id-{{ experimentinfoform.researcher_email.name }}">{{ experimentinfoform.researcher_email.label }}</label>
                                   <input type="email" class="form-control"
                                     name="{{ experimentinfoform.researcher_email.name }}"
+				    data-label="{{ experimentinfoform.researcher_email.label  }}"
                                     id="id-{{ experimentinfoform.researcher_email.name }}"
                                     placeholder="Enter {{ experimentinfoform.researcher_email.label }}" required>
                               </p>
@@ -164,6 +165,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                   <label class="control-label" for="id-{{ experimentinfoform.irb_officer_email.name }}">{{ experimentinfoform.irb_officer_email.label }}</label>
                                   <input type="email" class="form-control"
                                     name="{{ experimentinfoform.irb_officer_email.name }}"
+				    data-label="{{ experimentinfoform.irb_officer_email.label  }}"
                                     id="id-{{ experimentinfoform.irb_officer_email.name }}"
                                     placeholder="Enter {{ experimentinfoform.irb_officer_email.label }}" required>
                               </p>
@@ -186,7 +188,9 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                     placeholder="Enter the goal of your experiment" required>
                               </li>
                               <li>
-                                  <strong>What type(s) of smartphone sensors will you use (check all that apply)? A list of available sensors may be found at: <a href="https://sensibilitytestbed.com/projects/project/wiki/sensors">https://sensibilitytestbed.com/projects/project/wiki/sensors</a></strong>
+			  <strong>What type(s) of smartphone sensors will you use (check all that apply)?</strong><br/>
+			  ( A list of available sensors may be found at: <a href="https://sensibilitytestbed.com/projects/project/wiki/sensors">https://sensibilitytestbed.com/projects/project/wiki/sensors</a>)<br/>
+				  <p><b style="color:red">*</b> Select <b>ATLEAST ONE</b> sensor from below:</p>
                                   {% for sensor_dict in sensor_data %}
                                       <div class="sensor" id=sensor-{{sensor_dict.sensor.0}}>
 
@@ -204,7 +208,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 
                                           <div class="panel panel-default sensor_atrributes collapse in" id="sensorattr-{{sensor_dict.sensor.0}}">
 						<div class="panel-body">
-						<h4>Select ATLEAST ONE checkbox from below</h4>
+					<h4><b style="color:red">*</b> Select ATLEAST ONE checkbox from below</h4>
 						<div>
 
                                               {% for sensor_att in sensor_dict.sensor_attributes %}
@@ -250,7 +254,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 							      <div class="panel-body"><strong>How often will you need to access<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data?</strong>
                                                               <div class="form-inline">
                                                                   <div class="form-group">
-                                                                      <label for="frequency-{{ sensor_dict.sensor.0 }}">Once every</label>
+                                                                      <label for="frequency-{{ sensor_dict.sensor.0 }}"><b style="color:red">*</b> Once every</label>
                                                                       <input type="text" class="form-control" id="frequency-{{ sensor_dict.sensor.0 }}"
                                                                               name="frequency-{{ sensor_dict.sensor.0 }}">
                                                                   </div>
@@ -310,7 +314,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 							  
 							      <div class="panel panel-default">
                                                               <div class="panel-heading">Downloadable Data ?</div>
-                                                              <div class="panel-body"><label for="downloadable-{{sensor_dict.sensor.0}}">Will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be downloaded from participant's devices?</label>
+						      <div class="panel-body"><label for="downloadable-{{sensor_dict.sensor.0}}"><b style="color:red">*</b> Will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be downloaded from participant's devices?</label>
 							      <div class="row">
 								<div class="col-md-3"> <input type="radio" name="downloadable-{{ sensor_dict.sensor.0 }}" value=1> Yes </div>
 								<div class="col-md-3"> <input type="radio" name="downloadable-{{ sensor_dict.sensor.0 }}" value=0 checked> No </div>
@@ -319,7 +323,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                           
                                                               <div class="panel panel-default">
                                                               <div class="panel-heading">Frequency</div>
-                                                              <div class="panel-body"><label for="usage-{{sensor_dict.sensor.0}}">What will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be used for?</label>
+                                                              <div class="panel-body"><label for="usage-{{sensor_dict.sensor.0}}"><b style="color:red">*</b> What will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be used for?</label>
                                                               <input type="text" class="form-control" id="usage-{{sensor_dict.sensor.0}}" name="usage-{{sensor_dict.sensor.0}}"
                                                                       name="usage-{{sensor_dict.sensor.0}}" name="usage-{{sensor_dict.sensor.0}}">
                                                           </div></div>

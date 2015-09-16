@@ -2,10 +2,10 @@
 // For collapsible divs in Experiment Registration
 $(document).ready(function() {
 	$('.collapse').collapse();
-	min_sensor_condition();
+//	min_sensor_condition();
 });
 
-function validate_experiment(){
+function min_sensor_condition(){
   var sCheckBoxes = $("#experiment .sensors");
   var sChecked = sCheckBoxes.filter(":checked");
   var error = "";
@@ -40,31 +40,37 @@ function validate_experiment(){
 
 	}
   }
-	
-	
-//      for (var key in sChecked){
-//	if (sChecked.hasOwnProperty(key)){
-//		alert(sChecked[key].value);
-//        }
-//	else{
-//		var obj = "NONE";
-//        }
-//      }
-      //alert(obj +" "+ key);
-  if(error!=""){
-	alert(error);
-	return false;
-  }
-  else{
-	return true;
-  }
+return error;	
 }
 
-function min_sensor_condition(){
-	var checkedAtLeastOne = false;
-	$('input[type="checkbox"][class="sensor"]').each(function() {
-	    if ($(this).is(":checked")) {
-	        checkedAtLeastOne = true;
-	    }
-	});
+function validate_email(){
+	var email_fields = $('input[type="email"]');
+	var err = "";
+	if(email_fields.length != 0){
+		var re = /^\s*[\w\-\+_]+(\.[\w\-\+_]+)*\@[\w\-\+_]+\.[\w\-\+_]+(\.[\w\-\+_]+)*\s*$/;
+
+		for(i=0; i<email_fields.length; i++){
+			var email = $('input[type="email"]')[i];
+			if (!re.test(email.value)) {
+				err += 'Not a valid e-mail address at "'+email.getAttribute('data-label')+'"\n';
+			}
+		}
+	}
+
+	return err;
+}
+
+function validate_experiment(){
+	var error = "";
+	error += min_sensor_condition();
+	error += validate_email();
+	
+	if(error!=""){
+		alert(error);
+		return false;
+	}
+	else{
+		return true;
+	}
+
 }
