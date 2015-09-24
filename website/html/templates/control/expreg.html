@@ -69,8 +69,17 @@ Experiment Registration - {{ CLEARINGHOUSE }}
             {% endif %}
 
             <div class="alert alert-failure">
-                {{ form.errors }}
-                {{ form.non_field_errors }}
+                {{ exp_form.errors }}
+                {{ exp_form.non_field_errors }}
+		{% for s_form in exp_sensor_forms %}
+			{{ s_form.errors }}
+			{{ s_form.non_field_errors }}
+		{% endfor %}
+                {% for sa_form in exp_sa_forms %}
+                        {{ sa_form.errors }}
+			{{ sa_form.non_field_errors }}
+                {% endfor %}
+
             </div>
 
             <!--<div class="well">
@@ -79,7 +88,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                 {% endfor %}
             </div>-->
             <div name="ExperimentRegistrationForm">
-                <form id="experiment" name="experiment" action="{% url 'experimentregistration' %}" onsubmit="return validate_experiment()"  method="post" enctype="multipart/form-data">
+                <form id="experiment" name="experiment" action="{% url 'expreg' %}" onsubmit="return validate_experiment()"  method="post" enctype="multipart/form-data">
                   {% csrf_token %}
                   <!--{% if form.username.errors or form.password1.errors or form.password2.errors or form.affiliation.errors or form.email.errors or form.pubkey.errors %}-->
                       <!--<p class="warning2">-->
@@ -103,46 +112,46 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                           <div class="form-group">
                                   <!--<label for="ExperimentName">Experiment Name</label>-->
                                   <!--<input type="text" class="form-control" id="ExperimentName" placeholder="Enter an Experiment Name">-->
-                                  <!--{{experimentinfoform.experiment_name.label}} {{experimentinfoform.experiment_name}}-->
-                              <label class="control-label" for="id-{{ experimentinfoform.name.name }}">{{ experimentinfoform.name.label }}</label>
+                                  <!--{{exp_form.experiment_name.label}} {{exp_form.experiment_name}}-->
+                              <label class="control-label" for="{{ exp_form.name.id_for_label }}">{{ exp_form.name.label }}</label>
                               <input type="text" class="form-control"
-                                  name="{{ experimentinfoform.name.name }}"
-                                  id="id-{{ experimentinfoform.name.name }}"
-                                  placeholder="Enter {{ experimentinfoform.name.label }}" required>
+                                  name="{{ exp_form.name.name }}"
+                                  id="{{ exp_form.name.id_for_label }}"
+                                  placeholder="Enter {{ exp_form.name.label }}" required>
                           </div>
 
                           <div class="form-group">
                               <p>
                                   <!--<label for="ResearcherName">Researcher Name</label>-->
                                   <!--<input type="text" class="form-control" id="ResearcherName" placeholder="Enter Researcher's Name">-->
-                                  <label class="control-label" for="id-{{ experimentinfoform.researcher_name.name }}">{{ experimentinfoform.researcher_name.label }}</label>
+                                  <label class="control-label" for="{{ exp_form.researcher_name.id_for_label }}">{{ exp_form.researcher_name.label }}</label>
                                   <input type="text" class="form-control"
-                                      name="{{ experimentinfoform.researcher_name.name }}"
-                                      id="id-{{ experimentinfoform.researcher_name.name }}"
-                                      placeholder="Enter {{ experimentinfoform.researcher_name.label }}" required>
+                                      name="{{ exp_form.researcher_name.name }}"
+                                      id="{{ exp_form.researcher_name.id_for_label }}"
+                                      placeholder="Enter {{ exp_form.researcher_name.label }}" required>
                               </p>
                           </div>
 
                           <div class="form-group">
                                   <!--<label for="ResearcherAddr">Name and address of researcher’s home institution</label>-->
                                   <!--<input type="text" class="form-control" id="ResearcherAddr" placeholder="Name and address of researcher’s home institution">-->
-                                  <label class="control-label" for="id-{{ experimentinfoform.researcher_address.name }}">{{ experimentinfoform.researcher_address.label }}</label>
+                                  <label class="control-label" for="{{ exp_form.researcher_address.id_for_label }}">{{ exp_form.researcher_address.label }}</label>
                                   <input type="text" class="form-control"
-                                    name="{{ experimentinfoform.researcher_address.name }}"
-                                    id="id-{{ experimentinfoform.researcher_address.name }}"
-                                    placeholder="Enter {{ experimentinfoform.researcher_address.label }}" required>
+                                    name="{{ exp_form.researcher_address.name }}"
+                                    id="{{ exp_form.researcher_address.id_for_label }}"
+                                    placeholder="Enter {{ exp_form.researcher_address.label }}" required>
                           </div>
 
                           <div class="form-group">
                               <p>
                                   <!--<label for="ResearcherEmail">Researcher’s Email address</label>-->
                                   <!--<input type="email" class="form-control" id="ResearcherEmail" placeholder="Researcher’s email address">-->
-                                  <label class="control-label" for="id-{{ experimentinfoform.researcher_email.name }}">{{ experimentinfoform.researcher_email.label }}</label>
-                                  <input type="email" class="form-control"
-                                    name="{{ experimentinfoform.researcher_email.name }}"
-				    data-label="{{ experimentinfoform.researcher_email.label  }}"
-                                    id="id-{{ experimentinfoform.researcher_email.name }}"
-                                    placeholder="Enter {{ experimentinfoform.researcher_email.label }}" required>
+                                  <label class="control-label" for="{{ exp_form.researcher_email.id_for_label }}">{{ exp_form.researcher_email.label }}</label>
+                                  <input type="email" pattern="(?!(^[.-].*|[^@]*[.-]@|.*\.{2,}.*)|^.{254}.)([a-zA-Z0-9!#$%&'*+\/=?^_`{|}~.-]+@)(?!-.*|.*-\.)([a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,15}" class="form-control"
+                                    name="{{ exp_form.researcher_email.name }}"
+				    data-label="{{ exp_form.researcher_email.label  }}"
+                                    id="{{ exp_form.researcher_email.id_for_label }}"
+                                    placeholder="Enter {{ exp_form.researcher_email.label }}" required>
                               </p>
                           </div>
 
@@ -150,11 +159,11 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                               <p>
                                   <!--<label for="IRBName">Name of home institution’s IRB officer or contact person</label>-->
                                   <!--<input type="text" class="form-control" id="IRBName" placeholder="Enter the name of contact person">-->
-                                  <label class="control-label" for="id-{{ experimentinfoform.irb_officer_name.name }}">{{ experimentinfoform.irb_officer_name.label }}</label>
+                                  <label class="control-label" for="{{ exp_form.irb_officer_name.id_for_label }}">{{ exp_form.irb_officer_name.label }}</label>
                                   <input type="text" class="form-control"
-                                    name="{{ experimentinfoform.irb_officer_name.name }}"
-                                    id="id-{{ experimentinfoform.irb_officer_name.name }}"
-                                    placeholder="Enter {{ experimentinfoform.irb_officer_name.label }}" required>
+                                    name="{{ exp_form.irb_officer_name.name }}"
+                                    id="{{ exp_form.irb_officer_name.id_for_label }}"
+                                    placeholder="Enter {{ exp_form.irb_officer_name.label }}" required>
                               </p>
                           </div>
 
@@ -162,12 +171,12 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                               <p>
                                   <!--<label for="IRBEmail">Email address of of home institution’s IRB officer or contact person</label>-->
                                   <!--<input type="email" class="form-control" id="IRBEmail" placeholder="Enter the email address of contact person">-->
-                                  <label class="control-label" for="id-{{ experimentinfoform.irb_officer_email.name }}">{{ experimentinfoform.irb_officer_email.label }}</label>
-                                  <input type="email" class="form-control"
-                                    name="{{ experimentinfoform.irb_officer_email.name }}"
-				    data-label="{{ experimentinfoform.irb_officer_email.label  }}"
-                                    id="id-{{ experimentinfoform.irb_officer_email.name }}"
-                                    placeholder="Enter {{ experimentinfoform.irb_officer_email.label }}" required>
+                                  <label class="control-label" for="{{ exp_form.irb_officer_email.name }}">{{ exp_form.irb_officer_email.label }}</label>
+                                  <input type="email" pattern="(?!(^[.-].*|[^@]*[.-]@|.*\.{2,}.*)|^.{254}.)([a-zA-Z0-9!#$%&'*+\/=?^_`{|}~.-]+@)(?!-.*|.*-\.)([a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,15}" class="form-control"
+                                    name="{{ exp_form.irb_officer_email.name }}"
+				    data-label="{{ exp_form.irb_officer_email.label  }}"
+                                    id="{{ exp_form.irb_officer_email.id_for_label }}"
+                                    placeholder="Enter {{ exp_form.irb_officer_email.label }}" required>
                               </p>
                           </div>
                           <hr/>
@@ -181,27 +190,25 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                       <!--<input type="text" class="form-control" id="goal" placeholder="Enter the goal of your experiment">-->
                                   <!--</div>-->
 
-                                  <label for="id-{{ experimentinfoform.goal.name }}">{{ experimentinfoform.goal.label }}</label>
+                                  <label for="{{ exp_form.goal.id_for_label }}">{{ exp_form.goal.label }}</label>
                                   <input type="text" class="form-control"
-                                    name="{{ experimentinfoform.goal.name }}"
-                                    id="id-{{ experimentinfoform.goal.name }}"
+                                    name="{{ exp_form.goal.name }}"
+                                    id="{{ exp_form.goal.id_for_label }}"
                                     placeholder="Enter the goal of your experiment" required>
                               </li>
                               <li>
 			  <strong>What type(s) of smartphone sensors will you use (check all that apply)?</strong><br/>
 			  ( A list of available sensors may be found at: <a href="https://sensibilitytestbed.com/projects/project/wiki/sensors">https://sensibilitytestbed.com/projects/project/wiki/sensors</a>)<br/>
 				  <p><b style="color:red">*</b> Select <b>ATLEAST ONE</b> sensor from below:</p>
-                                  {% for sensor_dict in sensor_data %}
+                                  {% for sensor_dict,s_form in zipped_sensor_data %}
                                       <div class="sensor" id=sensor-{{sensor_dict.sensor.0}}>
 
-                                          <!--<input type="checkbox" name="sensor"-{{sensor_dict.sensor.0}} value={{sensor_dict.sensor.0}}> {{sensor_dict.sensor.1}}-->
-
                                           <div class="checkbox">
-                                              <label data-toggle="collapse" data-target="#sensorattr-{{sensor_dict.sensor.0}}">
+                                              <label for="{{ s_form.sensor.id_for_label }}" data-toggle="collapse" data-target="#sensorattr-{{sensor_dict.sensor.0}}">
                                                   <input type="checkbox" data-label={{sensor_dict.sensor.1}}
 							  class="sensors"
-                                                          name="select_sensor-{{ sensor_dict.sensor.0 }}"
-                                                          id="select_sensor-{{ sensor_dict.sensor.0 }}"
+                                                          name="{{ s_form.sensor.html_name }}"
+                                                          id="{{ s_form.sensor.id_for_label }}"
                                                           value="{{ sensor_dict.sensor.0 }}" > {{sensor_dict.sensor.1}}
                                               </label>
                                           </div>
@@ -211,11 +218,11 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 					<h4><b style="color:red">*</b> Select ATLEAST ONE checkbox from below</h4>
 						<div>
 
-                                              {% for sensor_att in sensor_dict.sensor_attributes %}
+                                              {% for sensor_att,sa_form in sensor_dict.zipped_sa_data %}
 						<label data-toggle="collapse" data-target="#precision_div-{{sensor_att.0}}">
                                                   <input type = "checkbox" data-label="{{sensor_att.1}}"
-                                                         name = "sensorattr-{{ sensor_dict.sensor.0 }}-{{sensor_att.0}}"
-                                                         id = "sensorattr-{{ sensor_dict.sensor.0 }}-{{sensor_att.0}}"
+                                                         name = "{{ sa_form.sensor_attribute.html_name }}"
+                                                         id = "{{ sa_form.sensor_attribute.id_for_label }}"
 							class = "sensorattrs-{{ sensor_dict.sensor.0 }}"
                                                          value = {{sensor_att.0}}> {{sensor_att.1}}</label><br/>
 						{% if sensor_dict.sensor.1 == 'Location' %}
@@ -223,8 +230,8 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                         <div class="row">
                                                         <div class="col-md-3"><strong>Level of Blurring</strong></div>
                                                         <div class="col-md-3">
-								<input type="hidden" name="sensorattr_precision-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" value="truncate"/>
-								<select class="form-control" name="sensorattr_precision_value-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}">
+								<input type="hidden" name="{{ sa_form.precision_choice.html_name }}" value="truncate"/>
+								<select class="form-control" name="{{ sa_form.precision_value.html_name }}">
 									<option value='01'>City</option>
 									<option value='10'>State</option>
 									<option value='11'>Country</option>
@@ -235,12 +242,12 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                         <div class="row">
 							<div class="col-md-3"><strong>Precision</strong></div>
 							<div class="col-md-3">
-                                                		<input type="radio" name="sensorattr_precision-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" value="full" checked/> Full precision
+                                                		<input type="radio" name="{{ sa_form.precision_choice.html_name }}" value="full" checked/> Full precision
 	                                                </div>
 	                                                <div class="col-md-4">
-	                                                	<label data-toggle="collapse" data-target="#sensorattr_precision_value-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}">
-								<input type="radio" name="sensorattr_precision-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" value="truncate"/> Truncation allowed</label> <br/>
-        	                                        	<input type="text" class="col-sm-2 form-control input-sm collapse in" id="sensorattr_precision_value-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" name="sensorattr_precision_value-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" placeholder="No. of Decimal points allowed">
+	                                                	<label data-toggle="collapse" data-target="#{{ sa_form.precision_value.id_for_label }}">
+								<input type="radio" name="{{ sa_form.precision_choice.html_name }}" value="truncate"/> Truncation allowed</label> <br/>
+        	                                        	<input type="number" min="1" step="1" class="col-sm-2 form-control input-sm collapse in" id="{{ sa_form.precision_value.id_for_label }}" name="{{ sa_form.precision_value.html_name }}" placeholder="No. of Decimal points allowed">
 	                                                </div>
                                                 </div></div>
 						{% endif %}
@@ -254,13 +261,13 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 							      <div class="panel-body"><strong>How often will you need to access<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data?</strong>
                                                               <div class="form-inline">
                                                                   <div class="form-group">
-                                                                      <label for="frequency-{{ sensor_dict.sensor.0 }}"><b style="color:red">*</b> Once every</label>
-                                                                      <input type="text" class="form-control" id="frequency-{{ sensor_dict.sensor.0 }}"
-                                                                              name="frequency-{{ sensor_dict.sensor.0 }}">
+                                                                      <label for="{{ s_form.frequency.id_for_label }}"><b style="color:red">*</b> Once every</label>
+                                                                      <input type="text" class="form-control" id="{{ s_form.frequency.id_for_label }}"
+                                                                              name="{{ s_form.frequency.html_name }}">
                                                                   </div>
                                                                   <div class="form-group">
-                                                                      <select id="frequency_unit-{{ sensor_dict.sensor.0 }}"
-                                                                              name="frequency_unit-{{ sensor_dict.sensor.0 }}">
+                                                                      <select id="{{ s_form.frequency_unit.id_for_label }}"
+                                                                              name="{{ s_form.frequency_unit.html_name }}">
                                                                           <option value="hour" selected="selected">hour</option>
                                                                           <option value="min">min</option>
                                                                           <option value="sec">sec</option>
@@ -268,87 +275,48 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                                   </div>
                                                               </div>
                                                               <div>
-                                                                  <label for="frequency_other-{{ sensor_dict.sensor.0 }}">Other:</label>
-                                                                  <input type="text" class="form-control" id="frequency_other-{{ sensor_dict.sensor.0 }}"
-                                                                          name="frequency_other-{{ sensor_dict.sensor.0 }}">
+                                                                  <label for="{{ s_form.frequency_other.id_for_label }}">Other:</label>
+                                                                  <input type="text" class="form-control" id="{{ s_form.frequency_other.id_for_label }}"
+                                                                          name="{{ s_form.frequency_other.html_name }}">
                                                               </div></div>
                                                           </div>
                                                           
                                                               <div class="panel panel-default">
                                                               <div class="panel-heading">Precision</div>
                                                               <div class="panel-body"><strong>How precise do you need the<b><i>'{{sensor_dict.sensor.1}}'</i></b>data to be?</strong><br/>
-                                                             <!-- <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" value="full" checked="checked"/> Full precision<br/>
-
-                                                              <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" value="truncate"/> Truncation allowed
-
-
-                                                              <div name="truncate-attribs">
-                                                                  <div class="panel panel-default">
-                                                                      <div class="panel-body">
-                                                                          {% for sensor_att in sensor_dict.sensor_attributes %}
-                                                                              {% if sensor_att.2 %}
-                                                                              <div class="row">
-                                                                                  <div class="col-md-3">{{ sensor_att.1 }} {{ sensor_att.2 }}</div>
-                                                                                  <div class="col-md-3">
-                                                                                      <input type="radio" name="sensorattr_precision-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" value="full" checked="checked"/> Full precision
-                                                                                  </div>
-                                                                                  <div class="col-md-4">
-                                                                                      <input type="radio" name="sensorattr_precision-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}" value="truncate"/> Truncation allowed<br/>
-                                                                                      <input type="text"
-                                                                                                  class="col-sm-2 form-control input-sm"
-                                                                                                  id="sensorattr_precision_value-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}"
-                                                                                                  name="sensorattr_precision_value-{{ sensor_dict.sensor.0 }}-{{ sensor_att.0 }}"
-                                                                                                    placeholder="No. of Decimal points allowed">
-                                                                                  </div>
-                                                                              </div>
-                                                                              {% endif %}
-                                                                          {% endfor %}
-                                                                      </div>
-                                                                  </div>
-                                                              </div>
-
-                                                              <input type="radio" name="sensor_precision-{{ sensor_dict.sensor.0 }}" id="sensor_precision-{{ sensor_dict.sensor.0 }}" value="other">-->
-                                                              <label for="sensor_precision_other-{{ sensor_dict.sensor.0 }}">A level of data precision that we currently do not support? Please elaborate:</label>
-                                                              <input type="text" class="form-control" name="sensor_precision_other-{{ sensor_dict.sensor.0 }}" id="sensor_precision_other-{{ sensor_dict.sensor.0 }}">
+                                                              <label for="{{ s_form.precision_other.id_for_label }}">A level of data precision that we currently do not support? Please elaborate:</label>
+                                                              <input type="text" class="form-control" name="{{ s_form.precision_other.html_name }}" id="{{ s_form.precision_other.id_for_label }}">
                                                           </div></div>
 							  
 							      <div class="panel panel-default">
                                                               <div class="panel-heading">Downloadable Data ?</div>
-						      <div class="panel-body"><label for="downloadable-{{sensor_dict.sensor.0}}"><b style="color:red">*</b> Will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be downloaded from participant's devices?</label>
+						      <div class="panel-body"><label for="{{s_form.downloadable.id_for_label}}"><b style="color:red">*</b> Will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be downloaded from participant's devices?</label>
 							      <div class="row">
-								<div class="col-md-3"> <input type="radio" name="downloadable-{{ sensor_dict.sensor.0 }}" value=1> Yes </div>
-								<div class="col-md-3"> <input type="radio" name="downloadable-{{ sensor_dict.sensor.0 }}" value=0 checked> No </div>
+								<div class="col-md-3"> <input type="radio" name="{{ s_form.downloadable.html_name }}" value=1> Yes </div>
+								<div class="col-md-3"> <input type="radio" name="{{ s_form.downloadable.html_name }}" value=0 checked> No </div>
 							      </div>
 							  </div></div>
                                                           
                                                               <div class="panel panel-default">
                                                               <div class="panel-heading">Usage Policy</div>
-                                                              <div class="panel-body"><label for="usage-{{sensor_dict.sensor.0}}"><b style="color:red">*</b> What will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be used for?</label>
-                                                              <input type="text" class="form-control" id="usage-{{sensor_dict.sensor.0}}" name="usage-{{sensor_dict.sensor.0}}"
-                                                                      name="usage-{{sensor_dict.sensor.0}}" name="usage-{{sensor_dict.sensor.0}}">
+                                                              <div class="panel-body"><label for="{{s_form.usage_policy.id_for_label}}"><b style="color:red">*</b> What will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be used for?</label>
+                                                              <input type="text" class="form-control" id="{{s_form.usage_policy.id_for_label}}" name="{{s_form.usage_policy.html_name}}">
                                                           </div></div>
                                                   </div>
                                           </div>
                                       </div></div>
 
-                                      <!--<label> {{key}}</label>-->
-                                      <!--<input type="checkbox" name="{{key.1}}" value="{{key.1}}" label="{{key.1}}" >-->
-                                      <!--{% for e in val %}-->
-                                          <!--{{e.1}}-->
-                                          <!--<input type="checkbox" name="{{e.1}}" value="{{e.1}}" > {{e.1}}-->
-                                      <!--{% endfor %}-->
-                                      
                                   {% endfor %}
-                                  <label for="{{experimentinfoform.sensor_other.name}}"><b>Other:</b>{{experimentinfoform.sensor_other.label}}: </label>
-                                  <input type="text" class="form-control" id="{{experimentinfoform.sensor_other.name}}" name="{{experimentinfoform.sensor_other.name}}">
+                                  <label for="{{exp_form.sensor_other.id_for_label}}"><b>Other:</b>{{exp_form.sensor_other.label}}: </label>
+                                  <input type="text" class="form-control" id="{{exp_form.sensor_other.id_for_label}}" name="{{exp_form.sensor_other.html_name}}">
                               </li>
                               <!--<li>
                                   <label for="downloadable">Using the sensors you identified above, what type(s) of sensor data will be downloaded from participants’ devices?</label>
                                   <input type="text" class="form-control" id="downloadable" name="downloadable">
                               </li>-->
                               <li>
-                                  <label for="{{experimentinfoform.store_protect.name}}">{{experimentinfoform.store_protect.label}}</label>
-                                  <input type="text" class="form-control" id="{{experimentinfoform.store_protect.name}}" name="{{experimentinfoform.store_protect.name}}" required>
+                                  <label for="{{exp_form.store_protect.id_for_label}}">{{exp_form.store_protect.label}}</label>
+                                  <input type="text" class="form-control" id="{{exp_form.store_protect.id_for_label}}" name="{{exp_form.store_protect.html_name}}" required>
                               </li>
                           </ol>
                       </li>

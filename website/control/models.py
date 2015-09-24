@@ -27,7 +27,7 @@ from django.db import models
 from django.contrib.auth.models import User as DjangoUser
 
 from common.util import log
-
+from datetime import datetime
 
 # First, we want to register a signal. This page recommends putting this code
 # in models.py: http://docs.djangoproject.com/en/dev/topics/signals/
@@ -49,6 +49,73 @@ else:
     log.error("You must use django >= 1.1 in order to support automatically " +
             "perform custom database connection initialization. (See settings.py)")
 
+class GeniUser(DjangoUser):
+  """
+  Defines the GeniUser model. A GeniUser record represents a SeattleGeni user.
+
+  By extending the DjangoUser model, django will still create a separate table
+  in the database for the GeniUser model but will take care of making it look
+  the same to us.
+  """
+
+  # The port which must be assigned to a vessel for the user to be able to
+  # acquire that vessel.
+  # Note: This field may go away later on if users are no longer always
+  # assigned to the same port on all vessels.
+  usable_vessel_port = models.IntegerField("GeniUser's vessel port")
+
+  # The text the user supplied which identifies the organization they are
+  # affiliated with.
+  affiliation = models.CharField("Affiliation", max_length=200)
+
+  # The user's public key which they use for communicating with nodes.
+  # Note that the key is stored as a string "e n" where e and n are
+  # decimal numbers. Because of this, max_length != max bits in the key.
+  # We index this field with custom sql. See the file sql/geniuser.sql.
+  user_pubkey = models.CharField("GeniUser's public key", max_length=2048)
+
+  # The user's private key which they use for communicating with nodes.
+  # This is not stored in the Key DB because the website needs access to it and
+  # it is not used by us. The private key will only be stored when the the user
+  # has had us generate their keys. The user will be encouraged through the
+  # website to download this private key and have us delete our copy of it.
+  # Note that the key is stored as a string "d p q" where d, p, and q are
+  # decimal numbers. Because of this, max_length != max bits in the key.
+  user_privkey = models.CharField("GeniUser's private key [!]", max_length=4096, null=True)
+
+  # This is not a cryptographic key. This is an API key that we generate which
+  # can be used by the user with the public SeattleGeni XML-RPC interface.
+  # The purpose is to allow developers to use the XML-RPC interface without
+  # requiring them to embed their passphrase in their source code.
+  api_key = models.CharField("API key", max_length=100, db_index=True)
+
+  # The public key new donations use to indicate the donation is by this user.
+  # The corresponding private key is always stored in the Key DB and is
+  # accessible using this public key. The user never sees their donor keys.
+  # Note that the key is stored as a string "e n" where e and n are
+  # decimal numbers. Because of this, max_length != max bits in the key.
+  # We index this field with custom sql. See the file sql/geniuser.sql.
+  donor_pubkey = models.CharField("Donor public Key", max_length=2048)
+
+  # The number of vessels the user is allowed to acquire regardless of whether
+  # they have made donations. When the user makes donations, they still get
+  # these free vessel credits, as well. This is stored in the database rather
+  # than a constant for all users as there are some users we want to special
+  # case and give extra free resources to. Unfortunately, "free" has more than
+  # one meaning in English. This is more accurately "gratis_vessel_credits".
+  free_vessel_credits = models.IntegerField("Free (gratis) vessel credits", db_index=True)
+
+  # Have the database keep track of when each record was created and modified.
+  date_created = models.DateTimeField("Date added to DB", auto_now_add=True, db_index=True)
+  date_modified = models.DateTimeField("Date modified in DB", auto_now=True, db_index=True)
+
+
+  def __unicode__(self):
+    """
+    Produce a string representation of the GeniUser instance.
+    """
+    return "GeniUser:%s" % (self.username)
+
 
 # SENSIBILITY
 
@@ -56,6 +123,7 @@ else:
 class Experiment(models.Model):
     # experiment_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
+    user = models.ForeignKey(GeniUser, db_index=True)
     researcher_name = models.CharField(max_length=30)
     researcher_email = models.EmailField()
     researcher_address = models.CharField(max_length=64)
@@ -64,9 +132,15 @@ class Experiment(models.Model):
     goal = models.CharField(max_length=256)
     sensor_other = models.CharField(max_length=256, default=None, blank=True)
     store_protect = models.CharField(max_length=512)
+    # Have the database keep track of when each record was created and modified.
+    date_created = models.DateTimeField("Date added to DB", auto_now_add=True, db_index=True)
+    date_modified = models.DateTimeField("Date modified in DB", auto_now=True, db_index=True)
 
-    class Meta:
-        verbose_name_plural = "Experiment info"
+    def __unicode__(self):
+	"""
+	Produce a string representation of the Experiment instance.
+	"""
+	return "Experiment:%s" % (self.name)
 
 # sensors(sensor_id, sensor_name)
 class Sensor(models.Model):
@@ -94,12 +168,18 @@ class ExperimentSensor(models.Model):
     # experiment_sensor_id = models.AutoField(primary_key=True)
     experiment = models.ForeignKey(Experiment)
     sensor = models.ForeignKey(Sensor)
-    frequency = models.IntegerField()
+    frequency = models.IntegerField(default=None, blank=True)
+    frequency_other = models.CharField(max_length=512, default=None, blank=True)
     usage_policy = models.CharField(max_length=512)
     downloadable = models.BooleanField(default=False)
+    precision_other = models.CharField(max_length=512, default=None, blank=True)
 
     def __unicode__(self):
         return "%d" % self.id
+
+    class Meta:
+        # Only one record can have a given experiment and sensor combination.
+        unique_together = ("experiment", "sensor")
 
 # experiment_sensor_attributes(experiment_id, sensor_attribute_id, precision)
 # experiment_id refers experiment_info
@@ -111,96 +191,17 @@ class ExperimentSensorAttribute(models.Model):
     sensor_attribute = models.ForeignKey(SensorAttribute)
     precision = models.IntegerField()
 
+    class Meta:
+        # Only one record can have a given experiment and sensor combination.
+        unique_together = ("experiment", "sensor_attribute")
+
     def __unicode__(self):
         return "%d" %(self.id)
-
-# location_blur(experiment_id, blur_level)
-# experiment_id refers experiment_info
-# class LocationBlur(models.Model):
-#     BLUR_CHOICES = (
-#         ('city', 'City'),
-#         ('state', 'State'),
-#         ('country', 'country')
-#     )
-#     experiment_id = models.ForeignKey(Experiment)
-#     blur_level = models.CharField(max_length=10,
-#                                   choices=BLUR_CHOICES)
 
 # SENSIBILITY
 
 
 # SEATTLE MODELS
-class GeniUser(DjangoUser):
-  """
-  Defines the GeniUser model. A GeniUser record represents a SeattleGeni user.
-
-  By extending the DjangoUser model, django will still create a separate table
-  in the database for the GeniUser model but will take care of making it look
-  the same to us.
-  """
-
-  # The port which must be assigned to a vessel for the user to be able to
-  # acquire that vessel.
-  # Note: This field may go away later on if users are no longer always
-  # assigned to the same port on all vessels. 
-  usable_vessel_port = models.IntegerField("GeniUser's vessel port")
-
-  # The text the user supplied which identifies the organization they are
-  # affiliated with. 
-  affiliation = models.CharField("Affiliation", max_length=200)
-  
-  # The user's public key which they use for communicating with nodes.
-  # Note that the key is stored as a string "e n" where e and n are
-  # decimal numbers. Because of this, max_length != max bits in the key.
-  # We index this field with custom sql. See the file sql/geniuser.sql.
-  user_pubkey = models.CharField("GeniUser's public key", max_length=2048)
-  
-  # The user's private key which they use for communicating with nodes.
-  # This is not stored in the Key DB because the website needs access to it and
-  # it is not used by us. The private key will only be stored when the the user
-  # has had us generate their keys. The user will be encouraged through the
-  # website to download this private key and have us delete our copy of it.
-  # Note that the key is stored as a string "d p q" where d, p, and q are
-  # decimal numbers. Because of this, max_length != max bits in the key.
-  user_privkey = models.CharField("GeniUser's private key [!]", max_length=4096, null=True)
-  
-  # This is not a cryptographic key. This is an API key that we generate which
-  # can be used by the user with the public SeattleGeni XML-RPC interface.
-  # The purpose is to allow developers to use the XML-RPC interface without
-  # requiring them to embed their passphrase in their source code. 
-  api_key = models.CharField("API key", max_length=100, db_index=True)
-  
-  # The public key new donations use to indicate the donation is by this user.
-  # The corresponding private key is always stored in the Key DB and is
-  # accessible using this public key. The user never sees their donor keys.
-  # Note that the key is stored as a string "e n" where e and n are
-  # decimal numbers. Because of this, max_length != max bits in the key.
-  # We index this field with custom sql. See the file sql/geniuser.sql.
-  donor_pubkey = models.CharField("Donor public Key", max_length=2048)
-  
-  # The number of vessels the user is allowed to acquire regardless of whether
-  # they have made donations. When the user makes donations, they still get
-  # these free vessel credits, as well. This is stored in the database rather
-  # than a constant for all users as there are some users we want to special
-  # case and give extra free resources to. Unfortunately, "free" has more than
-  # one meaning in English. This is more accurately "gratis_vessel_credits".
-  free_vessel_credits = models.IntegerField("Free (gratis) vessel credits", db_index=True)
-  
-  # Have the database keep track of when each record was created and modified.
-  date_created = models.DateTimeField("Date added to DB", auto_now_add=True, db_index=True)
-  date_modified = models.DateTimeField("Date modified in DB", auto_now=True, db_index=True)
-  
-  
-  def __unicode__(self):
-    """
-    Produce a string representation of the GeniUser instance.
-    """
-    return "GeniUser:%s" % (self.username)
-
-
-
-
-
 class Node(models.Model):
   """
   Defines the Node model. A Node record represents an individual nodemanager.

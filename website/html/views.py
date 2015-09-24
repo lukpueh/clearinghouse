@@ -717,6 +717,65 @@ def experimentregistration(request):
     return render_to_response('control/experimentregistration.html', context_dict,
                               context_instance)
 
+
+@login_required
+def expreg(request):
+    # Obtain the context from the HTTP request.
+    context_instance = RequestContext(request)
+
+    try:
+        user = _validate_and_get_geniuser(request)
+    except LoggedInButFailedGetGeniUserError:
+        return _show_failed_get_geniuser_page(request)
+
+    sensors = []
+    # Query the database for a list of ALL sensors currently stored.
+    # Place the list in our context_dict dictionary which will be passed to the template engine.
+    sensor_list = Sensor.objects.all()
+
+    def zip_sa_data(sa_list, id_list):
+	if request.method == "POST":
+	    expsaforms = [ExperimentSensorAttributeForm(request.POST, prefix=str(x), instance=ExperimentSensorAttribute()) for x in id_list]
+	else:
+	    expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), instance=ExperimentSensorAttribute()) for x in id_list]
+	return zip(sa_list, expsaforms)
+
+    s_id_list = []
+    for sensor in sensor_list:
+        d = {'sensor': (sensor.id, sensor.name)}
+
+	# populating sensor id list for creating corresponding experiment sensor forms
+	s_id_list.append(sensor.id)
+
+        temp_list = []
+	sa_id_list = []
+        for sensorAtt in SensorAttribute.objects.filter(sensor_id=sensor.id):
+            temp_list.append((sensorAtt.id, sensorAtt.name, sensorAtt.precision_flag))
+	    sa_id_list.append(sensorAtt.id)
+        d['zipped_sa_data'] = zip_sa_data(temp_list, sa_id_list)
+        sensors.append(d)
+
+    if request.method == "POST":
+        expform = ExperimentForm(request.POST, instance=Experiment())
+        expsensorforms = [ExperimentSensorForm(request.POST, prefix=str(x)) for x in s_id_list]
+	expsaforms = [ExperimentSensorAttributeForm(request.POST, prefix=str(x), instance=ExperimentSensorAttribute()) for x in sa_id_list]
+        if expform.is_valid() and all([esf.is_valid() for esf in expsensorforms]):
+	    new_exp.user = user.pk
+            new_exp = expform.save()
+            for esf in expsensorforms:
+                new_sensor = esf.save(commit=False)
+                new_sensor.experiment = new_exp
+                new_sensor.save()
+            return HttpResponseRedirect('/control/experiments')
+    else:
+        expform = ExperimentForm(instance=Experiment())
+        expsensorforms = [ExperimentSensorForm(prefix=str(x), instance=ExperimentSensor()) for x in s_id_list]
+	expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), instance=ExperimentSensorAttribute()) for x in sa_id_list]
+
+    zipped_sensor_data = zip(sensors, expsensorforms)
+    return render_to_response('control/expreg.html', {'zipped_sensor_data': zipped_sensor_data,'exp_sensor_forms':expsensorforms, 'exp_sa_forms':expsaforms, 'username': user.username, 'exp_form': expform}, context_instance)
+
+
 @login_required
 def mygeni(request):
   try:
@@ -1413,5 +1472,6 @@ def _show_failed_get_geniuser_page(request):
   err += "If you are logged in as an administrator, you'll need to logout, and login with a Seattle Clearinghouse account. "
   err += "If you aren't logged in as an administrator, then this is a bug. Please contact us!"
   return _show_login(request, 'accounts/login.html', {'err' : err})
+
 
 

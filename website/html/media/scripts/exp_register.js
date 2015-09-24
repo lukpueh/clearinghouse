@@ -23,18 +23,17 @@ function min_sensor_condition(){
 		}
 		else{
 			for(j=0; j<saChecked.length; j++){
-				var saLabelSuffix = sChecked[i].value+"-"+saChecked[j].value;
-				if($("input[name=sensorattr_precision-"+saLabelSuffix+"]:checked").val() == 'truncate'){
-					 if($("input[name=sensorattr_precision_value-"+saLabelSuffix+"]").val() == ''){
+				if($("input[name="+saChecked[j].value+"-precision_choice]").val() == 'truncate'){
+					 if($("input[name="+saChecked[j].value+"-precision_value]").val() == ''){
 						error += 'Please fill in the truncation level you would prefer under '+saChecked[j].getAttribute('data-label')+'\n';
 	                                }
 				}
 			}
 		}
-		if(document.getElementById("frequency-"+sChecked[i].value).value == ""){
+		if(document.getElementById("id_"+sChecked[i].value+"-frequency").value == ""){
 			error += 'Please fill in frequency field under '+sChecked[i].getAttribute('data-label')+'\n';
 		}
-		if(document.getElementById("usage-"+sChecked[i].value).value == ""){
+		if(document.getElementById("id_"+sChecked[i].value+"-usage_policy").value == ""){
                         error += 'Please fill in usage field under '+sChecked[i].getAttribute('data-label')+'\n';
                 }
 

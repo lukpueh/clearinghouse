@@ -66,53 +66,53 @@ class ExperimentForm(forms.ModelForm):
     store_protect = forms.CharField(label='How and where will you store and protect the collected data?', error_messages={'required': 'Please fill in - How and where will you store and protect the collected data'}, max_length=512)
     class Meta:
         model = Experiment
-        fields = '__all__'
+        exclude = ('user',)
 
 class ExperimentSensorForm(forms.ModelForm):
+    F_CHOICES = (('hour', 'Hour'),('min', 'Min'),('sec', 'Sec'),)
+    frequency_unit = forms.ChoiceField(widget = forms.Select(), 
+                     choices = F_CHOICES, required = True,)
     class Meta:
         model = ExperimentSensor
-        fields = '__all__'
+        exclude = ('experiment',)
+
     def clean(self):
         data = self.cleaned_data
-        return data
+	if data.get('sensor'):
+		frequency = data['frequency']
+                if frequency:
+                        if data['frequency_unit']=='hour':
+                                frequency = frequency*60*60
+                        elif data['frequency_unit']=='min':
+                                frequency =  frequency*60
+
+	        if data['frequency'] or data['frequency_other']:
+		    return data
+		else:
+		    raise ValidationError('Please fill in either of the fields under '+Sensor.objects.filter(id=data.get('sensor').name))
 
 class ExperimentSensorAttributeForm(forms.ModelForm):
+    P_CHOICES = (('full', 'Full Precision'),('truncate', 'Truncate'),)
+    precision_choice = forms.ChoiceField(widget = forms.Select(),
+                     choices = P_CHOICES, required = False,)
+    precision_value = forms.IntegerField()
+
     class Meta:
         model = ExperimentSensorAttribute
-        fields = '__all__'
+        exclude = ('experiment',)
 
-# class ExperimentRegistrationForm(forms.ModelForm):
-#     experimentname = forms.CharField(label="Experiment Name", error_messages={'required': 'Enter an Experiment Name'}, max_length=64)
-#     researchername = forms.CharField(label="Researcher Name", error_messages={'required': 'Enter a Researcher Name'}, max_length=64)
-#     address = forms.CharField(label="Name and address of researchers home institution", error_messages={'required': 'Enter the Researchers home institution'}, max_length=64)
-#     researcheremail = forms.CharField(label="Researchers E-mail Address", error_messages={'required': 'Enter Researchers E-mail Address'})
-#     irbofficername = forms.CharField(label="Name of home institutions IRB officer or contact person", error_messages={'required': 'Enter Contact Persons Name'}, max_length=64)
-#     irbofficeremail = forms.CharField(label="Email address of of home institutions IRB officer or contact person", error_messages={'required': 'Enter contact persons E-mail Address'})
-#     expgoal = forms.CharField(label="What is the goal of your research experiment? What do you want to find out?", widget=forms.Textarea, error_messages={'required': 'Enter the goal of your research experiment'}, max_length=256)
-#
-#     battery = forms.BooleanField(label="Battery", initial=False)
-#     if_battery_present = forms.BooleanField(label="if_battery_present", initial=False)
-#     battery_health = forms.BooleanField(label="battery_health", initial=False)
-#     battery_level = forms.BooleanField(label="battery_level", initial=False)
-#     battery_plug_type = forms.BooleanField(label="battery_plug_type", initial=False)
-#     battery_status = forms.BooleanField(label="battery_status", initial=False)
-#     battery_technology = forms.BooleanField(label="battery_technology", initial=False)
-#     battery_frequency = forms.IntegerField(label="How often will you need to access battery sensor data? Once every ", initial=1, min_value=1)
-#     FREQUENCY_CHOICES = (
-#         ('hours', 'hours'),
-#         ('minutes', 'minutes'),
-#         ('seconds', 'seconds'),
-#     )
-#     battery_frequency_unit = forms.ChoiceField(choices=FREQUENCY_CHOICES, initial='hours')
-#     battery_usage_policy = forms.CharField(label="What will these battery sensor data be used for?", widget=forms.Textarea, error_messages={'required': 'Enter the usage policy of this sensor data in your experiment'}, max_length=256)
-#
-#     def clean_email(self):
-#         value = self.cleaned_data['email']
-#         try:
-#             validations.validate_email(value)
-#         except ValidationError, err:
-#             raise forms.ValidationError, str(err)
-#         return value
+    def clean(self):
+	data = self.cleaned_data
+	# Validate and process precision data for a selected sensor_attribute
+	if data['precision_choice'] == 'full':
+	    data['precision'] = 0
+	elif data['precision_choice'] == 'truncate':
+	    if data['precision_value']:
+		data['precision'] = data['precision_value']
+	    else:
+		raise ValidationError('Please fill in truncation level under '+SensorAttribute.objects.filter(id=data['sensor_attribute'].name))
+	else:
+	    raise ValidationError('Please provide truncation data under '+SensorAttribute.objects.filter(id=data['sensor_attribute'].name))
 
 class GeniUserCreationForm(DjangoUserCreationForm):
     affiliation = forms.CharField(error_messages={'required': 'Enter an Affiliation'})

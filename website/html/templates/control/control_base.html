@@ -46,6 +46,11 @@
 					{% block nav_profile %}
             <td><a href="{% url 'profile' %}">Profile</a></td>
 					{% endblock nav_profile %}
+
+                    {% block nav_experimentregistration %}
+                                          <td><a href="{% url 'experimentregistration' %}">Register an Experiment</a></td>
+                    {% endblock nav_experimentregistration %}
+
           
           {% block nav_myvessels %}
 					  <td><a href="{% url 'myvessels' %}">My Vessels</a></td>
@@ -54,10 +59,6 @@
           {% block nav_getdonations %}
 					  <td><a href="{% url 'getdonations' %}">Get Donations</a></td>
           {% endblock nav_getdonations %}
-
-                    {% block nav_experimentregistration %}
-					  <td><a href="{% url 'experimentregistration' %}">Register an Experiment</a></td>
-		      {% endblock nav_experimentregistration %}
 
 		      {% block nav_help %}
 					  <td><a href="{% url 'help' %}">Help</a></td>
