@@ -71,48 +71,68 @@ class ExperimentForm(forms.ModelForm):
 class ExperimentSensorForm(forms.ModelForm):
     F_CHOICES = (('hour', 'Hour'),('min', 'Min'),('sec', 'Sec'),)
     frequency_unit = forms.ChoiceField(widget = forms.Select(), 
-                     choices = F_CHOICES, required = True,)
+                     choices = F_CHOICES, initial='hour', required = True,)
     class Meta:
         model = ExperimentSensor
         exclude = ('experiment',)
 
     def clean(self):
-        data = self.cleaned_data
-	if data.get('sensor'):
-		frequency = data['frequency']
-                if frequency:
-                        if data['frequency_unit']=='hour':
-                                frequency = frequency*60*60
-                        elif data['frequency_unit']=='min':
-                                frequency =  frequency*60
+        data = super(ExperimentSensorForm, self).clean()
+        # data = self.cleaned_data
+        if data.get('sensor'):
+            frequency = data['frequency']
+            if frequency:
+                if data['frequency_unit']=='hour':
+                    data['frequency'] = frequency*60*60
+                elif data['frequency_unit']=='min':
+                    data['frequency'] =  frequency*60
 
-	        if data['frequency'] or data['frequency_other']:
-		    return data
-		else:
-		    raise ValidationError('Please fill in either of the fields under '+Sensor.objects.filter(id=data.get('sensor').name))
+        if data['frequency'] or data['frequency_other']:
+            return data
+        else:
+            raise ValidationError('Please fill in either of the fields under '+Sensor.objects.filter(id=data.get('sensor')).name)
+        return data
 
 class ExperimentSensorAttributeForm(forms.ModelForm):
     P_CHOICES = (('full', 'Full Precision'),('truncate', 'Truncate'),)
     precision_choice = forms.ChoiceField(widget = forms.Select(),
                      choices = P_CHOICES, required = False,)
-    precision_value = forms.IntegerField()
+    precision = forms.IntegerField(required=False,)
+    # precision_value = forms.IntegerField(required=False)
 
     class Meta:
         model = ExperimentSensorAttribute
         exclude = ('experiment',)
 
     def clean(self):
-	data = self.cleaned_data
-	# Validate and process precision data for a selected sensor_attribute
-	if data['precision_choice'] == 'full':
-	    data['precision'] = 0
-	elif data['precision_choice'] == 'truncate':
-	    if data['precision_value']:
-		data['precision'] = data['precision_value']
-	    else:
-		raise ValidationError('Please fill in truncation level under '+SensorAttribute.objects.filter(id=data['sensor_attribute'].name))
-	else:
-	    raise ValidationError('Please provide truncation data under '+SensorAttribute.objects.filter(id=data['sensor_attribute'].name))
+        data = super(ExperimentSensorAttributeForm, self).clean()
+        # Validate and process precision data for a selected sensor_attribute
+        # Check if the precision Attribute is applicable for the given Sensor Attribute
+        # print('&&&&&&&&&&&&&&')
+        # print(data['sensor_attribute'])
+        # sa_id = data.get('sensor_attribute')
+        # print(sa_id)
+        # print('&&&&&&&&&&&&&&')
+
+        # sa_obj = SensorAttribute.objects.get(id=sa_id)
+        # if sa_obj.precision_flag:
+        if data.get('sensor_attribute'):
+            if data['precision_choice'] == 'full':
+                data['precision'] = 0
+            elif data['precision_choice'] == 'truncate':
+                if data['precision']:
+                    data['precision'] = data['precision']
+                else:
+                    raise ValidationError('Please fill in truncation level under '+SensorAttribute.objects.filter(id=data['sensor_attribute']).name)
+            else:
+                data['precision'] = 0
+                # raise ValidationError('Please provide truncation data under '+SensorAttribute.objects.filter(id=data['sensor_attribute']).name)
+            data['precision_choice'] = None
+        else:
+            # If NOT applicable, set everything to None
+            data['precision_choice'] = None
+            data['precision'] = None
+        return data
 
 class GeniUserCreationForm(DjangoUserCreationForm):
     affiliation = forms.CharField(error_messages={'required': 'Enter an Affiliation'})

@@ -33,6 +33,10 @@ function min_sensor_condition(){
 		if(document.getElementById("id_"+sChecked[i].value+"-frequency").value == ""){
 			error += 'Please fill in frequency field under '+sChecked[i].getAttribute('data-label')+'\n';
 		}
+		if((document.getElementById("id_"+sChecked[i].value+"-downloadable-y").checked == false)
+			&& (document.getElementById("id_"+sChecked[i].value+"-downloadable-n").checked == false)){
+			error += 'Please answer if the selected sensor is Downloadable under '+sChecked[i].getAttribute('data-label')+'\n';
+		}
 		if(document.getElementById("id_"+sChecked[i].value+"-usage_policy").value == ""){
                         error += 'Please fill in usage field under '+sChecked[i].getAttribute('data-label')+'\n';
                 }

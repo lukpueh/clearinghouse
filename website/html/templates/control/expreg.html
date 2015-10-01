@@ -230,24 +230,27 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                         <div class="row">
                                                         <div class="col-md-3"><strong>Level of Blurring</strong></div>
                                                         <div class="col-md-3">
-								<input type="hidden" name="{{ sa_form.precision_choice.html_name }}" value="truncate"/>
-								<select class="form-control" name="{{ sa_form.precision_value.html_name }}">
-									<option value='01'>City</option>
-									<option value='10'>State</option>
-									<option value='11'>Country</option>
-								</select>
+                                <label data-toggle="collapse" data-target="#{{ sa_form.precision.id_for_label }}" >
+								<input type="radio" name="{{ sa_form.precision_choice.html_name }}" value="truncate"/> Truncation allowed </label>
+								<!--<select class="form-control collapse in" id="{{ sa_form.precision.id_for_label }}" name="{{ sa_form.precision.html_name }}">-->
+                                <div class="collapse in" id="{{ sa_form.precision.id_for_label }}">
+									<label><input type="radio" name="{{ sa_form.precision.html_name }}" value='01'/> City</label>
+									<label><input type="radio" name="{{ sa_form.precision.html_name }}" value='10'/> State</label>
+									<label><input type="radio" name="{{ sa_form.precision.html_name }}" value='11'/> Country</label>
+                                </div>
+								<!--</select>-->
 	                                                </div></div></div>
 						{% else %}
 						<div id="precision_div-{{sensor_att.0}}" name="precision_div-{{sensor_att.0}}" class="panel panel-default collapse in" {% if sensor_att.2 == False %} style="display: none;" {% endif %}>
                                                         <div class="row">
 							<div class="col-md-3"><strong>Precision</strong></div>
 							<div class="col-md-3">
-                                                		<input type="radio" name="{{ sa_form.precision_choice.html_name }}" value="full" checked/> Full precision
+                                                		<input type="radio" name="{{ sa_form.precision_choice.html_name }}" value="full" /> Full precision
 	                                                </div>
 	                                                <div class="col-md-4">
-	                                                	<label data-toggle="collapse" data-target="#{{ sa_form.precision_value.id_for_label }}">
+	                                                	<label data-toggle="collapse" data-target="#{{ sa_form.precision.id_for_label }}">
 								<input type="radio" name="{{ sa_form.precision_choice.html_name }}" value="truncate"/> Truncation allowed</label> <br/>
-        	                                        	<input type="number" min="1" step="1" class="col-sm-2 form-control input-sm collapse in" id="{{ sa_form.precision_value.id_for_label }}" name="{{ sa_form.precision_value.html_name }}" placeholder="No. of Decimal points allowed">
+        	                                        	<input type="number" min="1" step="1" class="col-sm-2 form-control input-sm collapse in" id="{{ sa_form.precision.id_for_label }}" name="{{ sa_form.precision.html_name }}" placeholder="No. of Decimal points allowed">
 	                                                </div>
                                                 </div></div>
 						{% endif %}
@@ -268,7 +271,7 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                                                                   <div class="form-group">
                                                                       <select id="{{ s_form.frequency_unit.id_for_label }}"
                                                                               name="{{ s_form.frequency_unit.html_name }}">
-                                                                          <option value="hour" selected="selected">hour</option>
+                                                                          <option value="hour">hour</option>
                                                                           <option value="min">min</option>
                                                                           <option value="sec">sec</option>
                                                                       </select>
@@ -290,10 +293,10 @@ Experiment Registration - {{ CLEARINGHOUSE }}
 							  
 							      <div class="panel panel-default">
                                                               <div class="panel-heading">Downloadable Data ?</div>
-						      <div class="panel-body"><label for="{{s_form.downloadable.id_for_label}}"><b style="color:red">*</b> Will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be downloaded from participant's devices?</label>
+						      <div class="panel-body"><label><b style="color:red">*</b> Will these<b><i>'{{sensor_dict.sensor.1}}'</i></b>sensor data be downloaded from participant's devices?</label>
 							      <div class="row">
-								<div class="col-md-3"> <input type="radio" name="{{ s_form.downloadable.html_name }}" value=1> Yes </div>
-								<div class="col-md-3"> <input type="radio" name="{{ s_form.downloadable.html_name }}" value=0 checked> No </div>
+								<div class="col-md-3"> <input type="radio" name="{{ s_form.downloadable.html_name }}"  id="{{ s_form.downloadable.id_for_label }}-y" value=1> Yes </div>
+								<div class="col-md-3"> <input type="radio" name="{{ s_form.downloadable.html_name }}"  id="{{ s_form.downloadable.id_for_label }}-n" value=0> No </div>
 							      </div>
 							  </div></div>
                                                           
