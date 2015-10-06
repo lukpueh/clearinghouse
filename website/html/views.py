@@ -495,6 +495,11 @@ def about(request):
           context_instance=RequestContext(request))
 
 @login_required
+def expsuccess(request):
+    return render_to_response('control/expsuccess.html', {},
+          context_instance=RequestContext(request))
+
+@login_required
 def experiments(request):
     try:
         user = _validate_and_get_geniuser(request)
@@ -554,7 +559,7 @@ def expreg(request):
     sensors = []
     # Query the database for a list of ALL sensors currently stored.
     # Place the list in our context_dict dictionary which will be passed to the template engine.
-    sensor_list = Sensor.objects.all()
+    sensor_list = Sensor.objects.values()
 
     def zip_sa_data(sa_list, id_list):
         if request.method == "POST":
@@ -563,92 +568,97 @@ def expreg(request):
             expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), instance=ExperimentSensorAttribute()) for x in id_list]
         return zip(sa_list, expsaforms)
 
-    s_id_list = []
-    total_sa_id_list = []
+    # List of Sensor ids
+    s_id_list = Sensor.objects.values_list('id', flat=True).order_by('id')
+
+    # Total list of SensorAttribute ids
+    total_sa_id_list = SensorAttribute.objects.values_list('id', flat=True).order_by('id')
+
     for sensor in sensor_list:
-        if sensor:
-            d = {'sensor': (sensor.id, sensor.name)}
+        d = {'sensor': (sensor['id'], sensor['name'])}
+        temp_list = []
+        sa_id_list = []
+        for sensorAtt in SensorAttribute.objects.filter(sensor_id=sensor['id']).values():
+            temp_list.append((sensorAtt['id'], sensorAtt['name'], sensorAtt['precision_flag']))
+            sa_id_list.append(sensorAtt['id'])
+        d['zipped_sa_data'] = zip_sa_data(temp_list, sa_id_list)
+        sensors.append(d)
 
-            # populating sensor id list for creating corresponding experiment sensor forms
-            s_id_list.append(sensor.id)
-
-            temp_list = []
-            sa_id_list = []
-            for sensorAtt in SensorAttribute.objects.filter(sensor_id=sensor.id):
-                temp_list.append((sensorAtt.id, sensorAtt.name, sensorAtt.precision_flag))
-                sa_id_list.append(sensorAtt.id)
-                if sensorAtt.id not in total_sa_id_list:
-                    total_sa_id_list.append(sensorAtt.id)
-            d['zipped_sa_data'] = zip_sa_data(temp_list, sa_id_list)
-            sensors.append(d)
-
+    # Only if the request method is POST
     if request.method == "POST":
         expform = ExperimentForm(request.POST, instance=Experiment())
         expsensorforms = [ExperimentSensorForm(request.POST, prefix=str(x)) for x in s_id_list]
         expsaforms = [ExperimentSensorAttributeForm(request.POST, prefix=str(x)) for x in total_sa_id_list]
 
+        # List of the valid sensor forms among the many empty forms submitted
         valid_esforms = []
+        # List of the valid SensorAttribute forms among the many empty forms submitted
         valid_esaforms = []
+        # List of the sensors selected through the form
         selected_sensors = []
+
         sa_sensors = []
 
+        # To collect valid Sensor forms and corresponding sensor ids
         for esf in expsensorforms:
             if esf.has_changed():
                 if esf.is_valid():
                     valid_esforms.append(esf)
                     # To get a list of unique sensors
                     if esf.cleaned_data['sensor'] not in selected_sensors:
-                        selected_sensors.append(esf.cleaned_data['sensor'])
+                        selected_sensors.append(esf.cleaned_data['sensor'].id)
 
+        # To collect valid SensorAttribute forms and corresponding sensor_ids
         for esaf in expsaforms:
             if esaf.has_changed():
-                print('*')
-                print(esaf.changed_data)
-            if esaf.has_changed():
                 if esaf.is_valid():
-                    print('%%%%%%%%%%%%%%%%%%')
-                    print(esaf.cleaned_data)
-                    print('%%%%%%%%%%%%%%%%%%')
-                    valid_esaforms.append(esaf)
-                #     print('====================')
-                #     temp_sa = esaf.cleaned_data['sensor_attribute']
-                #     print(temp_sa)
-                #     print('====================')
-                #     sa=SensorAttribute.objects.filter(SensorAttribute=esaf.cleaned_data['sensor_attribute'])
-                #     if sa.sensor in selected_sensors:
-                #         valid_esaforms.append(esaf)
-                #         if sa.sensor not in sa_sensors:
-                #             sa_sensors.append(sa.sensor)
-                # else:
-                #     print(esaf.cleaned_data)
-                #     print('Fail')
-                #     print('%%%%%%%%$$$$$%%%%%%%')
-                #     print(esaf.errors)
-                #     print(esaf.non_field_errors)
-                #     print('%%%%%%%%$$$$$%%%%%%%')
-
-
-        # print("&&&&&&&&&&&&&&&&&")
-        # print(valid_esforms)
-        # print("&&&&&&&&&&&&&&&&&")
-        print(valid_esaforms)
-        print("&&&&&&&&&&&&&&&&&")
+                    # valid_esaforms.append(esaf)
+                    sa = SensorAttribute.objects.select_related('sensor').get(pk=esaf.cleaned_data['sensor_attribute'].id)
+                    if sa.sensor.id in selected_sensors:
+                        valid_esaforms.append(esaf)
+                        if sa.sensor.id not in sa_sensors:
+                            sa_sensors.append(sa.sensor.id)
 
         if expform.is_valid() and all([esf.is_valid() for esf in valid_esforms]) and all([esaf.is_valid() for esaf in valid_esaforms]):
-        # if set(selected_sensors) == set(sa_sensors):
-            new_exp = expform.save(commit=False)
-            user_inst = GeniUser.objects.get(user_ptr_id=user.pk)
-            new_exp.user = user_inst
-            new_exp = expform.save()
+            if set(selected_sensors) == set(sa_sensors):
+                new_exp = expform.save(commit=False)
+                user_inst = GeniUser.objects.get(user_ptr_id=user.pk)
+                new_exp.user = user_inst
+                new_exp = expform.save()
+                for esf in valid_esforms:
+                    new_sensor = esf.save(commit=False)
+                    new_sensor.experiment = new_exp
+                    new_sensor.save()
+                for esaf in valid_esaforms:
+                    new_sa = esaf.save(commit=False)
+                    new_sa.experiment = new_exp
+                    new_sa.save()
+
+                # messages.success(request, 'Experiment Submitted SUCCESSFULLY !!')
+                return HttpResponseRedirect('/html/expsuccess')
+            else:
+                for sensor in list(set(selected_sensors)-set(sa_sensors)):
+                    s_obj = Sensor.objects.filter(id=sensor.id).values()
+                    msg = "Need to select AT LEAST one sensor attribute under the sensor "+str(s_obj['name'])
+                    messages.error(request, msg)
+        else:
+            if not expform.is_valid():
+                if expform.errors:
+                    messages.error(request, expform.errors)
             for esf in valid_esforms:
-                new_sensor = esf.save(commit=False)
-                new_sensor.experiment = new_exp
-                new_sensor.save()
+                if not esf.is_valid():
+                    if esf.errors:
+                        messages.error(request, esf.errors)
             for esaf in valid_esaforms:
-                new_sa = esaf.save(commit=False)
-                new_sa.experiment = new_exp
-                new_sa.save()
-            return HttpResponseRedirect('/html/experiments')
+                if not esaf.is_valid():
+                    if esaf.errors:
+                        messages.error(request, esaf.errors)
+
+        if messages.error:
+            expform = ExperimentForm(instance=Experiment(context_instance))
+            expsensorforms = [ExperimentSensorForm(prefix=str(x), instance=ExperimentSensor(context_instance)) for x in s_id_list]
+            expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), instance=ExperimentSensorAttribute(context_instance)) for x in total_sa_id_list]
+
         # else:
         #     sensor_err = ""
         #     for missed_sensor in list(set(selected_sensors)-set(sa_sensors)):
@@ -662,7 +672,7 @@ def expreg(request):
     else:
         expform = ExperimentForm(instance=Experiment())
         expsensorforms = [ExperimentSensorForm(prefix=str(x), instance=ExperimentSensor()) for x in s_id_list]
-    expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), instance=ExperimentSensorAttribute()) for x in total_sa_id_list]
+        expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), instance=ExperimentSensorAttribute()) for x in total_sa_id_list]
 
     zipped_sensor_data = zip(sensors, expsensorforms)
     return render_to_response('control/expreg.html', {'zipped_sensor_data': zipped_sensor_data,'exp_sensor_forms':expsensorforms, 'exp_sa_forms':expsaforms, 'username': user.username, 'exp_form': expform}, context_instance)

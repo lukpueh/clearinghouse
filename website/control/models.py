@@ -189,7 +189,7 @@ class ExperimentSensorAttribute(models.Model):
     # experiment_sensor = models.ForeignKey(ExperimentSensor)
     experiment = models.ForeignKey(Experiment)
     sensor_attribute = models.ForeignKey(SensorAttribute)
-    precision = models.IntegerField()
+    precision = models.IntegerField(default=None, blank=True)
 
     class Meta:
         # Only one record can have a given experiment and sensor combination.

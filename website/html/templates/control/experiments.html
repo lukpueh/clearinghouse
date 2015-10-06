@@ -45,8 +45,8 @@ Submitted Experiments - {{ CLEARINGHOUSE }}
 {% block content %}
 
     {% if experiments %}
-        <h2>Submitted Experiments</h2> <hr/>
         <div class="container">
+            <h2>Submitted Experiments</h2>
             <table class="table table-responsive table-hover">
                 <tr>
                     <th>Experiment Name</th>
@@ -64,13 +64,13 @@ Submitted Experiments - {{ CLEARINGHOUSE }}
         </div>
     {% else %}
         <div class="container">
-            <h3>Experiment Info</h3> <hr/>
+            <h3>{{ exp.name }} - Info <small><span class="label label-warning">Being Reviewed</span></small> </h3>
             <table class="table table-responsive table-hover">
 
-                    <tr> <td>Experiment ID</td> <td>{{ exp.id }}</td> </tr>
+                    <!--<tr> <td>Experiment ID</td> <td>{{ exp.id }}</td> </tr>-->
                     <tr> <td>Submitted by</td> <td>{{ exp.user.username }}</td> </tr>
                     <tr> <td>Created on</td> <td>{{ exp.date_created }}</td> </tr>
-                    <tr> <td>Experiment Name</td> <td>{{ exp.name }}</td> </tr>
+                    <!--<tr> <td>Experiment Name</td> <td>{{ exp.name }}</td> </tr>-->
                     <tr> <td>Researcher's Name</td> <td>{{ exp.researcher_name }}</td> </tr>
                     <tr> <td>Researcher's Email</td> <td>{{ exp.researcher_email }}</td> </tr>
                     <tr> <td>Researcher's Address</td> <td>{{ exp.researcher_address }}</td> </tr>
@@ -82,7 +82,7 @@ Submitted Experiments - {{ CLEARINGHOUSE }}
 
             </table>
 
-            <h3>Experiment - Sensors</h3>
+            <h3>Requested Sensors</h3>
 
                 {% for sensor in exp_sensors %}
                     <div class="well">

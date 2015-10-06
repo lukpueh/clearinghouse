@@ -68,25 +68,6 @@ Experiment Registration - {{ CLEARINGHOUSE }}
                 </div>
             {% endif %}
 
-            <div class="alert alert-failure">
-                {{ exp_form.errors }}
-                {{ exp_form.non_field_errors }}
-		{% for s_form in exp_sensor_forms %}
-			{{ s_form.errors }}
-			{{ s_form.non_field_errors }}
-		{% endfor %}
-                {% for sa_form in exp_sa_forms %}
-                        {{ sa_form.errors }}
-			{{ sa_form.non_field_errors }}
-                {% endfor %}
-
-            </div>
-
-            <!--<div class="well">
-                {% for data in post_data %}
-                    {{ data.key }} | {{ data.value }} <br/>
-                {% endfor %}
-            </div>-->
             <div name="ExperimentRegistrationForm">
                 <form id="experiment" name="experiment" action="{% url 'expreg' %}" onsubmit="return validate_experiment()"  method="post" enctype="multipart/form-data">
                   {% csrf_token %}

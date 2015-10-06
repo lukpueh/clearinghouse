@@ -80,17 +80,22 @@ class ExperimentSensorForm(forms.ModelForm):
         data = super(ExperimentSensorForm, self).clean()
         # data = self.cleaned_data
         if data.get('sensor'):
-            frequency = data['frequency']
-            if frequency:
-                if data['frequency_unit']=='hour':
-                    data['frequency'] = frequency*60*60
-                elif data['frequency_unit']=='min':
-                    data['frequency'] =  frequency*60
+            print('***************')
+            print(data)
+            print('***************')
+            if data.get('sensor'):
+                frequency = data['frequency']
+                if frequency:
+                    if data['frequency_unit']=='hour':
+                        data['frequency'] = frequency*60*60
+                    elif data['frequency_unit']=='min':
+                        data['frequency'] =  frequency*60
 
-        if data['frequency'] or data['frequency_other']:
-            return data
-        else:
-            raise ValidationError('Please fill in either of the fields under '+Sensor.objects.filter(id=data.get('sensor')).name)
+            if data['frequency'] or data['frequency_other']:
+                return data
+            else:
+                raise ValidationError('Please fill in either of the fields under '+Sensor.objects.filter(id=data.get('sensor')).name)
+        
         return data
 
 class ExperimentSensorAttributeForm(forms.ModelForm):
@@ -108,14 +113,7 @@ class ExperimentSensorAttributeForm(forms.ModelForm):
         data = super(ExperimentSensorAttributeForm, self).clean()
         # Validate and process precision data for a selected sensor_attribute
         # Check if the precision Attribute is applicable for the given Sensor Attribute
-        # print('&&&&&&&&&&&&&&')
-        # print(data['sensor_attribute'])
-        # sa_id = data.get('sensor_attribute')
-        # print(sa_id)
-        # print('&&&&&&&&&&&&&&')
 
-        # sa_obj = SensorAttribute.objects.get(id=sa_id)
-        # if sa_obj.precision_flag:
         if data.get('sensor_attribute'):
             if data['precision_choice'] == 'full':
                 data['precision'] = 0

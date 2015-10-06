@@ -16,7 +16,7 @@ urlpatterns = patterns('clearinghouse.website.html.views',
                        (r'^doterms$', htmlviews.doterms, {},'doterms'),
                        (r'^dotechinfo$', htmlviews.dotechinfo, {},'dotechinfo'),
                        (r'^about$', htmlviews.about, {},'about'),
-
+                       (r'^expsuccess$', htmlviews.expsuccess, {}, 'expsuccess'),
                        (r'^expreg$', htmlviews.expreg, {}, 'expreg'),
                        (r'^experiments$', htmlviews.experiments, {},'experiments'),
                        (r'^register$', htmlviews.register, {},'register'),

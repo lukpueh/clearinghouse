@@ -1,0 +1,56 @@
+{% extends "control/control_base.html" %}
+
+{% comment %}
+<Program>
+  register.html
+
+<Author>
+  Originally by?:
+  Sai Kaushik Borra 2015
+
+<Purpose>
+  Django template file for {{ TESTBED }} {{ CLEARINGHOUSE }}'s 'registered experiments' page.  The page
+  allows a user to view the list of all experiments.
+
+<Extends>
+  accounts/accounts_base.html
+
+<Stylesheet>
+  common.css
+  form.css
+
+<Scripts>
+  register.js
+
+<Template Variables>
+  page_top_errors:
+                Error messages to display.
+
+  form:
+                New user registration form.  See GeniUserCreationForm in forms.py for more info.
+    .username:
+                .password1:
+                .password2:
+    .affiliation:
+                .email:
+    .pubkey:
+    .gen_upload_choice:
+
+{% endcomment %}
+
+{% block title %}
+Submitted Experiments - {{ CLEARINGHOUSE }}
+{% endblock title %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>Success!</h1>
+        <h1><small>Your Experiment has been submitted successfully</small></h1><hr style="border-color:black">
+        <p align="center">Please review all your experiments <a href='experiments'>here</a><br/>OR<br/>
+        <a href="expreg">Submit another Experiment</a></p>
+    </div>
+</div>
+
+{% endblock content %}
