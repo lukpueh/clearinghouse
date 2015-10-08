@@ -9,7 +9,8 @@ import clearinghouse.website.html.views as htmlviews
 # (regular exp, function, optional dictionary, optional name)
 urlpatterns = patterns('clearinghouse.website.html.views',
 
-                       # Previously defined in accounts/urls.py.                       
+                       # Previously defined in accounts/urls.py.
+                       (r'^$', htmlviews.login, {},'home'),
                        (r'^home$', htmlviews.home, {},'home'),
                        (r'^IRBnuts$', htmlviews.irbnuts, {},'irbnuts'),
                        (r'^rterms$', htmlviews.rterms, {},'rterms'),

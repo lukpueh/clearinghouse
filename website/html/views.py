@@ -334,7 +334,7 @@ def register(request):
 
       try:
         validations.validate_username_and_password_different(username, password)
-      except(ValidationError, err):
+      except ValidationError, err:
         page_top_errors.append(str(err))
 
       # NOTE: gen_upload_choice turns out to be a *string* when retrieved, hence '2'
@@ -347,7 +347,7 @@ def register(request):
           # we should never error here, since we've already finished validation at this point.
           # but, just to be safe...
           user = interface.register_user(username, password, email, affiliation, pubkey)
-        except(ValidationError, err):
+        except ValidationError, err:
           page_top_errors.append(str(err))
         else:
           return _show_login(request, 'accounts/login.html',
@@ -586,7 +586,7 @@ def expreg(request):
 
     # Only if the request method is POST
     if request.method == "POST":
-        expform = ExperimentForm(request.POST, instance=Experiment())
+        expform = ExperimentForm(request.POST, label_suffix="", instance=Experiment())
         expsensorforms = [ExperimentSensorForm(request.POST, prefix=str(x)) for x in s_id_list]
         expsaforms = [ExperimentSensorAttributeForm(request.POST, prefix=str(x)) for x in total_sa_id_list]
 
@@ -670,9 +670,19 @@ def expreg(request):
         #     messages.error(request, sensor_err)
 
     else:
-        expform = ExperimentForm(instance=Experiment())
-        expsensorforms = [ExperimentSensorForm(prefix=str(x), instance=ExperimentSensor()) for x in s_id_list]
-        expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), instance=ExperimentSensorAttribute()) for x in total_sa_id_list]
+        expform = ExperimentForm(label_suffix="", instance=Experiment())
+        # expsensorforms = [ExperimentSensorForm(prefix=str(x), label_suffix="", instance=ExperimentSensor()) for x in s_id_list]
+        # expsensorforms = [ExperimentSensorForm(prefix=str(sensor['id'], initial={'sensor':sensor_list['id']}), label_suffix="", instance=ExperimentSensor()) for sensor in sensor_list]
+        expsensorforms = []
+        for sensor in sensor_list:
+            esf = ExperimentSensorForm(prefix=str(sensor['id']), label_suffix="", instance=ExperimentSensor())
+            esf.fields['sensor'].label = sensor['name']
+            esf.fields['sensor'].widget.attrs['value'] = sensor['id']
+            esf.fields['sensor'].widget.attrs['data-label'] = sensor['name']
+            esf.fields['sensor'].widget.attrs['data-target'] = "#sensorattr-"+str(sensor['id'])
+            expsensorforms.append(esf)
+
+        expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), label_suffix="", instance=ExperimentSensorAttribute()) for x in total_sa_id_list]
 
     zipped_sensor_data = zip(sensors, expsensorforms)
     return render_to_response('control/expreg.html', {'zipped_sensor_data': zipped_sensor_data,'exp_sensor_forms':expsensorforms, 'exp_sa_forms':expsaforms, 'username': user.username, 'exp_form': expform}, context_instance)
@@ -808,7 +818,7 @@ def get_resources(request):
     
     try:
       acquired_vessels = interface.acquire_vessels(user, vessel_num, vessel_type)
-    except(UnableToAcquireResourcesError, err):
+    except UnableToAcquireResourcesError, err:
       action_summary = "Unable to acquire vessels at this time."
       if str(err) == 'Acquiring NAT vessels is currently disabled. ':
         link = """<a href="{{ TESTBED_URL }}}blog">blog</a>"""
@@ -858,12 +868,12 @@ def del_resource(request):
     vessel_to_release = interface.get_vessel_list(vessel_handle)
   except DoesNotExistError:
     remove_summary = "Unable to remove vessel. The vessel you are trying to remove does not exist."
-  except(InvalidRequestError, err):
+  except InvalidRequestError, err:
     remove_summary = "Unable to remove vessel. " + str(err)
   else:
     try:
       interface.release_vessels(user, vessel_to_release)
-    except(InvalidRequestError, err):
+    except InvalidRequestError, err:
       remove_summary = "Unable to remove vessel. The vessel does not belong"
       remove_summary += " to you any more (maybe it expired?). " + str(err)
   
@@ -889,7 +899,7 @@ def del_all_resources(request):
 
   try:
     interface.release_all_vessels(user)
-  except(InvalidRequestError, err):
+  except InvalidRequestError, err:
     remove_summary = "Unable to release all vessels: " + str(err)
   
   return myvessels(request, remove_summary=remove_summary)
@@ -924,15 +934,15 @@ def renew_resource(request):
     vessel_to_renew = interface.get_vessel_list(vessel_handle_list)
   except DoesNotExistError:
     action_summary = "Unable to renew vessel: The vessel you are trying to delete does not exist."
-  except(InvalidRequestError, err):
+  except InvalidRequestError, err:
     action_summary = "Unable to renew vessel."
     action_detail += str(err)
   else:
     try:
       interface.renew_vessels(user, vessel_to_renew)
-    except(InvalidRequestError, err):
+    except InvalidRequestError, err:
       action_summary = "Unable to renew vessel: " + str(err)
-    except(InsufficientUserResourcesError, err):
+    except InsufficientUserResourcesError, err:
       action_summary = "Unable to renew vessel: you are currently over your"
       action_summary += " vessel credit limit."
       action_detail += str(err)
@@ -959,9 +969,9 @@ def renew_all_resources(request):
   
   try:
     interface.renew_all_vessels(user)
-  except(InvalidRequestError, err):
+  except InvalidRequestError, err:
     action_summary = "Unable to renew vessels: " + str(err)
-  except(InsufficientUserResourcesError, err):
+  except InsufficientUserResourcesError, err:
     action_summary = "Unable to renew vessels: you are currently over your"
     action_summary += " vessel credit limit."
     action_detail += str(err)

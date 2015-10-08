@@ -1,9 +1,18 @@
 
 // For collapsible divs in Experiment Registration
 $(document).ready(function() {
-	$('.collapse').collapse();
-//	min_sensor_condition();
+	$('#experiment .collapsible').change(function() {
+		//$('#mycheckboxdiv').toggle();
+		sensor_on_change(this.getAttribute('data-target'), this.checked);
+	});
 });
+
+function sensor_on_change(target, flag){
+    if(flag)
+        $(target).show();
+    else
+        $(target).hide();
+}
 
 function min_sensor_condition(){
   var sCheckBoxes = $("#experiment .sensors");

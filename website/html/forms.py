@@ -56,21 +56,64 @@ class PubKeyField(forms.FileField):
         return pubkey
 
 class ExperimentForm(forms.ModelForm):
-    name = forms.CharField(label="Name of the Experiment", error_messages={'required': 'Enter the name of the experiment'})
-    researcher_address = forms.CharField(label="Name and address of researcher\'s home institution", error_messages={'required': 'Enter the address of Researchers home institution'})
-    researcher_email = forms.EmailField(label="Researcher\'s E-mail Address", error_messages={'required': 'Enter Researchers E-mail Address'})
-    irb_officer_name = forms.CharField(label="Name of the home institution\'s IRB officer or contact person", error_messages={'required': 'Enter Contact Person\'s Name'})
-    irb_officer_email = forms.CharField(label="Email address of home institution\'s IRB officer or contact person", error_messages={'required': 'Enter contact persons E-mail Address'})
-    goal = forms.CharField(label="What is the goal of your research experiment? What do you want to find out?", widget=forms.Textarea, error_messages={'required': 'Enter the goal of your research experiment'}, max_length=256)
-    sensor_other = forms.CharField(label='If you find sensors that we donot support, please tell us more', required=False, max_length=256)
-    store_protect = forms.CharField(label='How and where will you store and protect the collected data?', error_messages={'required': 'Please fill in - How and where will you store and protect the collected data'}, max_length=512)
+    name = forms.CharField(label="Name of the Experiment",
+                           error_messages={'required': 'Enter the name of the experiment'},
+                           widget=forms.TextInput(attrs={'class': 'form-control',
+                                                         'placeholder': 'Enter the Name of your Experiment'}))
+
+    researcher_name = forms.CharField(label="Name of the Researcher",
+                           error_messages={'required': 'Enter the name of the Researcher'},
+                           widget=forms.TextInput(attrs={'class': 'form-control',
+                                                         'placeholder': 'Enter the Name of the Researcher'}))
+
+    researcher_address = forms.CharField(label="Name and address of Researcher\'s home institution",
+                                         widget=forms.TextInput(attrs={'class': 'form-control',
+                                                         'placeholder': 'Enter the Address of the Researcher\'s home institution'}),
+                                         error_messages={'required': 'Enter the address of the Researcher\'s home institution'})
+
+    researcher_email = forms.EmailField(label="Researcher\'s E-mail Address",
+                                        widget=forms.EmailInput(attrs={'class': 'form-control',
+                                            'placeholder': 'Enter Researcher\'s E-mail Address',
+                                            'pattern': "(?!(^[.-].*|[^@]*[.-]@|.*\.{2,}.*)|^.{254}.)([a-zA-Z0-9!#$%&'*+\/=?^_`{|}~.-]+@)(?!-.*|.*-\.)([a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,15}"}),
+                                        error_messages={'required': 'Enter Researchers E-mail Address'})
+
+    irb_officer_name = forms.CharField(label="Name of the home institution\'s IRB officer or contact person",
+                                       widget=forms.TextInput(attrs={'class': 'form-control',
+                                                         'placeholder': 'Enter the Name of your Experiment'}),
+                                       error_messages={'required': 'Enter Contact Person\'s Name'})
+
+    irb_officer_email = forms.EmailField(label="Email address of home institution\'s IRB officer or contact person",
+                                        widget=forms.EmailInput(attrs={'class': 'form-control',
+                                            'placeholder': 'Enter the Email Address of your contact person',
+                                            'pattern': "(?!(^[.-].*|[^@]*[.-]@|.*\.{2,}.*)|^.{254}.)([a-zA-Z0-9!#$%&'*+\/=?^_`{|}~.-]+@)(?!-.*|.*-\.)([a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,15}"}),
+                                        error_messages={'required': 'Enter contact person\'s E-mail Address'})
+
+    goal = forms.CharField(label="What is the goal of your research experiment? What do you want to find out?",
+                           widget=forms.Textarea(attrs={'class': 'form-control', 'rows':1,
+                                                         'placeholder': 'Enter the goal of your Experiment'}),
+                           error_messages={'required': 'Enter the goal of your research experiment'},
+                           max_length=256)
+
+    sensor_other = forms.CharField(label='If you find sensors that we DO NOT support, please tell us more',
+                                    widget=forms.Textarea(attrs={'class': 'form-control', 'rows':1,
+                                                         'placeholder': 'Enter the names of sensors and relevant information'}),
+                                    required=False,
+                                    max_length=256)
+
+    store_protect = forms.CharField(label='How and where will you store and protect the collected data?',
+                                    widget=forms.Textarea(attrs={'class': 'form-control', 'rows':1,
+                                                         'placeholder': 'Enter how do you plan to store and protect the collected data'}),
+                                    error_messages={'required': 'Please fill in - How and where will you store and protect the collected data'},
+                                    max_length=512)
     class Meta:
         model = Experiment
         exclude = ('user',)
 
 class ExperimentSensorForm(forms.ModelForm):
+    # sensor = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'sensors collapsible'}))
+    frequency = forms.IntegerField(label='Once every', min_value=1, widget=forms.NumberInput(attrs={'class': 'form-control'}))
     F_CHOICES = (('hour', 'Hour'),('min', 'Min'),('sec', 'Sec'),)
-    frequency_unit = forms.ChoiceField(widget = forms.Select(), 
+    frequency_unit = forms.ChoiceField(widget = forms.Select(attrs={'class': 'form-control'}),
                      choices = F_CHOICES, initial='hour', required = True,)
     class Meta:
         model = ExperimentSensor
