@@ -121,30 +121,56 @@ class GeniUser(DjangoUser):
 
 # experiment_info(experiment_id, experiment_name, researcher_name, resercher_email, researcher_address, irb_officer_name, irb_officer_email)
 class Experiment(models.Model):
-    # experiment_id = models.AutoField(primary_key=True)
+    """
+    This defines an Experiment which is submitted by a Researcher.
+    """
+
+    # Name of the Experiment
     name = models.CharField(max_length=30)
+
+    # The user who submitted the form
     user = models.ForeignKey(GeniUser, db_index=True)
+
+    # Name of the researcher who carry out the experiment
     researcher_name = models.CharField(max_length=30)
+
+    # Email Address of the Researcher
     researcher_email = models.EmailField()
+
+    # Postal/Mail address of the researcher
     researcher_address = models.CharField(max_length=64)
+
+    # Name of the Researcher's IRB officer
     irb_officer_name = models.CharField(max_length=30)
+
+    # Email Address of the Researcher's IRB officer
     irb_officer_email = models.EmailField()
+
+    # The main goal of the experiment
     goal = models.CharField(max_length=256)
+
+    # The list and details of sensors which are not supported by Sensibility's sensor API
     sensor_other = models.CharField(max_length=256, default=None, blank=True)
+
+    # How does the researcher plan to store and protect the data collected
     store_protect = models.CharField(max_length=512)
+
     # Have the database keep track of when each record was created and modified.
     date_created = models.DateTimeField("Date added to DB", auto_now_add=True, db_index=True)
     date_modified = models.DateTimeField("Date modified in DB", auto_now=True, db_index=True)
 
     def __unicode__(self):
-	"""
-	Produce a string representation of the Experiment instance.
-	"""
-	return "Experiment:%s" % (self.name)
+        """
+        Produce a string representation of the Experiment instance.
+        """
+        return "Experiment:%s" % (self.name)
 
 # sensors(sensor_id, sensor_name)
 class Sensor(models.Model):
-    # sensor_id = models.AutoField(primary_key=True)
+    """
+    This model defines a Sensor which is supported in Sensibility's sensor lib
+    """
+    # Name of the sensor
     name = models.CharField(max_length=30)
 
     def __unicode__(self):
@@ -153,9 +179,16 @@ class Sensor(models.Model):
 # sensor_attributes(sensor_attribute_id, sensor_id, sensor_attribute_name)
 # sensor_id refers sensors
 class SensorAttribute(models.Model):
-    # sensor_attribute_id = models.AutoField(primary_key=True)
+    """
+    This model defines kind of sensor data available under a sensor which is supported in Sensibility's sensor lib
+    """
+    # Foreign key Sensor to which this SensorAttribute belongs
     sensor = models.ForeignKey(Sensor)
+
+    # Name of the Sensor Attribute
     name = models.CharField(max_length=30)
+
+    # A boolean field that tells us if this Sensor Attribute can have a precision level or not
     precision_flag = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -165,13 +198,29 @@ class SensorAttribute(models.Model):
 # experiment_id refers experiment_info
 # sensor_id refers sensors
 class ExperimentSensor(models.Model):
-    # experiment_sensor_id = models.AutoField(primary_key=True)
+    """
+    This defines the sensors selected when an experiment is submitted
+    This is later used to allow/disallow the sensor data requests by an experiment
+    """
+    # Foreign key reference to the experiment id to which this sensor is requested
     experiment = models.ForeignKey(Experiment)
+
+    # The Sensor which is selected
     sensor = models.ForeignKey(Sensor)
+
+    # How frequently is this sensor data pulled/requested
     frequency = models.IntegerField(default=None, blank=True)
+
+    # Any level of frequency that we do not support?
     frequency_other = models.CharField(max_length=512, default=None, blank=True)
+
+    # How is this sensor data used
     usage_policy = models.CharField(max_length=512)
+
+    # Is this sensor data downloaded by the experiment/researcher
     downloadable = models.BooleanField(default=False)
+
+    # A level of precision for any of this sensor data that we do NOT support
     precision_other = models.CharField(max_length=512, default=None, blank=True)
 
     def __unicode__(self):
@@ -185,10 +234,18 @@ class ExperimentSensor(models.Model):
 # experiment_id refers experiment_info
 # sensor_attribute_id refers sensor_attributes
 class ExperimentSensorAttribute(models.Model):
-    # experiment_sensor_attribute_id = models.AutoField(primary_key=True)
-    # experiment_sensor = models.ForeignKey(ExperimentSensor)
+    """
+    This defines the kind of data under a SELECTED EXPERIMENT SENSOR which will be requested by the experiment
+    """
+    # Foreign key reference to the experiment id to which this sensor attribute is requested
     experiment = models.ForeignKey(Experiment)
+
+    # What kind of sensor data will be requested from a SELECTED SENSOR
     sensor_attribute = models.ForeignKey(SensorAttribute)
+
+    # What is the level of precision for this data
+    # It usually represents the number of decimal points. (00 represents FULL PRECISION)
+    # If it is LOCATION, then the precision actually represents the blurring level such as City(01), State(10), Country(11)
     precision = models.IntegerField(default=None, blank=True)
 
     class Meta:

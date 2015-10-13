@@ -15,6 +15,7 @@ handler500 = 'clearinghouse.website.html.errorviews.internal_error'
 # (regular exp, function, optional dictionary, optional name)
 urlpatterns = patterns('',
     
+    url(r'^$', RedirectView.as_view(url='/html/login')),
     url(r'^html/', include('clearinghouse.website.html.urls')),
     url(r'^download/', include('clearinghouse.website.html.downloadurls')),
     url(r'^xmlrpc', include('clearinghouse.website.xmlrpc.urls')),

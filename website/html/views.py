@@ -34,6 +34,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.core.context_processors import csrf
+from django.core.exceptions import PermissionDenied
 
 # Used to display meaningful OpenID/OAuth error messages to the user
 from django.contrib.messages.api import get_messages
@@ -496,11 +497,22 @@ def about(request):
 
 @login_required
 def expsuccess(request):
+    """
+    A view which displays that an experiment has been submitted successfully
+    """
     return render_to_response('control/expsuccess.html', {},
           context_instance=RequestContext(request))
 
 @login_required
 def experiments(request):
+    """
+    If an experiment id is provided:
+        This displays all the data that belongs to the provided experiment id
+    Else:
+        This displays a list of all the experiments submitted by the logged in user
+    """
+
+    # Checking if a valid user id is found or not
     try:
         user = _validate_and_get_geniuser(request)
     except LoggedInButFailedGetGeniUserError:
@@ -508,46 +520,74 @@ def experiments(request):
 
     context_instance = RequestContext(request)
     exp_id = request.GET.get('id')
+
+    # If the experiment id is NOT provided through GET
+    # Display a list of experiments which are submitted by the logged in user
     if exp_id is None:
         experiments_list = Experiment.objects.filter(user=user.id).values().order_by('-date_created')
         context_dict = {'username': user.username, 'experiments': experiments_list}
-    else:
-        experiment = Experiment.objects.select_related('user').get(id=exp_id)
-        experiment_sensors = ExperimentSensor.objects.select_related('sensor').filter(experiment=exp_id)
-        # Converting Frequency values to sec(s)/min(s)/hour(s) accordingly
-        for es in experiment_sensors:
-            fr_val = es.frequency/60
-            if fr_val >= 60:
-                es.frequency = str(fr_val/60)+' hour(s)'
-            elif fr_val >= 1:
-                es.frequency = str(fr_val)+' min(s)'
-            else:
-                es.frequency = str(es.frequency)+' sec(s)'
 
-        experiment_sensor_attribs = ExperimentSensorAttribute.objects.select_related('sensor_attribute__sensor').filter(experiment=exp_id)
-        for esa in experiment_sensor_attribs:
-            if esa.sensor_attribute.precision_flag:
-                if esa.sensor_attribute.sensor.name == 'Location':
-                    esa.precision_tag = ''                             # Used in template as a tag for 'Precision' heading
-                    if esa.precision == 10:
-                        esa.precision = 'State'
-                    elif esa.precision == 11:
-                        esa.precision = 'Country'
-                    else:
-                        esa.precision = 'City'
+    # If the experiment id is PROVIDED through GET
+    else:
+        # Collecting data of this experiment from Experiment model
+        experiment = Experiment.objects.select_related('user').get(id=exp_id, user=user.id)
+
+        # If the logged in user did NOT submit this experiment
+        if not experiment:
+            raise PermissionDenied
+
+        # If the logged in user SUBMITTED this experiment
+        else:
+            # Collecting data of this experiment from Experiment Sensors model
+            experiment_sensors = ExperimentSensor.objects.select_related('sensor').filter(experiment=exp_id)
+
+            # Converting Frequency values which are by default seconds to sec(s)/min(s)/hour(s) accordingly
+            for es in experiment_sensors:
+                fr_val = es.frequency/60
+                if fr_val >= 60:
+                    es.frequency = str(fr_val/60)+' hour(s)'
+                elif fr_val >= 1:
+                    es.frequency = str(fr_val)+' min(s)'
                 else:
-                    esa.precision_tag = '(No.of Decimal Places)'        # Used in template as a tag for 'Precision' heading
-                    if esa.precision == 0:
-                        esa.precision = 'Full'
-            else:
-                 esa.precision = 'N/A'
-        context_dict = {'username': user.username, 'exp': experiment, 'exp_sensors': experiment_sensors,
+                    es.frequency = str(es.frequency)+' sec(s)'
+
+            # Collecting data of this experiment from Experiment Sensor Attributes model
+            experiment_sensor_attribs = ExperimentSensorAttribute.objects.select_related('sensor_attribute__sensor').filter(experiment=exp_id)
+            for esa in experiment_sensor_attribs:
+                # Converting any PRECISION values to other forms, if necessary
+                # The PRECISION value represent 'the number of decimal places' by default for all the sensors
+                # For Location, the values correspond to a specific blur level of data such as:
+                # 10 => State, 11 => Country, 01 or any other value correspond to the default value 'City'.
+                if esa.sensor_attribute.precision_flag:
+                    if esa.sensor_attribute.sensor.name == 'Location':
+                        esa.precision_tag = ''                             # Used in template as a tag for 'Precision' heading
+                        if esa.precision == 10:
+                            esa.precision = 'State'
+                        elif esa.precision == 11:
+                            esa.precision = 'Country'
+                        else:
+                            esa.precision = 'City'
+                    else:
+                        esa.precision_tag = '(No.of Decimal Places)'        # Used in template as a tag for 'Precision' heading
+                        if esa.precision == 0:
+                            esa.precision = 'Full'
+                else:
+                     esa.precision = 'N/A'
+            context_dict = {'username': user.username, 'exp': experiment, 'exp_sensors': experiment_sensors,
                         'exp_sensor_attribs': experiment_sensor_attribs}
 
     return render_to_response('control/experiments.html', context_dict, context_instance)
 
+
 @login_required
 def expreg(request):
+    """
+    <Purpose>
+        Show the Experiment Registration Form
+    <Returns>
+        An HTTP response object that represents the experiment registration page on
+        success.
+    """
     # Obtain the context from the HTTP request.
     context_instance = RequestContext(request)
 
@@ -562,10 +602,17 @@ def expreg(request):
     sensor_list = Sensor.objects.values()
 
     def zip_sa_data(sa_list, id_list):
+        """
+        Get a tupled list of Sensor Attribute ID and it's corresponding Sensor Attribute form
+        """
+        # Form with POST data filled in it
         if request.method == "POST":
             expsaforms = [ExperimentSensorAttributeForm(request.POST, prefix=str(x), instance=ExperimentSensorAttribute()) for x in id_list]
+
+        # A new Sensor Attribute Form
         else:
             expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), instance=ExperimentSensorAttribute()) for x in id_list]
+
         return zip(sa_list, expsaforms)
 
     # List of Sensor ids
@@ -574,10 +621,16 @@ def expreg(request):
     # Total list of SensorAttribute ids
     total_sa_id_list = SensorAttribute.objects.values_list('id', flat=True).order_by('id')
 
+    # Populating sensor list with corresponding Sensor Attribute data
     for sensor in sensor_list:
         d = {'sensor': (sensor['id'], sensor['name'])}
+
+        # A list of Sensor Attribute data which is later used to zip it with it's corresponding Sensor Attribute ID
         temp_list = []
+
+        # A list of Sensor Attribute IDs which is later used to zip it with it's corresponding Sensor Attribute data list
         sa_id_list = []
+
         for sensorAtt in SensorAttribute.objects.filter(sensor_id=sensor['id']).values():
             temp_list.append((sensorAtt['id'], sensorAtt['name'], sensorAtt['precision_flag']))
             sa_id_list.append(sensorAtt['id'])
@@ -608,18 +661,21 @@ def expreg(request):
                     if esf.cleaned_data['sensor'] not in selected_sensors:
                         selected_sensors.append(esf.cleaned_data['sensor'].id)
 
-        # To collect valid SensorAttribute forms and corresponding sensor_ids
+        # To collect VALID SensorAttribute forms and corresponding sensor_ids
         for esaf in expsaforms:
+            # If user selected/changed data in this ExperimentSensorAttributeForm
             if esaf.has_changed():
+                # If the ExperimentSensorAttributeForm is valid
                 if esaf.is_valid():
-                    # valid_esaforms.append(esaf)
                     sa = SensorAttribute.objects.select_related('sensor').get(pk=esaf.cleaned_data['sensor_attribute'].id)
                     if sa.sensor.id in selected_sensors:
                         valid_esaforms.append(esaf)
                         if sa.sensor.id not in sa_sensors:
                             sa_sensors.append(sa.sensor.id)
 
+        # If all the forms are valid.. Just double checking..
         if expform.is_valid() and all([esf.is_valid() for esf in valid_esforms]) and all([esaf.is_valid() for esaf in valid_esaforms]):
+            # If all the sensors from valid ExperimentSensorForms = All the sensors from valid ExperimentSensorAttributeForms, then save all the VALID forms
             if set(selected_sensors) == set(sa_sensors):
                 new_exp = expform.save(commit=False)
                 user_inst = GeniUser.objects.get(user_ptr_id=user.pk)
@@ -636,11 +692,13 @@ def expreg(request):
 
                 # messages.success(request, 'Experiment Submitted SUCCESSFULLY !!')
                 return HttpResponseRedirect('/html/expsuccess')
+            # Generate an error message displaying which Sensor has corresponding unfilled Sensor Attribute forms
             else:
                 for sensor in list(set(selected_sensors)-set(sa_sensors)):
                     s_obj = Sensor.objects.filter(id=sensor.id).values()
                     msg = "Need to select AT LEAST one sensor attribute under the sensor "+str(s_obj['name'])
                     messages.error(request, msg)
+        # Generating error messages
         else:
             if not expform.is_valid():
                 if expform.errors:
@@ -654,25 +712,16 @@ def expreg(request):
                     if esaf.errors:
                         messages.error(request, esaf.errors)
 
+        # If the submit fails, populating the forms with corresponding POST data to display it again
         if messages.error:
             expform = ExperimentForm(instance=Experiment(context_instance))
             expsensorforms = [ExperimentSensorForm(prefix=str(x), instance=ExperimentSensor(context_instance)) for x in s_id_list]
             expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), instance=ExperimentSensorAttribute(context_instance)) for x in total_sa_id_list]
 
-        # else:
-        #     sensor_err = ""
-        #     for missed_sensor in list(set(selected_sensors)-set(sa_sensors)):
-        #         missed_sensor_inst = Sensor.objects.get(pk=missed_sensor)
-        #         print("%%%%%%%%%%%%%%%%%%%%%%%")
-        #         print(missed_sensor_inst.name)
-        #         print("%%%%%%%%%%%%%%%%%%%%%%%")
-        #         sensor_err += "ERROR: Required data under the selected Sensor ("+missed_sensor_inst.name+") has NOT been submitted<br>"
-        #     messages.error(request, sensor_err)
-
+    # Generating new form for Experiment Registration
     else:
         expform = ExperimentForm(label_suffix="", instance=Experiment())
-        # expsensorforms = [ExperimentSensorForm(prefix=str(x), label_suffix="", instance=ExperimentSensor()) for x in s_id_list]
-        # expsensorforms = [ExperimentSensorForm(prefix=str(sensor['id'], initial={'sensor':sensor_list['id']}), label_suffix="", instance=ExperimentSensor()) for sensor in sensor_list]
+
         expsensorforms = []
         for sensor in sensor_list:
             esf = ExperimentSensorForm(prefix=str(sensor['id']), label_suffix="", instance=ExperimentSensor())
