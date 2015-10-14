@@ -601,17 +601,21 @@ def expreg(request):
     # Place the list in our context_dict dictionary which will be passed to the template engine.
     sensor_list = Sensor.objects.values()
 
-    def zip_sa_data(sa_list, id_list):
+    def zip_sa_data(sa_list):
         """
         Get a tupled list of Sensor Attribute ID and it's corresponding Sensor Attribute form
         """
-        # Form with POST data filled in it
-        if request.method == "POST":
-            expsaforms = [ExperimentSensorAttributeForm(request.POST, prefix=str(x), instance=ExperimentSensorAttribute()) for x in id_list]
-
-        # A new Sensor Attribute Form
-        else:
-            expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), instance=ExperimentSensorAttribute()) for x in id_list]
+        expsaforms = []
+        for sa in sa_list:
+            if request.method == "POST":
+                esaf = ExperimentSensorAttributeForm(request.POST, prefix=str(sa['id']), label_suffix="", initial={'sensor_attribute': sa['id']}, instance=ExperimentSensorAttribute())
+            else:
+                esaf = ExperimentSensorAttributeForm(prefix=str(sa['id']), label_suffix="", initial={'sensor_attribute': sa['id']}, instance=ExperimentSensorAttribute())
+            esaf.fields['sensor_attribute'].value = sa['id']
+            esaf.fields['sa_select'].label = sa['name']
+            esaf.fields['sa_select'].widget.attrs['data-label'] = sa['name']
+            esaf.fields['sa_select'].widget.attrs['data-target'] = "#precision_div-"+str(sa['id'])
+            expsaforms.append(esaf)
 
         return zip(sa_list, expsaforms)
 
@@ -634,7 +638,8 @@ def expreg(request):
         for sensorAtt in SensorAttribute.objects.filter(sensor_id=sensor['id']).values():
             temp_list.append((sensorAtt['id'], sensorAtt['name'], sensorAtt['precision_flag']))
             sa_id_list.append(sensorAtt['id'])
-        d['zipped_sa_data'] = zip_sa_data(temp_list, sa_id_list)
+        # d['zipped_sa_data'] = zip_sa_data(temp_list, sa_id_list)
+        d['zipped_sa_data'] = zip_sa_data(SensorAttribute.objects.filter(sensor_id=sensor['id']).values())
         sensors.append(d)
 
     # Only if the request method is POST
@@ -661,10 +666,13 @@ def expreg(request):
                     if esf.cleaned_data['sensor'] not in selected_sensors:
                         selected_sensors.append(esf.cleaned_data['sensor'].id)
 
+
         # To collect VALID SensorAttribute forms and corresponding sensor_ids
         for esaf in expsaforms:
             # If user selected/changed data in this ExperimentSensorAttributeForm
             if esaf.has_changed():
+                print('********************')
+                print(esaf.changed_data)
                 # If the ExperimentSensorAttributeForm is valid
                 if esaf.is_valid():
                     sa = SensorAttribute.objects.select_related('sensor').get(pk=esaf.cleaned_data['sensor_attribute'].id)
@@ -672,6 +680,9 @@ def expreg(request):
                         valid_esaforms.append(esaf)
                         if sa.sensor.id not in sa_sensors:
                             sa_sensors.append(sa.sensor.id)
+                print(esaf.cleaned_data)
+                print(esaf.cleaned_data['sensor_attribute'])
+                print('********************')
 
         # If all the forms are valid.. Just double checking..
         if expform.is_valid() and all([esf.is_valid() for esf in valid_esforms]) and all([esaf.is_valid() for esaf in valid_esaforms]):
@@ -691,7 +702,7 @@ def expreg(request):
                     new_sa.save()
 
                 # messages.success(request, 'Experiment Submitted SUCCESSFULLY !!')
-                return HttpResponseRedirect('/html/expsuccess')
+                # return HttpResponseRedirect('/html/expsuccess')
             # Generate an error message displaying which Sensor has corresponding unfilled Sensor Attribute forms
             else:
                 for sensor in list(set(selected_sensors)-set(sa_sensors)):
@@ -724,17 +735,17 @@ def expreg(request):
 
         expsensorforms = []
         for sensor in sensor_list:
-            esf = ExperimentSensorForm(prefix=str(sensor['id']), label_suffix="", instance=ExperimentSensor())
-            esf.fields['sensor'].label = sensor['name']
-            esf.fields['sensor'].widget.attrs['value'] = sensor['id']
-            esf.fields['sensor'].widget.attrs['data-label'] = sensor['name']
-            esf.fields['sensor'].widget.attrs['data-target'] = "#sensorattr-"+str(sensor['id'])
+            esf = ExperimentSensorForm(prefix=str(sensor['id']), label_suffix="", initial={'sensor': sensor['id']}, instance=ExperimentSensor())
+            esf.fields['sensor'].value = sensor['id']
+            esf.fields['sensor_select'].label = sensor['name']
+            esf.fields['sensor_select'].widget.attrs['data-label'] = sensor['name']
+            esf.fields['sensor_select'].widget.attrs['data-target'] = "#sensorattr-"+str(sensor['id'])
             expsensorforms.append(esf)
 
-        expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), label_suffix="", instance=ExperimentSensorAttribute()) for x in total_sa_id_list]
+        # expsaforms = [ExperimentSensorAttributeForm(prefix=str(x), label_suffix="", instance=ExperimentSensorAttribute()) for x in total_sa_id_list]
 
     zipped_sensor_data = zip(sensors, expsensorforms)
-    return render_to_response('control/expreg.html', {'zipped_sensor_data': zipped_sensor_data,'exp_sensor_forms':expsensorforms, 'exp_sa_forms':expsaforms, 'username': user.username, 'exp_form': expform}, context_instance)
+    return render_to_response('control/expreg.html', {'zipped_sensor_data': zipped_sensor_data,'exp_sensor_forms':expsensorforms, 'username': user.username, 'exp_form': expform}, context_instance)
 
 
 @login_required

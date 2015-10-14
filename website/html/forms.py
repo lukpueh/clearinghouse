@@ -110,31 +110,39 @@ class ExperimentForm(forms.ModelForm):
         exclude = ('user',)
 
 class ExperimentSensorForm(forms.ModelForm):
-    # sensor = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'sensors collapsible'}))
+    sensor_select = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'sensors collapsible'}))
     frequency = forms.IntegerField(label='Once every', min_value=1, widget=forms.NumberInput(attrs={'class': 'form-control'}))
     F_CHOICES = (('hour', 'Hour'),('min', 'Min'),('sec', 'Sec'),)
     frequency_unit = forms.ChoiceField(widget = forms.Select(attrs={'class': 'form-control'}),
                      choices = F_CHOICES, initial='hour', required = True,)
+    frequency_other = forms.CharField(label="Other:",
+                                        widget=forms.TextInput(attrs={'class': 'form-control',
+                                                'placeholder': 'Please provide any additional information that you would like'}))
+    precision_other = forms.CharField(label="A level of data precision that we currently do not support? Please elaborate:",
+                                        widget=forms.Textarea(attrs={'class': 'form-control', 'rows':1,
+                                                'placeholder': 'Please provide any additional information that you would like'}))
+    D_CHOICES = ((1, 'Yes',), (0, 'No',))
+    downloadable = forms.ChoiceField(label= "Will these sensor data be downloaded from participant\'s devices?",                                                                                                                                      widget=forms.RadioSelect, choices=D_CHOICES)
+    usage_policy = forms.CharField(label='What will these sensor data be used for?',
+                                    widget=forms.Textarea(attrs={'class': 'form-control', 'rows':1,
+                                                         'placeholder': 'Enter how do you plan to use the collected data'}),
+                                    max_length=512)
     class Meta:
         model = ExperimentSensor
         exclude = ('experiment',)
 
     def clean(self):
         data = super(ExperimentSensorForm, self).clean()
-        # data = self.cleaned_data
-        if data.get('sensor'):
-            print('***************')
-            print(data)
-            print('***************')
+        if data.get('sensor_select'):
             if data.get('sensor'):
-                frequency = data['frequency']
+                frequency = data.get('frequency')
                 if frequency:
                     if data['frequency_unit']=='hour':
                         data['frequency'] = frequency*60*60
                     elif data['frequency_unit']=='min':
                         data['frequency'] =  frequency*60
 
-            if data['frequency'] or data['frequency_other']:
+            if data.get('frequency') or data.get('frequency_other'):
                 return data
             else:
                 raise ValidationError('Please fill in either of the fields under '+Sensor.objects.filter(id=data.get('sensor')).name)
@@ -142,11 +150,15 @@ class ExperimentSensorForm(forms.ModelForm):
         return data
 
 class ExperimentSensorAttributeForm(forms.ModelForm):
+    sa_select = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'sa collapsible'}))
     P_CHOICES = (('full', 'Full Precision'),('truncate', 'Truncate'),)
     precision_choice = forms.ChoiceField(widget = forms.Select(),
                      choices = P_CHOICES, required = False,)
+    PL_CHOICES = ((1, 'City'),(10, 'State'),(11, 'Country'),)
+    precision_choice_loc = forms.ChoiceField(label= "Level of Blurring",
+        widget = forms.Select(attrs={'class': 'form-control'}),
+                     choices = PL_CHOICES, required = False,)
     precision = forms.IntegerField(required=False,)
-    # precision_value = forms.IntegerField(required=False)
 
     class Meta:
         model = ExperimentSensorAttribute
@@ -156,19 +168,28 @@ class ExperimentSensorAttributeForm(forms.ModelForm):
         data = super(ExperimentSensorAttributeForm, self).clean()
         # Validate and process precision data for a selected sensor_attribute
         # Check if the precision Attribute is applicable for the given Sensor Attribute
+        print('@@@@@@@@@@@@@@@')
+        print(data)
 
-        if data.get('sensor_attribute'):
-            if data['precision_choice'] == 'full':
-                data['precision'] = 0
-            elif data['precision_choice'] == 'truncate':
-                if data['precision']:
-                    data['precision'] = data['precision']
+        if data.get('sa_select'):
+            if data.get('sensor_attribute'):
+                # data['sensor_attribute'] = data.get('sensor_attribute').id
+                if data.get('precision'):
+                    precision = data.get('precision')
+                elif data.get('precision_choice_loc'):
+                    precision = data.get('precision_choice_loc')
+
+                if data['precision_choice'] == 'full':
+                    data['precision'] = 0
+                elif data['precision_choice'] == 'truncate':
+                    if data['precision']:
+                        data['precision'] = precision
+                    else:
+                        raise ValidationError('Please fill in truncation level under '+SensorAttribute.objects.filter(id=data['sensor_attribute']).name)
                 else:
-                    raise ValidationError('Please fill in truncation level under '+SensorAttribute.objects.filter(id=data['sensor_attribute']).name)
-            else:
-                data['precision'] = 0
-                # raise ValidationError('Please provide truncation data under '+SensorAttribute.objects.filter(id=data['sensor_attribute']).name)
-            data['precision_choice'] = None
+                    data['precision'] = 0
+                    # raise ValidationError('Please provide truncation data under '+SensorAttribute.objects.filter(id=data['sensor_attribute']).name)
+                data['precision_choice'] = None
         else:
             # If NOT applicable, set everything to None
             data['precision_choice'] = None
