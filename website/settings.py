@@ -9,7 +9,7 @@ additional changes you'll need to make to this file.
 
 import os
 
-from common.util import log
+from clearinghouse.common.util import log # <~>
 
 
 

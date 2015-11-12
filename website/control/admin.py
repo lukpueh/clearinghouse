@@ -16,7 +16,7 @@
   See http://docs.djangoproject.com/en/dev/ref/contrib/admin/
 """
 
-from common.api import maindb
+from clearinghouse.common.api import maindb # <~>
 
 from models import Donation
 from models import GeniUser

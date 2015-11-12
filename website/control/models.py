@@ -27,7 +27,7 @@ import django
 from django.db import models
 from django.contrib.auth.models import User as DjangoUser
 
-from common.util import log
+from clearinghouse.common.util import log # <~>
 
 
 
@@ -37,7 +37,7 @@ from common.util import log
 
 # Called when new database connections are created (see below).
 def _prepare_newly_created_db_connection(sender, **kwargs):
-    from common.api import maindb
+    from clearinghouse.common.api import maindb # <~>
     maindb.init_maindb()
 
 # If this is a modern-enough version of django to support specifying a function
