@@ -873,7 +873,7 @@ def priv_key(request):
   except LoggedInButFailedGetGeniUserError:
     return _show_failed_get_geniuser_page(request)
   
-  response = HttpResponse(user.user_privkey, mimetype='text/plain')
+  response = HttpResponse(user.user_privkey, content_type='text/plain') # <~>
   response['Content-Disposition'] = 'attachment; filename=' + \
           str(user.username) + '.privatekey'
   return response
@@ -890,7 +890,7 @@ def pub_key(request):
   except LoggedInButFailedGetGeniUserError:
     return _show_failed_get_geniuser_page(request)
   
-  response = HttpResponse(user.user_pubkey, mimetype='text/plain')
+  response = HttpResponse(user.user_pubkey, content_type='text/plain') # <~>
   response['Content-Disposition'] = 'attachment; filename=' + \
             str(user.username) + '.publickey'
   return response
