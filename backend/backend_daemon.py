@@ -338,7 +338,8 @@ def cleanup_vessels():
   log.info("[cleanup_vessels] cleanup thread started.")
 
   # Start a transaction management.
-  django.db.transaction.enter_transaction_management()
+  # <~> Commenting out next line. Functionality removed in Django 1.8. Expecting autocommit to work in its absence.
+  #django.db.transaction.enter_transaction_management()
 
   # Run forever.
   while True:
