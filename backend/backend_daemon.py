@@ -341,6 +341,19 @@ def cleanup_vessels():
   # <~> Commenting out next line. Functionality removed in Django 1.8. Expecting autocommit to work in its absence.
   #django.db.transaction.enter_transaction_management()
 
+  # <~> Trying..... here.
+  # If we are in a django version that has django.setup() (1.7+?), run django.setup()
+  # This is needed for django compatibility.
+  # So that it works, undo the repy custom patching of the type builtin so that django can use it. We'll turn it back on after.
+  if hasattr(django, 'setup'):
+    temp_type = __builtins__.type
+    import safe
+    __builtins__.type = safe._type
+    django.setup()
+    __builtins__.type = temp_type
+  # <~> end
+
+
   # Run forever.
   while True:
     
@@ -386,6 +399,7 @@ def cleanup_vessels():
       # that are down.
       cleanupvessellist = maindb.get_vessels_needing_cleanup()
       if len(cleanupvessellist) == 0:
+        log.info("[cleanup_vessels] found no vessels needing cleanup.") # <~>
         continue
         
       log.info("[cleanup_vessels] " + str(len(cleanupvessellist)) + " vessels to clean up: " + str(cleanupvessellist))
@@ -492,6 +506,18 @@ def sync_user_keys_of_vessels():
 
   log.info("[sync_user_keys_of_vessels] thread started.")
 
+  # <~> Trying..... here.
+  # If we are in a django version that has django.setup() (1.7+?), run django.setup()
+  # This is needed for django compatibility.
+  # So that it works, undo the repy custom patching of the type builtin so that django can use it. We'll turn it back on after.
+  if hasattr(django, 'setup'):
+    temp_type = __builtins__.type
+    import safe
+    __builtins__.type = safe._type
+    django.setup()
+    __builtins__.type = temp_type
+  # <~> end
+
   # Run forever.
   while True:
     
@@ -511,6 +537,7 @@ def sync_user_keys_of_vessels():
       # communicate with nodes that are down.
       vessellist = maindb.get_vessels_needing_user_key_sync()
       if len(vessellist) == 0:
+        log.info("[sync_user_keys_of_vessels] found no vessels needing sync.") # <~>
         continue
         
       log.info("[sync_user_keys_of_vessels] " + str(len(vessellist)) + 
