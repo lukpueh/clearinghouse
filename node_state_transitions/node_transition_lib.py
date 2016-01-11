@@ -65,6 +65,14 @@ from clearinghouse.common.exceptions import *
 
 from clearinghouse.website import settings
 
+# <~> Perform django setup (required in Django 1.7+ (possibly 1.6.?+)) to make db/models available.
+#   We need to do this if we are using a django version that has django.setup() (1.7+?)
+# This should happen before the repy patching of builtins, which likely occurs in the add_dy_support
+#   call in the next line of code. django.setup() expects to be able to use the builtin keyword 'type',
+#   which is patched by repy, so we should do this here, before that patching.
+if hasattr(django, 'setup'):
+  django.setup()
+
 # Import all the repy files.
 add_dy_support(locals())
 
