@@ -106,9 +106,9 @@ class GeniUserCreationForm(DjangoUserCreationForm):
 
 
 
-
-#def gen_edit_user_form(field_list=None, *args, **kwargs):
-def gen_edit_user_form(field_list='__all__', *args, **kwargs): # <~> default from None to __all__ for Django 1.8 compatibility
+# Part of fix for Issue #152: change default field_list from None to '__all__'
+# for Django 1.8 compatibility
+def gen_edit_user_form(field_list='__all__', *args, **kwargs):
   """
   <Purpose>
       Dynamically generates a EditUserForm depending on field_list.
