@@ -96,7 +96,7 @@ def main():
       print("")
       renameddir = deployroot.rstrip('/').rstrip('\\') + '.bak.' + str(time.time())
       print("Renaming existing directory {0} to {1}".format(deployroot,
-          renamedir))
+          renameddir))
       shutil.move(deployroot, renameddir)
 
   # Create the directory we will deploy to.
