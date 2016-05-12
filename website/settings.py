@@ -44,7 +44,14 @@ SEATTLECLEARINGHOUSE_WEBSITE_ROOT = os.path.dirname(__file__)
 SEATTLECLEARINGHOUSE_STATE_KEYS_DIR = os.path.join(SEATTLECLEARINGHOUSE_WEBSITE_ROOT, '..', 'node_state_transitions', 'statekeys')
 
 # The XML-RPC interface to the Custom Installer Builder.
-SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://custombuilder.poly.edu/custom_install/xmlrpc/"
+# As of this writing, custombuilder.poly.edu/custom_install/xmlrpc does not support
+# repy_v2. Notably, this means that installers from it will not provide NAT traversal,
+# and so clients behind routers may fail to connect. You may choose to use your own
+# Custom Installer Builder instance, or that provided for the SensibilityTestbed.
+# For a guide to setting up your own CIB instance, see:
+#   https://seattle.poly.edu/wiki/CustomInstallerBuilderInstallation
+SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://custombuilder.poly.edu/custom_install/xmlrpc/" # Default, currently no repy_v2 support
+#SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://sensibilityclearinghouse.poly.edu/custominstallerbuilder/xmlrpc/" # SensibilityTestbed's CIB, which supports repy_v2 and thereby NAT traversal.
 
 # Not currently used. This is left in for legacy installs
 # The directory where the base installers named seattle_linux.tgz, seattle_mac.tgz,
