@@ -68,7 +68,8 @@ function shutdown() {
   echo "Shutting down Clearinghouse components."
   # Tell kill to kill the process group (so, kill children) by giving a negative process id.
   # Note: "--" means the end of options
-  kill -- -$$
+  #kill -- -$$
+  pkill -P $$
   wait
   exit
 }
