@@ -50,6 +50,13 @@ SEATTLECLEARINGHOUSE_STATE_KEYS_DIR = os.path.join(SEATTLECLEARINGHOUSE_WEBSITE_
 SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://custombuilder.poly.edu/custom_install/xmlrpc/" # Default, currently no repy_v2 support
 #SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://sensibilityclearinghouse.poly.edu/custominstallerbuilder/xmlrpc/" # SensibilityTestbed's CIB, which supports repy_v2 and thereby NAT traversal.
 
+# In Python 2.7.9+ a HTTPS request to a server using a self-signed certificate
+# will raise an exception.
+# This setting provides to chose whether to accept self-signed certificates
+# (e.g. in DEBUG mode) by using an unverified ssl context.
+# c.f. https://github.com/SeattleTestbed/custominstallerbuilder/issues/16
+UNVERIFIED_SSL_CONTEXT = DEBUG
+
 # Not currently used. This is left in for legacy installs
 # The directory where the base installers named seattle_linux.tgz, seattle_mac.tgz,
 # and seattle_win.zip are located.
