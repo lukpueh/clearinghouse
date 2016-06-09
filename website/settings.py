@@ -65,7 +65,7 @@ SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://custombuilder.poly.edu/
 
 # Not currently used. This is left in for legacy installs
 #The url that corresponds to SEATTLECLEARINGHOUSE_USER_INSTALLERS_DIR
-#SEATTLECLEARINGHOUSE_USER_INSTALLERS_URL = "https://blackbox.cs.washington.edu/dist/geni"
+
 
 # Need to specify the LOGIN_URL, as our login page isn't at the default login
 # location (the default is /accounts/login).
