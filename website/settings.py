@@ -257,6 +257,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
   'social_auth.context_processors.social_auth_by_type_backends',
   # Add context processor for TESTBED etc. tags; configure these below.
   'clearinghouse.website.context_processor.customizable_strings',
+  'clearinghouse.website.context_processor.options',
 )
 #  Social_auth follows each of these in order and passes along a object with
 #  information gathered to each function.
