@@ -79,6 +79,9 @@ rsa = dy_import_module("rsa.r2py")
 
 
 
+
+
+
 class LoggedInButFailedGetGeniUserError(Exception):
   """
   <Purpose>
@@ -468,6 +471,8 @@ def accounts_help(request):
 
 
 
+
+
 @login_required
 def mygeni(request):
   try:
@@ -522,7 +527,7 @@ def myvessels(request, get_form=False, action_summary="", action_detail="", remo
   
   # this user's number of donations, max vessels, total vessels and free credits
   my_donations = interface.get_donations(user)
-  my_max_vessels = interface.get_available_vessel_credits(user)	
+  my_max_vessels = interface.get_available_vessel_credits(user)
   my_free_vessel_credits = interface.get_free_vessel_credits_amount(user)
   my_total_vessel_credits = interface.get_total_vessel_credits(user)
 
@@ -868,7 +873,7 @@ def priv_key(request):
   except LoggedInButFailedGetGeniUserError:
     return _show_failed_get_geniuser_page(request)
   
-  response = HttpResponse(user.user_privkey, mimetype='text/plain')
+  response = HttpResponse(user.user_privkey, content_type='text/plain')
   response['Content-Disposition'] = 'attachment; filename=' + \
           str(user.username) + '.privatekey'
   return response
@@ -885,7 +890,7 @@ def pub_key(request):
   except LoggedInButFailedGetGeniUserError:
     return _show_failed_get_geniuser_page(request)
   
-  response = HttpResponse(user.user_pubkey, mimetype='text/plain')
+  response = HttpResponse(user.user_pubkey, content_type='text/plain')
   response['Content-Disposition'] = 'attachment; filename=' + \
             str(user.username) + '.publickey'
   return response

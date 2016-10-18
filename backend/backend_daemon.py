@@ -324,8 +324,27 @@ class BackendPublicFunctions(object):
     
     # Raises NodemanagerCommunicationError if it fails.
     return nodemanager.join_vessels(nodehandle, firstvesselname, secondvesselname)
-      
 
+
+
+def run_django_setup_using_python_type():
+  """
+  Helper function to run `django.setup` with `__builtins__.type`
+  set to the default Python `type` function (rather than Repy's).
+
+  We need to do this because other code could have imported
+  repy.py and/or safe.py and by this have overridden the built-in
+  `type` function. We need to undo this override temporarily 
+  before running `django.setup()`, and restore it afterwards.
+  (Restoration makes sure that any following Repy code/libraries
+  see the overridden `type` again.)
+  """
+  repy_safe_type = __builtins__.type
+  # safe.py stores a reference to Python's original `type`
+  import safe
+  __builtins__.type = safe._type
+  django.setup()
+  __builtins__.type = repy_safe_type
 
 
 
@@ -337,8 +356,8 @@ def cleanup_vessels():
   
   log.info("[cleanup_vessels] cleanup thread started.")
 
-  # Start a transaction management.
-  django.db.transaction.enter_transaction_management()
+  run_django_setup_using_python_type()
+
 
   # Run forever.
   while True:
@@ -490,6 +509,8 @@ def sync_user_keys_of_vessels():
   """
 
   log.info("[sync_user_keys_of_vessels] thread started.")
+
+  run_django_setup_using_python_type()
 
   # Run forever.
   while True:

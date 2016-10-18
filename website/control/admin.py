@@ -7,6 +7,7 @@
 
 <Author>
   Justin Samuel
+  Sai Kaushik Borra
 
 <Purpose>
   This module provides classes that tell django how to represent the models
@@ -17,14 +18,15 @@
 
 from clearinghouse.common.api import maindb
 
-from clearinghouse.website.control.models import Donation
-from clearinghouse.website.control.models import GeniUser
-from clearinghouse.website.control.models import Node
-from clearinghouse.website.control.models import Vessel
-from clearinghouse.website.control.models import VesselPort
-from clearinghouse.website.control.models import VesselUserAccessMap
-from clearinghouse.website.control.models import ActionLogEvent
-from clearinghouse.website.control.models import ActionLogVesselDetails
+from models import Donation
+from models import GeniUser
+from models import Node
+from models import Vessel
+from models import VesselPort
+from models import VesselUserAccessMap
+from models import ActionLogEvent
+from models import ActionLogVesselDetails
+
 
 from django.contrib import admin
 from django.contrib.auth.forms import AdminPasswordChangeForm
@@ -244,3 +246,4 @@ admin.site.register(VesselPort, VesselPortAdmin)
 admin.site.register(VesselUserAccessMap, VesselUserAccessMapAdmin)
 admin.site.register(ActionLogEvent, ActionLogEventAdmin)
 admin.site.register(ActionLogVesselDetails, ActionLogVesselDetailsAdmin)
+

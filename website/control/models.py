@@ -7,6 +7,7 @@
 
 <Author>
   Justin Samuel
+  Sai Kaushik Borra
 
 <Purpose>
   This file contains definitions of model classes for the main database
@@ -31,7 +32,6 @@ from clearinghouse.common.util import log
 
 
 
-
 # First, we want to register a signal. This page recommends putting this code
 # in models.py: http://docs.djangoproject.com/en/dev/topics/signals/
 
@@ -40,17 +40,10 @@ def _prepare_newly_created_db_connection(sender, **kwargs):
   from clearinghouse.common.api import maindb
   maindb.init_maindb()
 
-# If this is a modern-enough version of django to support specifying a function
-# to be called on database connection creation, then have it call init_maindb()
-# at that time. This is to help prevent init_maindb() from accidentally not
-# being called when it should be.
-if django.VERSION >= (1,1):
-  # connection_created only exists with django >= 1.1
-  import django.db.backends.signals
-  django.db.backends.signals.connection_created.connect(_prepare_newly_created_db_connection)
-else:
-  log.error("You must use django >= 1.1 in order to support automatically " +
-            "perform custom database connection initialization. (See settings.py)")
+# Call init_maindb() on database connection creation. This is to help prevent
+# init_maindb() from accidentally not being called when it should be.
+import django.db.backends.signals
+django.db.backends.signals.connection_created.connect(_prepare_newly_created_db_connection)
 
 
 
@@ -60,7 +53,7 @@ else:
 class GeniUser(DjangoUser):
   """
   Defines the GeniUser model. A GeniUser record represents a SeattleGeni user.
-  
+
   By extending the DjangoUser model, django will still create a separate table
   in the database for the GeniUser model but will take care of making it look
   the same to us.

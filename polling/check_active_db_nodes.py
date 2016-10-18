@@ -65,6 +65,9 @@ def main():
   
   lockserver_handle = lockserver.create_lockserver_handle()
 
+  django.setup()
+
+
   # Always try to release the lockserver handle, though it's probably not
   # very useful in this case.
   try:
