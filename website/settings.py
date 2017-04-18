@@ -106,25 +106,24 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+# Take a look at https://docs.djangoproject.com/en/1.8/ref/databases/
+# to learn more about Django and databases.
+# You can use other databases like Postgres or SQLite as well.
 DATABASES = {
     'default': {
-        # you can use django.db.backends.sqlite3 instead of mysql. If you
-        # decide to do so, you can leave the other fields empty
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'FILL_THIS_IN',
         'USER': 'FILL_THIS_IN',
         'PASSWORD': 'FILL_THIS_IN',
         'HOST': '',
         'PORT': '',
+        'OPTIONS': {
+            # INNODB is ully transactional and supports foreign key references
+            # (default since MySQL 5.5.5)
+            'init_command': 'SET default_storage_engine=INNODB'
+        }
     }
 }
-
-if DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
-    DATABASES['default']['OPTIONS'] = {}
-    DATABASES['default']['OPTIONS']['init_command'] = \
-            'SET storage_engine=INNODB'
 
 # Make this unique, and don't share it with anybody.
 # Fill this in!
