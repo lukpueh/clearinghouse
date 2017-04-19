@@ -118,7 +118,7 @@ DATABASES = {
         'HOST': '',
         'PORT': '',
         'OPTIONS': {
-            # INNODB is ully transactional and supports foreign key references
+            # INNODB is fully transactional and supports foreign key references
             # (default since MySQL 5.5.5)
             'init_command': 'SET default_storage_engine=INNODB'
         }
