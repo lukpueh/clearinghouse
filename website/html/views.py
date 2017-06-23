@@ -22,7 +22,6 @@ import sys
 import shutil
 import subprocess
 import xmlrpclib
-import re
 import ssl
 
 # Needed to escape characters for the Android referrer...
