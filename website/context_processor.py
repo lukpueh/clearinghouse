@@ -18,5 +18,5 @@ def options(request):
         # 'django.core.context_processors.debug', but only if the request's
         # IP address is listed in the INTERNAL_IPS setting, c.f.:
         # https://docs.djangoproject.com/en/1.9/ref/templates/api/#django-template-context-processors-debug
-        "DEBUG" : "settings.DEBUG",
+        "DEBUG" : settings.DEBUG,
         }
