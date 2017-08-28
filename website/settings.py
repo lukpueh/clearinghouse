@@ -52,9 +52,10 @@ SEATTLECLEARINGHOUSE_INSTALLER_BUILDER_XMLRPC = "https://custombuilder.poly.edu/
 
 # In Python 2.7.9+ a HTTPS request to a server using a self-signed certificate
 # will raise an exception.
-# This setting provides to chose whether to accept self-signed certificates
-# (e.g. in DEBUG mode) by using an unverified ssl context.
+# If set to `True` the SSL context is not verified for HTTPS XMLRPC requests
+# and therefore allows the use of self-signed certificates.
 # c.f. https://github.com/SeattleTestbed/custominstallerbuilder/issues/16
+# NOTE: Don't set to `True` in production!
 UNVERIFIED_SSL_CONTEXT = DEBUG
 
 # Not currently used. This is left in for legacy installs
